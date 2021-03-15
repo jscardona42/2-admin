@@ -1,0 +1,42 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Permissions {
+  id                Int                 @id @default(autoincrement()) @db.SmallInt
+  name              String?             @db.VarChar(50)
+  methodclass       String?             @db.VarChar(255)
+  Roles_permissions Roles_permissions[]
+}
+
+model Roles {
+  id                Int                 @id @default(autoincrement()) @db.SmallInt
+  role              String              @db.VarChar(100)
+  Roles_permissions Roles_permissions[]
+  User              User[]
+}
+
+model Roles_permissions {
+  id            Int         @id @default(autoincrement()) @db.SmallInt
+  role_id       Int         @db.SmallInt
+  permission_id Int         @default(1) @db.SmallInt
+  permissions   String      @db.VarChar(255)
+  Permissions   Permissions @relation(fields: [permission_id], references: [id])
+  Roles         Roles       @relation(fields: [role_id], references: [id])
+}
+
+model User {
+  id       Int     @id @default(autoincrement())
+  name     String?
+  email    String
+  password String?
+  token    String?
+  salt     String?
+  role_id  Int     @db.SmallInt
+  Roles    Roles   @relation(fields: [role_id], references: [id])
+}

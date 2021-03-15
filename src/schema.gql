@@ -1,0 +1,95 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+directive @key(fields: String!) on OBJECT | INTERFACE
+
+directive @extends on OBJECT | INTERFACE
+
+directive @external on OBJECT | FIELD_DEFINITION
+
+directive @requires(fields: String!) on FIELD_DEFINITION
+
+directive @provides(fields: String!) on FIELD_DEFINITION
+
+type Permissions {
+  id: ID!
+  name: String!
+  methodclass: String!
+}
+
+type Role {
+  id: ID!
+  role: String!
+}
+
+type RolesPermissions {
+  id: ID!
+  role_id: Float!
+  permission_id: Float!
+  permissions: String!
+}
+
+type Order {
+  id: ID!
+  order: String!
+}
+
+type User {
+  id: ID!
+  email: String!
+  password: String!
+  token: String
+  salt: String
+  name: String
+  role_id: Float!
+}
+
+type Query {
+  users: [User!]!
+
+  """Get one user by email and password"""
+  signInUser(data: SignInUserInput!): User!
+
+  """It returns all registered permisions"""
+  permissions: [Permissions!]!
+
+  """It returns all registered roles"""
+  roles: [Role!]!
+
+  """It returns all registered roles_Permissions"""
+  rolesPermissions: [RolesPermissions!]!
+  orders: [Order!]!
+}
+
+input SignInUserInput {
+  email: String!
+  password: String!
+}
+
+type Mutation {
+  """Create a new user"""
+  signUpUser(data: SignUpUserInput!): User!
+  createOrder(data: createOrderInput!): Order!
+  updateOrder(data: updateOrderInput!): Order!
+  deleteOrder(id: Float!): Order!
+}
+
+"""New User Input"""
+input SignUpUserInput {
+  name: String!
+  email: String!
+  password: String!
+  roles: Float!
+}
+
+"""New order input"""
+input createOrderInput {
+  order: String!
+}
+
+"""Update order input"""
+input updateOrderInput {
+  id: ID!
+  order: String!
+}
