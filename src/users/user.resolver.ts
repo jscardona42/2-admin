@@ -15,7 +15,7 @@ export class UserResolver {
   ) { }
 
   @Query(() => [User], { name: 'users' })
-  @UseGuards(GqlAuthGuard)
+  // @UseGuards(GqlAuthGuard)
   async findAllUsers() {
     return await this.userService.findAllUsers();
   }
