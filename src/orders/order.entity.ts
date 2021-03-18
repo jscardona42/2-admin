@@ -12,14 +12,14 @@ export class Order {
     order: string
 }
 
-@InputType({ description: "New order input" })
+@InputType()
 export class createOrderInput {
     @Field()
     @IsNotEmpty()
     order: string
 }
 
-@InputType({ description: "Update order input" })
+@InputType()
 export class updateOrderInput {
     @Field((type) => ID)
     @IsNotEmpty()

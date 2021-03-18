@@ -14,7 +14,13 @@ export class UserService {
     return this.prismaService.user.findMany();
   }
 
-  async signInUser(data) {
+  async findOneUser(id: number): Promise<User> {
+    return await this.prismaService.user.findUnique({
+      where: { id: id }
+    });
+  }
+
+  async signInUser(data, res) {
     const salt = await this.prismaService.user.findFirst({
       where: { email: data.email },
       select: { salt: true },
@@ -27,12 +33,19 @@ export class UserService {
       },
     })
 
+    const permiss = await this.prismaService.roles_permissions.findFirst({
+      where: { role_id: user.role_id },
+      select: { permissions: true }
+    })
+
     if (!user) {
       throw new AuthenticationError('Invalid credentials');
     }
 
-    const token = this.jwtService.sign({ userId: user.id, role: user.role_id });
-    const updToken = this.createToken(token, user);
+    console.log(permiss);
+
+    const token = this.jwtService.sign({ userId: user.id, role: user.role_id, permissions: permiss.permissions });
+    const updToken = this.createToken(token, user, res);
 
     return updToken;
   }
@@ -71,13 +84,16 @@ export class UserService {
     return bcrypt.hash(password, salt);
   }
 
-  async createToken(token: string, user) {
+  async createToken(token: string, user, res) {
     const updToken = await this.prismaService.user.update({
       where: { id: user.id, },
       data: { token: token, },
-      select: { token: true }
+      select: { token: true, role_id: true }
     })
 
-    return updToken;
+
+    // res.cookie("token", token, { httpOnly: false });
+
+    return updToken
   }
 }

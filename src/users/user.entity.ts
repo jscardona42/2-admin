@@ -29,7 +29,7 @@ export class User {
   role_id?: number
 }
 
-@InputType({ description: "New User Input" })
+@InputType()
 export class SignUpUserInput {
   @Field()
   @IsNotEmpty()

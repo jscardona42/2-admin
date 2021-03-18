@@ -18,11 +18,11 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req;
 
-        console.log(req);
+        if (req.headers.authorization === undefined) {
+            throw new UnauthorizedException("Usuario no autorizado");
+        }
 
         var tkn = req.headers.authorization.split(' ')[1];
-
-        
 
         var token = jwt.verify(tkn, 'topSecret');
 
@@ -34,8 +34,6 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         const perExists = permissions.filter(permiss => permiss === permissionsReq);
 
         const user = await this.validate(token, tkn);
-
-        
 
         if (user == null || token == null || perExists.length === 0) {
             throw new UnauthorizedException("Usuario no autorizado");

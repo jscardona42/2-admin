@@ -26,7 +26,6 @@ type Role {
 type RolesPermissions {
   id: ID!
   role_id: Float!
-  permission_id: Float!
   permissions: String!
 }
 
@@ -46,20 +45,17 @@ type User {
 }
 
 type Query {
-  users: [User!]!
-
-  """Get one user by email and password"""
+  findAllUsers: [User!]!
+  findOneUser(id: Float!): User!
   signInUser(data: SignInUserInput!): User!
-
-  """It returns all registered permisions"""
-  permissions: [Permissions!]!
+  getAllMethods: [Permissions!]!
 
   """It returns all registered roles"""
   roles: [Role!]!
 
   """It returns all registered roles_Permissions"""
   rolesPermissions: [RolesPermissions!]!
-  orders: [Order!]!
+  findAllOrders: [Order!]!
 }
 
 input SignInUserInput {
@@ -68,14 +64,12 @@ input SignInUserInput {
 }
 
 type Mutation {
-  """Create a new user"""
   signUpUser(data: SignUpUserInput!): User!
   createOrder(data: createOrderInput!): Order!
   updateOrder(data: updateOrderInput!): Order!
   deleteOrder(id: Float!): Order!
 }
 
-"""New User Input"""
 input SignUpUserInput {
   name: String!
   email: String!
@@ -83,12 +77,10 @@ input SignUpUserInput {
   roles: Float!
 }
 
-"""New order input"""
 input createOrderInput {
   order: String!
 }
 
-"""Update order input"""
 input updateOrderInput {
   id: ID!
   order: String!

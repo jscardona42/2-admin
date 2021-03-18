@@ -12,13 +12,13 @@ const headers = { 'Content-Type': 'application/json' }
 export class OrderResolver {
     constructor() { }
 
-    @Query(() => [Order], { name: 'orders' })
+    @Query(() => [Order],)
     @UseGuards(GqlAuthGuard)
     async findAllOrders(): Promise<Order[]> {
         return fetch(`${apiUrl}/orders`).then(res => res.json())
     }
 
-    @Mutation(() => Order, { name: 'createOrder' })
+    @Mutation(() => Order)
     async createOrder(@Args("data") data: createOrderInput, @Context() ctx, err): Promise<Order> {
         return fetch(`${apiUrl}/orders`, {
             method: 'POST',
@@ -27,7 +27,7 @@ export class OrderResolver {
         }).then(res => res.json())
     }
 
-    @Mutation(() => Order, { name: 'updateOrder' })
+    @Mutation(() => Order)
     async updateOrder(@Args("data") data: updateOrderInput, @Context() ctx, err): Promise<Order> {
         return fetch(`${apiUrl}/orders`, {
             method: 'PUT',
@@ -36,7 +36,7 @@ export class OrderResolver {
         }).then(res => res.json())
     }
 
-    @Mutation(() => Order, { name: 'deleteOrder' })
+    @Mutation(() => Order)
     async deleteOrder(@Args("id") id: number, @Context() ctx, err): Promise<Order> {
         return fetch(`${apiUrl}/orders`, {
             method: 'DELETE',

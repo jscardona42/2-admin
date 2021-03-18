@@ -8,10 +8,9 @@ datasource db {
 }
 
 model Permissions {
-  id                Int                 @id @default(autoincrement()) @db.SmallInt
-  name              String?             @db.VarChar(50)
-  methodclass       String?             @db.VarChar(255)
-  Roles_permissions Roles_permissions[]
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String? @db.VarChar(50)
+  methodclass String? @db.VarChar(255)
 }
 
 model Roles {
@@ -22,12 +21,10 @@ model Roles {
 }
 
 model Roles_permissions {
-  id            Int         @id @default(autoincrement()) @db.SmallInt
-  role_id       Int         @db.SmallInt
-  permission_id Int         @default(1) @db.SmallInt
-  permissions   String      @db.VarChar(255)
-  Permissions   Permissions @relation(fields: [permission_id], references: [id])
-  Roles         Roles       @relation(fields: [role_id], references: [id])
+  id          Int    @id @default(autoincrement()) @db.SmallInt
+  role_id     Int    @db.SmallInt
+  permissions String @db.VarChar(255)
+  Roles       Roles  @relation(fields: [role_id], references: [id])
 }
 
 model User {
