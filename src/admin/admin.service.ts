@@ -20,18 +20,22 @@ export class AdminService {
         return this.prismaService.roles.findMany();
     }
 
-    getMethods(cls: any) {
-        var TMPmethods = Object.getOwnPropertyNames(cls.prototype).filter(
-            item => item !== 'constructor'
-        );
-
-        var nameMethods = [{ nameClass: cls.name, methods: TMPmethods }];
+    getMethods(TMPmethods, clsname: any) {
+        var nameMethods = [{ nameClass: clsname, methods: TMPmethods }];
         var nameMethods1 = nameMethods.filter(method => !method.nameClass.includes("Service"));
 
-        if (nameMethods1.length > 0) {
-            this.createMethods(nameMethods1[0])
+        var data: any = [];
+        var status: any = {};
+
+        status = {
+            status: 400
         }
-        // return JSON.stringify(nameMethods);
+
+        if (nameMethods1.length > 0) {
+            data = this.createMethods(nameMethods1[0]);
+            status = { status: 200 };
+        }
+        return JSON.stringify(status);
     }
 
     async createMethods(cls) {

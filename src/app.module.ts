@@ -3,6 +3,7 @@ import { GraphQLFederationModule, GraphQLGatewayModule, GraphQLModule } from '@n
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
+import { AdminController } from './admin/admin.controller';
 import { AdminResolver } from './admin/admin.resolver';
 import { AdminService } from './admin/admin.service';
 import { OrderResolver } from './orders/order.resolver';
@@ -34,30 +35,22 @@ const MyProviders = [PrismaService, AdminService, UserService, UserResolver, Adm
       buildSchemaOptions: {
         orphanedTypes: [User],
       },
-      // typePaths: ['./**/*.graphql'],
-      // definitions: {
-      //   path: join(process.cwd(), 'src/graphql.schema.ts'),
-      // },
     })
-    // GraphQLModule.forRoot({
-    //   cors: {
-    //     origin: '*',
-    //     credentials: true,
-    //   },
-    //   autoSchemaFile: join(process.cwd(), "src/schema.gql"),
-    //   context: ({ req }) => ({ req })
-    // })
   ],
-  controllers: [],
+  controllers: [AdminController],
   providers: MyProviders,
 })
+
 export class AppModule {
   constructor(private readonly adminService: AdminService) {
     this.refreshMethods();
   }
   public refreshMethods() {
     for (const clsname of MyProviders) {
-      this.adminService.getMethods(clsname);
+      var TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(
+        item => item !== 'constructor'
+      );
+      this.adminService.getMethods(TMPmethods, clsname.name);
     }
   }
 }
