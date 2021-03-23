@@ -42,7 +42,7 @@ export class UserService {
       throw new AuthenticationError('Invalid credentials');
     }
 
-    const token = this.jwtService.sign({ userId: user.id, role: user.role_id, permissions: permiss.permissions });
+    const token = this.jwtService.sign({ userId: user.id });
     const updToken = this.createToken(token, user, res);
 
     return updToken;
@@ -89,9 +89,6 @@ export class UserService {
       select: { token: true, role_id: true }
     })
 
-
-    // res.cookie("token", token, { httpOnly: false });
-
-    return updToken
+    return updToken;
   }
 }

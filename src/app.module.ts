@@ -6,13 +6,12 @@ import { join } from 'path';
 import { AdminController } from './admin/admin.controller';
 import { AdminResolver } from './admin/admin.resolver';
 import { AdminService } from './admin/admin.service';
-import { OrderResolver } from './orders/order.resolver';
 import { PrismaService } from './prisma.service';
 import { User } from './users/user.entity';
 import { UserResolver } from './users/user.resolver';
 import { UserService } from './users/user.service';
 
-const MyProviders = [PrismaService, AdminService, UserService, UserResolver, AdminResolver, OrderResolver]
+const MyProviders = [PrismaService, AdminService, UserService, UserResolver, AdminResolver]
 
 @Module({
   imports: [

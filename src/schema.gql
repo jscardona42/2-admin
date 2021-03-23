@@ -29,11 +29,6 @@ type RolesPermissions {
   permissions: String!
 }
 
-type Order {
-  id: ID!
-  order: String!
-}
-
 type User {
   id: ID!
   email: String!
@@ -55,7 +50,6 @@ type Query {
 
   """It returns all registered roles_Permissions"""
   rolesPermissions: [RolesPermissions!]!
-  findAllOrders: [Order!]!
 }
 
 input SignInUserInput {
@@ -65,9 +59,6 @@ input SignInUserInput {
 
 type Mutation {
   signUpUser(data: SignUpUserInput!): User!
-  createOrder(data: createOrderInput!): Order!
-  updateOrder(data: updateOrderInput!): Order!
-  deleteOrder(id: Float!): Order!
 }
 
 input SignUpUserInput {
@@ -75,13 +66,4 @@ input SignUpUserInput {
   email: String!
   password: String!
   roles: Float!
-}
-
-input createOrderInput {
-  order: String!
-}
-
-input updateOrderInput {
-  id: ID!
-  order: String!
 }
