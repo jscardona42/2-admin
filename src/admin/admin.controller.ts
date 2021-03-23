@@ -6,9 +6,8 @@ export class AdminController {
     constructor(private adminService: AdminService) { }
 
     @Post()
-    async createOrder(@Body('clsname') clsname: any, @Body('TMPmethods') methods: any) {
+    async getMethods(@Body('clsname') clsname: any, @Body('TMPmethods') methods: any) {
         return this.adminService.getMethods(methods, clsname);
-        
     }
 
 }

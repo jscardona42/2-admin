@@ -9,7 +9,6 @@ import { RolesPermissions } from "./rolepermission.entity";
 @Injectable()
 export class AdminService {
     constructor(private prismaService: PrismaService) {
-
     }
 
     async getAllMethods(): Promise<Permissions[]> {
@@ -19,6 +18,7 @@ export class AdminService {
     async getAllRoles(): Promise<Role[]> {
         return this.prismaService.roles.findMany();
     }
+
 
     getMethods(TMPmethods, clsname: any) {
         var nameMethods = [{ nameClass: clsname, methods: TMPmethods }];

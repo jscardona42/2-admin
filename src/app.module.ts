@@ -31,7 +31,6 @@ const MyProviders = [PrismaService, AdminService, UserService, UserResolver, Adm
         credentials: true,
       },
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
-      context: ({ req, res }) => ({ req, res }),
       buildSchemaOptions: {
         orphanedTypes: [User],
       },

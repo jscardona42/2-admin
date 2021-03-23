@@ -42,8 +42,6 @@ export class UserService {
       throw new AuthenticationError('Invalid credentials');
     }
 
-    console.log(permiss);
-
     const token = this.jwtService.sign({ userId: user.id, role: user.role_id, permissions: permiss.permissions });
     const updToken = this.createToken(token, user, res);
 

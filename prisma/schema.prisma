@@ -37,3 +37,12 @@ model User {
   role_id  Int     @db.SmallInt
   Roles    Roles   @relation(fields: [role_id], references: [id])
 }
+
+model Microservices {
+  id       Int     @id @default(autoincrement()) @db.SmallInt
+  name     String? @db.VarChar(255)
+  hostname String? @db.VarChar(255)
+  port     Int?
+  url      String? @db.VarChar(32)
+  state    Int?
+}
