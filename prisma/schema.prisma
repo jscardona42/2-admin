@@ -46,3 +46,11 @@ model Microservices {
   url      String? @db.VarChar(32)
   state    Int?
 }
+
+model Menus {
+  id         Int     @id @default(autoincrement()) @db.SmallInt
+  menu1      String  @db.VarChar(100)
+  menu2      String? @db.VarChar(100)
+  menu3      String? @db.VarChar(100)
+  permission String? @db.VarChar(255)
+}

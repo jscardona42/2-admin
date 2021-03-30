@@ -11,14 +11,13 @@ export class AdminService {
     constructor(private prismaService: PrismaService) {
     }
 
-    async getAllMethods(): Promise<Permissions[]> {
+    async findAllPermissions(): Promise<Permissions[]> {
         return this.prismaService.permissions.findMany({});
     }
 
-    async getAllRoles(): Promise<Role[]> {
+    async findAllRoles(): Promise<Role[]> {
         return this.prismaService.roles.findMany();
     }
-
 
     getMethods(TMPmethods, clsname: any) {
         var nameMethods = [{ nameClass: clsname, methods: TMPmethods }];
@@ -32,13 +31,13 @@ export class AdminService {
         }
 
         if (nameMethods1.length > 0) {
-            data = this.createMethods(nameMethods1[0]);
+            data = this.createPermissions(nameMethods1[0]);
             status = { status: 200 };
         }
         return JSON.stringify(status);
     }
 
-    async createMethods(cls) {
+    async createPermissions(cls) {
         const moduleData = await this.prismaService.permissions.findFirst({
             where: {
                 name: cls.nameClass,
@@ -57,7 +56,7 @@ export class AdminService {
         }
     }
 
-    async getAllRolesPermissions(): Promise<RolesPermissions[]> {
+    async findAllRolesPermissions(): Promise<RolesPermissions[]> {
         return this.prismaService.roles_permissions.findMany({});
     }
 }

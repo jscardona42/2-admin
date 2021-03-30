@@ -15,18 +15,18 @@ export class AdminResolver {
     constructor(@Inject(PrismaService) private prismaService: PrismaService, private jwtService: JwtService, private adminService: AdminService) { }
 
     @Query(returns => [Permissions])
-    async getAllMethods(): Promise<Permissions[]> {
-        return this.adminService.getAllMethods();
+    async findAllPermissions(): Promise<Permissions[]> {
+        return await this.adminService.findAllPermissions();
     }
 
     @Query(returns => [Role], { name: "roles", description: "It returns all registered roles" })
-    async getAllRoles(): Promise<Role[]> {
-        return this.adminService.getAllRoles();
+    async findAllRoles(): Promise<Role[]> {
+        return this.adminService.findAllRoles();
     }
 
     @Query(returns => [RolesPermissions], { name: "rolesPermissions", description: "It returns all registered roles_Permissions" })
-    async getAllRolesPermissions(): Promise<RolesPermissions[]> {
-        return this.adminService.getAllRolesPermissions();
+    async findAllRolesPermissions(): Promise<RolesPermissions[]> {
+        return this.adminService.findAllRolesPermissions();
     }
 
 }

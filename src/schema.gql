@@ -29,6 +29,14 @@ type RolesPermissions {
   permissions: String!
 }
 
+type Menu {
+  id: ID!
+  menu1: String
+  menu2: String
+  menu3: String
+  permission: String
+}
+
 type User {
   id: ID!
   email: String!
@@ -43,13 +51,15 @@ type Query {
   findAllUsers: [User!]!
   findOneUser(id: Float!): User!
   signInUser(data: SignInUserInput!): User!
-  getAllMethods: [Permissions!]!
+  findAllPermissions: [Permissions!]!
 
   """It returns all registered roles"""
   roles: [Role!]!
 
   """It returns all registered roles_Permissions"""
   rolesPermissions: [RolesPermissions!]!
+  findAllMenus: [Menu!]!
+  getMenuRole(role_id: Float!): [Menu!]!
 }
 
 input SignInUserInput {
