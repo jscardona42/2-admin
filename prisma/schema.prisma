@@ -7,35 +7,26 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Permissions {
-  id          Int     @id @default(autoincrement()) @db.SmallInt
-  name        String? @db.VarChar(50)
-  methodclass String? @db.VarChar(255)
+model Login {
+  id                Int         @id @default(autoincrement()) @db.SmallInt
+  username          String
+  password          String?
+  token             String?
+  salt              String?
+  role_id           Int         @db.SmallInt
+  active_two_factor Int?        @default(0) @db.SmallInt
+  user_id           Int?        @db.SmallInt
+  Roles             Roles       @relation(fields: [role_id], references: [id])
+  Users             Users?      @relation(fields: [user_id], references: [id])
+  Twofactor         Twofactor[]
 }
 
-model Roles {
-  id                Int                 @id @default(autoincrement()) @db.SmallInt
-  role              String              @db.VarChar(100)
-  Roles_permissions Roles_permissions[]
-  User              User[]
-}
-
-model Roles_permissions {
-  id          Int    @id @default(autoincrement()) @db.SmallInt
-  role_id     Int    @db.SmallInt
-  permissions String @db.VarChar(255)
-  Roles       Roles  @relation(fields: [role_id], references: [id])
-}
-
-model User {
-  id       Int     @id @default(autoincrement())
-  name     String?
-  email    String
-  password String?
-  token    String?
-  salt     String?
-  role_id  Int     @db.SmallInt
-  Roles    Roles   @relation(fields: [role_id], references: [id])
+model Menus {
+  id         Int     @id @default(autoincrement()) @db.SmallInt
+  menu1      String  @db.VarChar(100)
+  menu2      String? @db.VarChar(100)
+  menu3      String? @db.VarChar(100)
+  permission String? @db.VarChar(255)
 }
 
 model Microservices {
@@ -47,10 +38,40 @@ model Microservices {
   state    Int?
 }
 
-model Menus {
-  id         Int     @id @default(autoincrement()) @db.SmallInt
-  menu1      String  @db.VarChar(100)
-  menu2      String? @db.VarChar(100)
-  menu3      String? @db.VarChar(100)
-  permission String? @db.VarChar(255)
+model Permissions {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String? @db.VarChar(50)
+  methodclass String? @db.VarChar(255)
+}
+
+model Roles {
+  id                Int                 @id @default(autoincrement()) @db.SmallInt
+  role              String              @db.VarChar(100)
+  Login             Login[]
+  Roles_permissions Roles_permissions[]
+}
+
+model Roles_permissions {
+  id          Int    @id @default(autoincrement()) @db.SmallInt
+  role_id     Int    @db.SmallInt
+  permissions String @db.VarChar(255)
+  Roles       Roles  @relation(fields: [role_id], references: [id])
+}
+
+model Twofactor {
+  twofactor_id     Int     @id @default(autoincrement()) @db.SmallInt
+  twofactor_secret String? @db.VarChar(255)
+  qr_code          String?
+  config_twofactor Int?    @default(0) @db.SmallInt
+  login_id         Int     @db.SmallInt
+  recovery_codes   String? @db.VarChar(255)
+  Login            Login   @relation(fields: [login_id], references: [id])
+}
+
+model Users {
+  id    Int     @id @default(autoincrement()) @db.SmallInt
+  name  String  @db.VarChar(100)
+  email String  @db.VarChar(100)
+  state Int?    @default(1) @db.SmallInt
+  Login Login[]
 }

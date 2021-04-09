@@ -53,7 +53,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     }
 
     async validate(token: any, tkn: any) {
-        const user = await this.prismaService.user.findFirst(
+        const user = await this.prismaService.login.findFirst(
             { where: { id: token.userId, token: tkn } }
         )
         // if (!user) {

@@ -1,16 +1,15 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID, InputType, InterfaceType } from '@nestjs/graphql'
+import { ObjectType, Field, ID, InputType, InterfaceType, Int } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 
 @ObjectType()
-export class User {
+export class Login {
   @Field((type) => ID)
   id: number
 
   @Field()
-  @IsEmail()
   @IsNotEmpty()
-  email: string
+  username: string
 
   @Field()
   @IsNotEmpty()
@@ -22,23 +21,21 @@ export class User {
   @Field((type) => String, { nullable: true })
   salt?: string | null
 
-  @Field((type) => String, { nullable: true })
-  name?: string | null
-
   @Field((type) => Number)
   role_id?: number
+
+  @Field((type) => Number, { nullable: true })
+  active_two_factor?: number | null
+
+  @Field((type) => Number, { nullable: true })
+  user_id?: number | null
 }
 
 @InputType()
 export class SignUpUserInput {
   @Field()
   @IsNotEmpty()
-  name: string
-
-  @Field()
-  @IsEmail()
-  @IsNotEmpty()
-  email: string
+  username: string
 
   @Field()
   @IsNotEmpty()
@@ -51,8 +48,7 @@ export class SignUpUserInput {
 @InputType()
 export class SignInUserInput {
   @Field()
-  @IsEmail()
-  email: string
+  username: string
 
   @Field()
   password: string

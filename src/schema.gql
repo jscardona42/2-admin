@@ -37,20 +37,36 @@ type Menu {
   permission: String
 }
 
-type User {
+type Login {
   id: ID!
-  email: String!
+  username: String!
   password: String!
   token: String
   salt: String
-  name: String
   role_id: Float!
+  active_two_factor: Float
+  user_id: Float
+}
+
+type Twofactor {
+  twofactor_id: ID!
+  twofactor_secret: String
+  config_twofactor: String
+  qr_code: String
+  login_id: Float
+  Login: Login
+  recovery_codes: String
 }
 
 type Query {
-  findAllUsers: [User!]!
-  findOneUser(id: Float!): User!
-  signInUser(data: SignInUserInput!): User!
+  getLogin: [Login!]!
+  getLoginById(id: Float!): Login!
+  signInLogin(data: SignInUserInput!): Login!
+  configTwoFactor(data: ConfigTwofactorInput!): Twofactor!
+  validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
+  setTwoFactorConfig(data: SetTwoFactorInput!): Twofactor!
+  getTwoFactorById(twofactor_id: Float!): Twofactor!
+  validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!
   findAllPermissions: [Permissions!]!
 
   """It returns all registered roles"""
@@ -63,17 +79,34 @@ type Query {
 }
 
 input SignInUserInput {
-  email: String!
+  username: String!
   password: String!
 }
 
+input ConfigTwofactorInput {
+  login_id: String!
+}
+
+input TwoFactorAuthenticateInput {
+  login_id: String!
+  code: String!
+}
+
+input SetTwoFactorInput {
+  twofactor_id: String!
+}
+
+input RecoveryCodeInput {
+  twofactor_id: Float!
+  recovery_code: String!
+}
+
 type Mutation {
-  signUpUser(data: SignUpUserInput!): User!
+  signUpLogin(data: SignUpUserInput!): Login!
 }
 
 input SignUpUserInput {
-  name: String!
-  email: String!
+  username: String!
   password: String!
   roles: Float!
 }

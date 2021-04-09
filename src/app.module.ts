@@ -9,11 +9,12 @@ import { AdminService } from './admin/admin.service';
 import { MenuResolver } from './menu/menu.resolver';
 import { MenuService } from './menu/menu.service';
 import { PrismaService } from './prisma.service';
-import { User } from './users/user.entity';
-import { UserResolver } from './users/user.resolver';
-import { UserService } from './users/user.service';
+import { TwoFactorAuthenticationService } from './twofactor/twoFactorAuthentication.service';
+import { Login } from './users/login.entity';
+import { LoginResolver } from './users/login.resolver';
+import { LoginService } from './users/login.service';
 
-const MyProviders = [PrismaService, AdminService, UserService, UserResolver, AdminResolver, MenuService, MenuResolver]
+const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwoFactorAuthenticationService]
 
 @Module({
   imports: [
@@ -33,7 +34,7 @@ const MyProviders = [PrismaService, AdminService, UserService, UserResolver, Adm
       },
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       buildSchemaOptions: {
-        orphanedTypes: [User],
+        orphanedTypes: [Login],
       },
     })
   ],
