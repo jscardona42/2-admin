@@ -22,11 +22,13 @@ model Login {
 }
 
 model Menus {
-  id         Int     @id @default(autoincrement()) @db.SmallInt
-  menu1      String  @db.VarChar(100)
-  menu2      String? @db.VarChar(100)
-  menu3      String? @db.VarChar(100)
-  permission String? @db.VarChar(255)
+  id         Int        @id @default(autoincrement())
+  title      String
+  path       String
+  isEntity   Boolean
+  subMenu    Menus[] @relation("treeMenuTotreeMenu")
+  parentMenu   Menus?  @relation("treeMenuTotreeMenu", fields: [parentMenuId], references: [id])
+  parentMenuId Int?
 }
 
 model Microservices {
@@ -36,12 +38,6 @@ model Microservices {
   port     Int?
   url      String? @db.VarChar(32)
   state    Int?
-}
-
-model Permissions {
-  id          Int     @id @default(autoincrement()) @db.SmallInt
-  name        String? @db.VarChar(50)
-  permissions String? @db.VarChar(255)
 }
 
 model Roles {
@@ -54,7 +50,7 @@ model Roles {
 model Roles_permissions {
   id          Int    @id @default(autoincrement()) @db.SmallInt
   role_id     Int    @db.SmallInt
-  permissions String @db.VarChar(255)
+  permissions String[] 
   Roles       Roles  @relation(fields: [role_id], references: [id])
 }
 
