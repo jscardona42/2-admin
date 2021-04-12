@@ -11,8 +11,8 @@ export class AdminService {
     constructor(private prismaService: PrismaService) {
     }
 
-    async findAllPermissions(): Promise<Permissions[]> {
-        return this.prismaService.permissions.findMany({});
+    async findAllPermissions() {
+        return this.prismaService.permissions.findMany();
     }
 
     async findAllRoles(): Promise<Role[]> {
@@ -47,11 +47,11 @@ export class AdminService {
         if (moduleData) {
             return this.prismaService.permissions.update({
                 where: { id: moduleData.id },
-                data: { methodclass: JSON.stringify(cls.methods) }
+                data: { permissions: JSON.stringify(cls.methods) }
             });
         } else {
             return this.prismaService.permissions.create({
-                data: { name: cls.nameClass, methodclass: JSON.stringify(cls.methods) }
+                data: { name: cls.nameClass, permissions: JSON.stringify(cls.methods) }
             });
         }
     }

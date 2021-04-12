@@ -41,7 +41,7 @@ model Microservices {
 model Permissions {
   id          Int     @id @default(autoincrement()) @db.SmallInt
   name        String? @db.VarChar(50)
-  methodclass String? @db.VarChar(255)
+  permissions String? @db.VarChar(255)
 }
 
 model Roles {

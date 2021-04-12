@@ -15,7 +15,7 @@ export class AdminResolver {
     constructor(@Inject(PrismaService) private prismaService: PrismaService, private jwtService: JwtService, private adminService: AdminService) { }
 
     @Query(returns => [Permissions])
-    async findAllPermissions(): Promise<Permissions[]> {
+    async findAllPermissions(){
         return await this.adminService.findAllPermissions();
     }
 
