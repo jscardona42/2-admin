@@ -26,16 +26,21 @@ type Role {
 type RolesPermissions {
   id: ID!
   role_id: Float!
-  permissions: String!
+  permissions: [String!]!
 }
 
 type Menu {
   id: ID!
-  menu1: String
-  menu2: String
-  menu3: String
-  permission: String
+  title: String!
+  path: String!
+  isEntity: Boolean!
+  subMenu: JSON!
 }
+
+"""
+The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
+"""
+scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
 type Login {
   id: ID!
@@ -74,8 +79,8 @@ type Query {
 
   """It returns all registered roles_Permissions"""
   rolesPermissions: [RolesPermissions!]!
-  findAllMenus: [Menu!]!
-  getMenuRole(role_id: Float!): [Menu!]!
+  rootMenu: Menu!
+  filteredMenuForRoleId(roleId: Float!): Menu!
 }
 
 input SignInUserInput {
@@ -103,6 +108,9 @@ input RecoveryCodeInput {
 
 type Mutation {
   signUpLogin(data: SignUpUserInput!): Login!
+  createRootMenu: Menu!
+  createFolder(folderName: String!, parentId: Float!): Menu!
+  insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
 }
 
 input SignUpUserInput {

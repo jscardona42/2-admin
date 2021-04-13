@@ -26,8 +26,8 @@ model Menus {
   title      String
   path       String
   isEntity   Boolean
-  subMenu    Menus[] @relation("treeMenuTotreeMenu")
-  parentMenu   Menus?  @relation("treeMenuTotreeMenu", fields: [parentMenuId], references: [id])
+  subMenu    Menus[] @relation("menusToMenus")
+  parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
   parentMenuId Int?
 }
 
@@ -40,6 +40,12 @@ model Microservices {
   state    Int?
 }
 
+model Permissions {
+  id          Int     @id @default(autoincrement()) @db.SmallInt
+  name        String? @db.VarChar(50)
+  permissions String? @db.VarChar(255)
+}
+
 model Roles {
   id                Int                 @id @default(autoincrement()) @db.SmallInt
   role              String              @db.VarChar(100)
@@ -50,7 +56,7 @@ model Roles {
 model Roles_permissions {
   id          Int    @id @default(autoincrement()) @db.SmallInt
   role_id     Int    @db.SmallInt
-  permissions String[] 
+  permissions String[]
   Roles       Roles  @relation(fields: [role_id], references: [id])
 }
 

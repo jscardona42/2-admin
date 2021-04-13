@@ -1,22 +1,22 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID, InputType, InterfaceType } from '@nestjs/graphql'
-import { IsEmail, IsNotEmpty } from 'class-validator'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
+import JSON from 'graphql-type-json'
 
 @ObjectType()
 export class Menu {
-    @Field((type) => ID)
+    @Field(type => ID)
     id: number
 
-    @Field((type) => String, { nullable: true })
-    menu1?: string | null
+    @Field()
+    title: string
 
-    @Field((type) => String, { nullable: true })
-    menu2?: string | null
+    @Field()
+    path: string 
 
-    @Field((type) => String, { nullable: true })
-    menu3?: string | null
+    @Field()
+    isEntity: boolean
 
-    @Field((type) => String, { nullable: true })
-    permission?: string | null
+    @Field(type => JSON)
+    subMenu: [JSON]
 
 }

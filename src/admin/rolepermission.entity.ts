@@ -8,7 +8,7 @@ export class RolesPermissions {
     @Field((type) => Number)
     role_id: number
 
-    @Field((type) => String)
-    permissions: string | null
+    @Field((type) => [String])
+    permissions: string[]
 
 }

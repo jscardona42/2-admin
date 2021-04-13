@@ -29,15 +29,15 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         let _class = context.getClass().name;
         let permissionsReq = context.getHandler().name;
 
-        const permissions = JSON.parse(await this.getPermissions(token));
+        // const permissions = JSON.parse(await this.getPermissions(token));
 
-        const perExists = permissions.filter(permiss => permiss === permissionsReq);
+        // const perExists = permissions.filter(permiss => permiss === permissionsReq);
 
         const user = await this.validate(token, tkn);
 
-        if (user == null || token == null || perExists.length === 0) {
-            throw new UnauthorizedException("Usuario no autorizado");
-        }
+        // if (user == null || token == null || perExists.length === 0) {
+        //     throw new UnauthorizedException("Usuario no autorizado");
+        // }
         return true;
 
         // } catch (error) {
