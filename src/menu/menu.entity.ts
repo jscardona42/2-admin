@@ -1,6 +1,6 @@
-import 'reflect-metadata'
-import { ObjectType, Field, ID } from '@nestjs/graphql'
-import JSON from 'graphql-type-json'
+import 'reflect-metadata';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
+import JSON from 'graphql-type-json';
 
 @ObjectType()
 export class Menu {

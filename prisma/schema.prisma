@@ -22,13 +22,13 @@ model Login {
 }
 
 model Menus {
-  id         Int        @id @default(autoincrement())
-  title      String
-  path       String
-  isEntity   Boolean
-  subMenu    Menus[] @relation("menusToMenus")
-  parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
+  id           Int     @id @default(autoincrement())
+  title        String
+  path         String
+  isEntity     Boolean
   parentMenuId Int?
+  parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
+  subMenu      Menus[] @relation("menusToMenus")
 }
 
 model Microservices {
@@ -54,20 +54,23 @@ model Roles {
 }
 
 model Roles_permissions {
-  id          Int    @id @default(autoincrement()) @db.SmallInt
-  role_id     Int    @db.SmallInt
-  permissions String[]
-  Roles       Roles  @relation(fields: [role_id], references: [id])
+  id               Int      @id @default(autoincrement()) @db.SmallInt
+  role_id          Int      @db.SmallInt
+  permissions_menu String[]
+  permissions      String?
+  Roles            Roles    @relation(fields: [role_id], references: [id])
 }
 
 model Twofactor {
-  twofactor_id     Int     @id @default(autoincrement()) @db.SmallInt
-  twofactor_secret String? @db.VarChar(255)
-  qr_code          String?
-  config_twofactor Int?    @default(0) @db.SmallInt
-  login_id         Int     @db.SmallInt
-  recovery_codes   String? @db.VarChar(255)
-  Login            Login   @relation(fields: [login_id], references: [id])
+  twofactor_id         Int                 @id @default(autoincrement()) @db.SmallInt
+  twofactor_secret     String?             @db.VarChar(255)
+  qr_code              String?
+  config_twofactor     Int?                @default(0) @db.SmallInt
+  login_id             Int                 @db.SmallInt
+  recovery_codes       String?             @db.VarChar(255)
+  validation_method_id Int?                @db.SmallInt
+  Login                Login               @relation(fields: [login_id], references: [id])
+  Validation_methods   Validation_methods? @relation(fields: [validation_method_id], references: [validation_method_id])
 }
 
 model Users {
@@ -76,4 +79,11 @@ model Users {
   email String  @db.VarChar(100)
   state Int?    @default(1) @db.SmallInt
   Login Login[]
+}
+
+model Validation_methods {
+  validation_method_id Int         @id @default(autoincrement()) @db.SmallInt
+  validation_method    String      @db.VarChar(255)
+  state                Int?        @default(1) @db.SmallInt
+  Twofactor            Twofactor[]
 }

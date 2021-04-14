@@ -26,7 +26,7 @@ type Role {
 type RolesPermissions {
   id: ID!
   role_id: Float!
-  permissions: [String!]!
+  permissions_menu: [String!]!
 }
 
 type Menu {
@@ -61,18 +61,14 @@ type Twofactor {
   login_id: Float
   Login: Login
   recovery_codes: String
+  validation_method_id: Float!
 }
 
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
-  configTwoFactor(data: ConfigTwofactorInput!): Twofactor!
-  validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
-  setTwoFactorConfig(data: SetTwoFactorInput!): Twofactor!
-  getTwoFactorById(twofactor_id: Float!): Twofactor!
-  validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!
-  findAllPermissions: [Permissions!]!
+  getPermissions: [Permissions!]!
 
   """It returns all registered roles"""
   roles: [Role!]!
@@ -81,6 +77,11 @@ type Query {
   rolesPermissions: [RolesPermissions!]!
   rootMenu: Menu!
   filteredMenuForRoleId(roleId: Float!): Menu!
+  getTwoFactorById(twofactor_id: Float!): Twofactor!
+  configTwoFactor(login_id: Float!): Twofactor!
+  validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
+  validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!
+  validationCodeMail(data: ValidateCodeInput!): Twofactor!
 }
 
 input SignInUserInput {
@@ -88,17 +89,9 @@ input SignInUserInput {
   password: String!
 }
 
-input ConfigTwofactorInput {
-  login_id: String!
-}
-
 input TwoFactorAuthenticateInput {
-  login_id: String!
+  login_id: Float!
   code: String!
-}
-
-input SetTwoFactorInput {
-  twofactor_id: String!
 }
 
 input RecoveryCodeInput {
@@ -106,15 +99,28 @@ input RecoveryCodeInput {
   recovery_code: String!
 }
 
+input ValidateCodeInput {
+  login_id: Float!
+  validate_code: String!
+}
+
 type Mutation {
   signUpLogin(data: SignUpUserInput!): Login!
   createRootMenu: Menu!
   createFolder(folderName: String!, parentId: Float!): Menu!
   insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
+  createTwoFactor(data: configTwoFactorInput!): Twofactor!
+  setTwoFactorConfig(twofactor_id: Float!): Twofactor!
+  sendMail(login_id: Float!): Twofactor!
 }
 
 input SignUpUserInput {
   username: String!
   password: String!
   roles: Float!
+}
+
+input configTwoFactorInput {
+  login_id: Float!
+  validation_method_id: Float!
 }

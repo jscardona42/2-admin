@@ -9,15 +9,28 @@ import { AdminService } from './admin/admin.service';
 import { MenuResolver } from './menu/menu.resolver';
 import { MenuService } from './menu/menu.service';
 import { PrismaService } from './prisma.service';
+import { TwofactorResolver } from './twofactor/twofactor.resolver';
+import { TwofactorService } from './twofactor/twofactor.service';
 import { TwoFactorAuthenticationService } from './twofactor/twoFactorAuthentication.service';
 import { Login } from './users/login.entity';
 import { LoginResolver } from './users/login.resolver';
 import { LoginService } from './users/login.service';
+import { MailerModule } from '@nestjs-modules/mailer';
 
-const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwoFactorAuthenticationService]
+const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwoFactorAuthenticationService, TwofactorService, TwofactorResolver]
 
 @Module({
   imports: [
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.gmail.com',
+        port: 465,
+        auth: {
+          user: "tiresiatest@gmail.com",
+          pass: "Tiresia2021*"
+        },
+      }
+    }),
     JwtModule.register({
       secret: "topSecret",
       signOptions: {
