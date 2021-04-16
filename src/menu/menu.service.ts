@@ -116,7 +116,7 @@ export class MenuService {
         role_id: roleId,
       },
       select: {
-        permissions: true,
+        permissions_menu: true,
       },
     });
     const filteredMenu = await this.prismaService.menus.findUnique({
@@ -140,7 +140,7 @@ export class MenuService {
                 OR: [
                   {
                     title: {
-                      in: permissions[0].permissions,
+                      in: permissions[0].permissions_menu,
                     },
                   },
                   { isEntity: false },
@@ -153,7 +153,7 @@ export class MenuService {
                 isEntity: true,
                 subMenu: {
                   where: {
-                    title: { in: permissions[0].permissions },
+                    title: { in: permissions[0].permissions_menu },
                   },
                 },
               },

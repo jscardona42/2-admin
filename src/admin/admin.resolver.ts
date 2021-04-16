@@ -16,23 +16,23 @@ export class AdminResolver {
   ) {}
 
   @Query((returns) => [Permissions])
-  async findAllPermissions() {
-    return await this.adminService.findAllPermissions();
+  async getPermissions() {
+    return await this.adminService.getPermissions();
   }
 
   @Query((returns) => [Role], {
     name: 'roles',
     description: 'It returns all registered roles',
   })
-  async findAllRoles(): Promise<Role[]> {
-    return this.adminService.findAllRoles();
+  async getRoles(): Promise<Role[]> {
+    return this.adminService.getRoles();
   }
 
   @Query((returns) => [RolesPermissions], {
     name: 'rolesPermissions',
     description: 'It returns all registered roles_Permissions',
   })
-  async findAllRolesPermissions(): Promise<RolesPermissions[]> {
-    return this.adminService.findAllRolesPermissions();
+  async getRolesPermissions(): Promise<RolesPermissions[]> {
+    return this.adminService.getRolesPermissions();
   }
 }

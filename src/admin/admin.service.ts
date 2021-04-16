@@ -7,11 +7,11 @@ import { RolesPermissions } from './rolepermission.entity';
 export class AdminService {
   constructor(private prismaService: PrismaService) {}
 
-  async findAllPermissions() {
+  async getPermissions() {
     return this.prismaService.permissions.findMany();
   }
 
-  async findAllRoles(): Promise<Role[]> {
+  async getRoles(): Promise<Role[]> {
     return this.prismaService.roles.findMany();
   }
 
@@ -54,7 +54,7 @@ export class AdminService {
     }
   }
 
-  async findAllRolesPermissions(): Promise<RolesPermissions[]> {
+  async getRolesPermissions(): Promise<RolesPermissions[]> {
     return this.prismaService.roles_permissions.findMany();
   }
 }

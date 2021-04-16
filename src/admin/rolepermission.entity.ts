@@ -9,6 +9,6 @@ export class RolesPermissions {
     role_id: number
 
     @Field((type) => [String])
-    permissions: string[]
+    permissions_menu: string[]
 
 }

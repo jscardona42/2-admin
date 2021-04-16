@@ -5,40 +5,39 @@ import { IsNotEmpty } from 'class-validator'
 
 @ObjectType()
 export class Twofactor {
-    @Field((type) => ID)
-    twofactor_id: number
+  @Field((type) => ID)
+  twofactor_id: number
 
-    @Field((type) => String, { nullable: true })
-    twofactor_secret?: string | null
+  @Field((type) => String, { nullable: true })
+  twofactor_secret?: string | null
 
-    @Field((type) => String, { nullable: true })
-    config_twofactor?: string | null
+  @Field((type) => String, { nullable: true })
+  config_twofactor?: string | null
 
-    @Field((type) => String, { nullable: true })
-    qr_code?: string | null
+  @Field((type) => String, { nullable: true })
+  qr_code?: string | null
 
-    @Field((type) => Number, { nullable: true })
-    login_id?: number | null
+  @Field((type) => Number, { nullable: true })
+  login_id?: number | null
 
-    @Field({ nullable: true })
-    Login: Login
+  @Field({ nullable: true })
+  Login: Login
 
-    @Field((type) => String, { nullable: true })
-    recovery_codes?: string | null
-}
+  @Field((type) => String, { nullable: true })
+  recovery_code?: string | null
 
-@InputType()
-export class ConfigTwofactorInput {
   @Field()
-  @IsNotEmpty()
-  login_id: string
+  validation_method_id: number
+
+  @Field()
+  time_creation_code: string
 }
 
 @InputType()
 export class TwoFactorAuthenticateInput {
   @Field()
   @IsNotEmpty()
-  login_id: string
+  login_id: number
 
   @Field()
   @IsNotEmpty()
@@ -57,8 +56,22 @@ export class RecoveryCodeInput {
 }
 
 @InputType()
-export class SetTwoFactorInput {
+export class configTwoFactorInput {
   @Field()
   @IsNotEmpty()
-  twofactor_id: string
+  login_id: number
+
+  @Field()
+  validation_method_id: number
+}
+
+@InputType()
+export class ValidateCodeInput {
+  @Field()
+  @IsNotEmpty()
+  login_id: number
+
+  @Field()
+  @IsNotEmpty()
+  validate_code: string
 }
