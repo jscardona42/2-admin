@@ -11,23 +11,22 @@ import { MenuService } from './menu/menu.service';
 import { PrismaService } from './prisma.service';
 import { TwofactorResolver } from './twofactor/twofactor.resolver';
 import { TwofactorService } from './twofactor/twofactor.service';
-import { TwoFactorAuthenticationService } from './twofactor/twoFactorAuthentication.service';
 import { Login } from './users/login.entity';
 import { LoginResolver } from './users/login.resolver';
 import { LoginService } from './users/login.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 
-const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwoFactorAuthenticationService, TwofactorService, TwofactorResolver]
+const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver]
 
 @Module({
   imports: [
     MailerModule.forRoot({
       transport: {
-        host: 'smtp.gmail.com',
-        port: 465,
+        host: process.env.HOST_MAILER,
+        port: process.env.PORT_MAILER,
         auth: {
-          user: "tiresiatest@gmail.com",
-          pass: "Tiresia2021*"
+          user: process.env.USER_MAILER,
+          pass: process.env.PASSWORD_MAILER
         },
       }
     }),

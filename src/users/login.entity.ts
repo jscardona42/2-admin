@@ -42,7 +42,7 @@ export class SignUpUserInput {
   password: string
 
   @Field()
-  roles: number
+  role_id: number
 }
 
 @InputType()

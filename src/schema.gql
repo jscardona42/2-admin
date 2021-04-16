@@ -60,8 +60,9 @@ type Twofactor {
   qr_code: String
   login_id: Float
   Login: Login
-  recovery_codes: String
+  recovery_code: String
   validation_method_id: Float!
+  time_creation_code: String!
 }
 
 type Query {
@@ -110,14 +111,14 @@ type Mutation {
   createFolder(folderName: String!, parentId: Float!): Menu!
   insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
   createTwoFactor(data: configTwoFactorInput!): Twofactor!
-  setTwoFactorConfig(twofactor_id: Float!): Twofactor!
+  setActivateConfigTwofactorTOTP(login_id: Float!): Twofactor!
   sendMail(login_id: Float!): Twofactor!
 }
 
 input SignUpUserInput {
   username: String!
   password: String!
-  roles: Float!
+  role_id: Float!
 }
 
 input configTwoFactorInput {

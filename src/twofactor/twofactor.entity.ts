@@ -24,10 +24,13 @@ export class Twofactor {
   Login: Login
 
   @Field((type) => String, { nullable: true })
-  recovery_codes?: string | null
+  recovery_code?: string | null
 
   @Field()
   validation_method_id: number
+
+  @Field()
+  time_creation_code: string
 }
 
 @InputType()

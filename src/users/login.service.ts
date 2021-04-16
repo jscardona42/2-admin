@@ -74,7 +74,7 @@ export class LoginService {
         password: await this.hashPassword(data.password, salt),
         salt: salt,
         token: data.token,
-        role_id: 3
+        role_id: data.role_id
       }
     })
 

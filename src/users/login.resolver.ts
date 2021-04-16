@@ -3,15 +3,13 @@ import { LoginService } from './login.service';
 import { SignInUserInput, SignUpUserInput, Login } from './login.entity';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Response } from 'express';
-import { TwoFactorAuthenticationService } from 'src/twofactor/twoFactorAuthentication.service';
 var QRCode = require('qrcode')
 
 @Resolver(() => Login)
 export class LoginResolver {
 
   constructor(
-    private readonly loginService: LoginService,
-    private readonly twoFactorService: TwoFactorAuthenticationService
+    private readonly loginService: LoginService
   ) { }
 
   @Query(() => [Login])

@@ -1,9 +1,7 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
-
 import { UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 const fetch = require('node-fetch');
 import { Response } from 'express';
-import { TwoFactorAuthenticationService } from 'src/twofactor/twoFactorAuthentication.service';
 import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput, ValidateCodeInput } from 'src/twofactor/twofactor.entity';
 import { TwofactorService } from 'src/twofactor/twofactor.service';
 import { LoginService } from 'src/users/login.service';
@@ -15,7 +13,6 @@ export class TwofactorResolver {
 
     constructor(
         private readonly loginService: LoginService,
-        private readonly twoFactorService: TwoFactorAuthenticationService,
         private readonly twofactorService: TwofactorService
     ) { }
 
@@ -40,18 +37,23 @@ export class TwofactorResolver {
     async configTwoFactor(
         @Args("login_id") login_id: number, @Context('res') res: Response) {
 
+        var twofactorReturn = {};
         var login = await this.loginService.getLoginById(login_id);
+        if (!login.active_two_factor) {
+            throw new UnauthorizedException("Debe activar la autenticación de dos factores para el usuario");
+        }
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
         var user = await this.loginService.getUserById(login.user_id);
 
-        if (twofactor.validation_method_id == 1) {
-            if (!twofactor.config_twofactor) {
-                const { otpauthUrl, secret } = await this.twoFactorService.generateTwoFactorAuthenticationSecret(user);
-                const qrCodeUrl = await this.twofactorService.buildQrCodeUrl(otpauthUrl);
-                return await this.twofactorService.setTwoFactorSecret(secret, login_id, qrCodeUrl);
-            }
+        if (!twofactor.config_twofactor) {
+            const { otpauthUrl, secret } = await this.twofactorService.generateTwoFactorAuthenticationSecret(user);
+            const qrCodeUrl = await this.twofactorService.buildQrCodeUrl(otpauthUrl);
+            twofactorReturn = await this.twofactorService.configTwoFactor(secret, login_id, qrCodeUrl);
+            return Object.assign(twofactorReturn, { qr_code: JSON.stringify(qrCodeUrl) });
         }
-        return await this.twofactorService.getTwoFactorById(twofactor.twofactor_id);
+
+        twofactorReturn = await this.twofactorService.getTwoFactorById(twofactor.twofactor_id);
+        return Object.assign(twofactorReturn, { qr_code: "" });
     }
 
     @Query(returns => Login)//Válido para 2FA
@@ -62,7 +64,7 @@ export class TwofactorResolver {
         const login = await this.loginService.getLoginById(data.login_id);
         const twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
 
-        const isCodeValid = this.twoFactorService.validateTwoFactorCode(
+        const isCodeValid = this.twofactorService.validateTwoFactorCode(
             data, twofactor
         );
 
@@ -74,11 +76,14 @@ export class TwofactorResolver {
 
     @Mutation(returns => Twofactor)//Válido para 2FA // Recovery-Codes
     @UsePipes(ValidationPipe)
-    async setTwoFactorConfig(
-        @Args("twofactor_id") twofactor_id: number,
+    async setActivateConfigTwofactorTOTP(
+        @Args("login_id") login_id: number,
         @Context() ctx) {
-        var twofactor = await this.twofactorService.getTwoFactorById(twofactor_id);
-        return this.twofactorService.setTwoFactorConfig(twofactor);
+        var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
+        if (!twofactor.config_twofactor) {
+            return this.twofactorService.setActivateConfigTwofactorTOTP(twofactor);
+        }
+        return twofactor;
     }
 
     @Query(returns => Twofactor)
@@ -111,7 +116,8 @@ export class TwofactorResolver {
         @Args("data") data: ValidateCodeInput,
         @Context() ctx) {
         var login = await this.loginService.getLoginById(data.login_id);
-        return this.twofactorService.validationCodeMail(data, login);
+        var twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
+        return this.twofactorService.validationCodeMail(data, login, twofactor);
     }
 
 }
