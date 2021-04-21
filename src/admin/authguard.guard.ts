@@ -13,7 +13,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     async canActivate(context: ExecutionContext): Promise<any> {
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req;
-        if (req.headers.authorization === undefined || req.headers.authorization_url) {
+        if (req.headers.authorization === undefined && req.headers.authorization_url === undefined) {
             throw new UnauthorizedException("Unauthorized");
         }
         const authorization = req.headers.authorization;
