@@ -1,8 +1,9 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { LoginService } from './login.service';
 import { SignInUserInput, SignUpUserInput, Login } from './login.entity';
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Response } from 'express';
+import { GqlAuthGuard } from 'src/admin/authguard.guard';
 var QRCode = require('qrcode')
 
 @Resolver(() => Login)
@@ -14,7 +15,7 @@ export class LoginResolver {
 
   @Query(() => [Login])
   // @UseGuards(GqlAuthGuard)
-  async getLogin() {
+  async getLogin(@Context('res') res) {
     return await this.loginService.getLogin();
   }
 
@@ -27,9 +28,8 @@ export class LoginResolver {
   @Query(returns => Login)
   @UsePipes(ValidationPipe)
   async signInLogin(
-    @Args("data") data: SignInUserInput, @Context('res') res: Response) {
-    return await this.loginService.signInLogin(data, res);
-
+    @Args("data") data: SignInUserInput, @Context('req') req) {
+    return await this.loginService.signInLogin(data, req);
   }
 
   @Mutation(returns => Login)

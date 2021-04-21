@@ -15,8 +15,9 @@ import { Login } from './users/login.entity';
 import { LoginResolver } from './users/login.resolver';
 import { LoginService } from './users/login.service';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { AuditService } from './audit/audit.service';
 
-const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver]
+const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService]
 
 @Module({
   imports: [
@@ -31,9 +32,9 @@ const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, A
       }
     }),
     JwtModule.register({
-      secret: "topSecret",
+      secret: process.env.JWT_SECRET,
       signOptions: {
-        expiresIn: 3600
+        expiresIn: process.env.JWT_EXPIRESIN
       }
     }),
     PassportModule.register({
@@ -44,6 +45,10 @@ const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, A
         origin: '*',
         credentials: true,
       },
+      context: ({ req, res }) => ({
+        req: req,
+        res: res
+      }),
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       buildSchemaOptions: {
         orphanedTypes: [Login],

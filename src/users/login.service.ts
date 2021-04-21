@@ -4,18 +4,23 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Login } from './login.entity';
+import { AuditService } from 'src/audit/audit.service';
 var QRCode = require('qrcode')
 
 
 @Injectable()
 export class LoginService {
-  constructor(private prismaService: PrismaService, private jwtService: JwtService) { }
+  constructor(
+    private prismaService: PrismaService,
+    private jwtService: JwtService,
+    private auditService: AuditService
+  ) { }
 
   async getLogin() {
     return this.prismaService.login.findMany();
   }
 
- async getLoginById(login_id: number): Promise<Login> {
+  async getLoginById(login_id: number): Promise<Login> {
     return await this.prismaService.login.findUnique({
       where: { id: login_id }
     });
@@ -27,12 +32,16 @@ export class LoginService {
     });
   }
 
-  async signInLogin(data, res) {
-
+  async signInLogin(data, req) {
     const salt = await this.prismaService.login.findFirst({
       where: { username: data.username },
       select: { salt: true },
     })
+
+    if (salt === null) {
+      this.auditService.registerAudit(data, req);
+      throw new AuthenticationError('Invalid credentials');
+    }
 
     const user = await this.prismaService.login.findFirst({
       where: {
@@ -47,11 +56,14 @@ export class LoginService {
     })
 
     if (!user) {
+      this.auditService.registerAudit(data, req);
       throw new AuthenticationError('Invalid credentials');
     }
 
+    this.auditService.registerAudit(user, req);
+
     const token = this.jwtService.sign({ userId: user.id });
-    const updToken = this.createToken(token, user, res);
+    const updToken = this.createToken(token, user);
 
     return updToken;
   }
@@ -89,7 +101,7 @@ export class LoginService {
     return bcrypt.hash(password, salt);
   }
 
-  async createToken(token: string, user, res) {
+  async createToken(token: string, user) {
     const updToken = await this.prismaService.login.update({
       where: { id: user.id, },
       data: { token: token, },
