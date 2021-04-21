@@ -39,7 +39,7 @@ export class LoginService {
     })
 
     if (salt === null) {
-      this.auditService.registerAudit(data, "unauthorized", req);
+      this.auditService.registerAudit(data, req);
       throw new AuthenticationError('Invalid credentials');
     }
 
@@ -56,11 +56,11 @@ export class LoginService {
     })
 
     if (!user) {
-      this.auditService.registerAudit(data, "unauthorized", req);
+      this.auditService.registerAudit(data, req);
       throw new AuthenticationError('Invalid credentials');
     }
 
-    this.auditService.registerAudit(user, "authorized", req);
+    this.auditService.registerAudit(user, req);
 
     const token = this.jwtService.sign({ userId: user.id });
     const updToken = this.createToken(token, user);
