@@ -11,8 +11,8 @@ export class Twofactor {
   @Field((type) => String, { nullable: true })
   twofactor_secret?: string | null
 
-  @Field((type) => String, { nullable: true })
-  config_twofactor?: string | null
+  @Field((type) => Number, { nullable: true })
+  config_twofactor?: number | null
 
   @Field((type) => String, { nullable: true })
   qr_code?: string | null
@@ -20,17 +20,14 @@ export class Twofactor {
   @Field((type) => Number, { nullable: true })
   login_id?: number | null
 
-  @Field({ nullable: true })
-  Login: Login
-
   @Field((type) => String, { nullable: true })
   recovery_code?: string | null
 
   @Field()
   validation_method_id: number
 
-  @Field()
-  time_creation_code: string
+  @Field((type) => String, { nullable: true })
+  time_creation_code: Date
 }
 
 @InputType()

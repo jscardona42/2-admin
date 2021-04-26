@@ -1,18 +1,18 @@
 import { Injectable } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
-import { JwtService } from "@nestjs/jwt";
+import { PrismaService } from '../prisma.service';
+import { Audit } from './audit.entity';
 
 
 @Injectable()
 export class AuditService {
   constructor(private prismaService: PrismaService) { }
 
-  async getAudits() {
+  async getAudits(): Promise<Audit[]> {
     return await this.prismaService.audits.findMany({
     })
   }
 
-  async registerAudit(data, req) {
+  async registerAudit(data): Promise<void> {
     var status: string;
     var profile: string;
     var has_Twofactor = 0;
@@ -29,7 +29,7 @@ export class AuditService {
       status = "unauthorized";
     }
     await this.prismaService.audits.create({
-      data: { login_id: data.id, status: status, type: "signin", username: data.username, role: profile, has_TwoFactor: has_Twofactor }
+      data: { login_id: data.id, status: status, type: "signin", username: data.username, role: profile, has_twofactor: has_Twofactor }
     })
   }
 }

@@ -15,7 +15,7 @@ directive @provides(fields: String!) on FIELD_DEFINITION
 type Permissions {
   id: ID!
   name: String!
-  methodclass: String!
+  permissions: String!
 }
 
 type Role {
@@ -27,6 +27,7 @@ type RolesPermissions {
   id: ID!
   role_id: Float!
   permissions_menu: [String!]!
+  permissions: String!
 }
 
 type Menu {
@@ -56,26 +57,37 @@ type Login {
 type Twofactor {
   twofactor_id: ID!
   twofactor_secret: String
-  config_twofactor: String
+  config_twofactor: Float
   qr_code: String
   login_id: Float
-  Login: Login
   recovery_code: String
   validation_method_id: Float!
-  time_creation_code: String!
+  time_creation_code: String
 }
+
+type Audit {
+  audit_id: ID!
+  login_id: String
+  status: String
+  created_at: DateTime
+  type: String
+  username: String
+  role: String
+  has_twofactor: String
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
   getPermissions: [Permissions!]!
-
-  """It returns all registered roles"""
-  roles: [Role!]!
-
-  """It returns all registered roles_Permissions"""
-  rolesPermissions: [RolesPermissions!]!
+  getRoles: [Role!]!
+  getRolesPermissions: [RolesPermissions!]!
   rootMenu: Menu!
   filteredMenuForRoleId(roleId: Float!): Menu!
   getTwoFactorById(twofactor_id: Float!): Twofactor!
@@ -83,6 +95,7 @@ type Query {
   validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
   validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!
   validationCodeMail(data: ValidateCodeInput!): Twofactor!
+  getAudits: [Audit!]!
 }
 
 input SignInUserInput {

@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GraphQLFederationModule, GraphQLGatewayModule, GraphQLModule } from '@nestjs/graphql';
+import { GraphQLFederationModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
@@ -14,10 +14,11 @@ import { TwofactorService } from './twofactor/twofactor.service';
 import { Login } from './users/login.entity';
 import { LoginResolver } from './users/login.resolver';
 import { LoginService } from './users/login.service';
-import { MailerModule } from '@nestjs-modules/mailer';
+import { MailerModule, MailerService } from '@nestjs-modules/mailer';
 import { AuditService } from './audit/audit.service';
+import { AuditResolver } from './audit/audit.resolver';
 
-const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService]
+const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService, AuditService, AuditResolver]
 
 @Module({
   imports: [
@@ -57,6 +58,7 @@ const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, A
   ],
   controllers: [AdminController],
   providers: MyProviders,
+  exports: [MailerModule]
 })
 
 export class AppModule {

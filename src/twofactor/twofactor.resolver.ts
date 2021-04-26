@@ -2,10 +2,10 @@ import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 const fetch = require('node-fetch');
 import { Response } from 'express';
-import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput, ValidateCodeInput } from 'src/twofactor/twofactor.entity';
-import { TwofactorService } from 'src/twofactor/twofactor.service';
-import { LoginService } from 'src/users/login.service';
-import { Login } from 'src/users/login.entity';
+import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput, ValidateCodeInput } from '../twofactor/twofactor.entity';
+import { TwofactorService } from '../twofactor/twofactor.service';
+import { LoginService } from '../users/login.service';
+import { Login } from '../users/login.entity';
 var QRCode = require('qrcode')
 
 @Resolver(() => Twofactor)
@@ -20,7 +20,7 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async createTwoFactor(
         @Args("data") data: configTwoFactorInput,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         return this.twofactorService.createTwoFactor(data);
     }
 
@@ -28,14 +28,14 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async getTwoFactorById(
         @Args("twofactor_id") twofactor_id: number,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         return this.twofactorService.getTwoFactorById(twofactor_id);
     }
 
     @Query(returns => Twofactor)//Válido para 2FA
     @UsePipes(ValidationPipe)
     async configTwoFactor(
-        @Args("login_id") login_id: number, @Context('res') res: Response) {
+        @Args("login_id") login_id: number, @Context('res') res: Response): Promise<Object> {
 
         var twofactorReturn = {};
         var login = await this.loginService.getLoginById(login_id);
@@ -59,7 +59,7 @@ export class TwofactorResolver {
     @Query(returns => Login)//Válido para 2FA
     @UsePipes(ValidationPipe)
     async validateTwoFactorCode(
-        @Args("data") data: TwoFactorAuthenticateInput, @Context('res') res: Response) {
+        @Args("data") data: TwoFactorAuthenticateInput, @Context('res') res: Response): Promise<Login> {
 
         const login = await this.loginService.getLoginById(data.login_id);
         const twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
@@ -78,7 +78,7 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async setActivateConfigTwofactorTOTP(
         @Args("login_id") login_id: number,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
         if (!twofactor.config_twofactor) {
             return this.twofactorService.setActivateConfigTwofactorTOTP(twofactor);
@@ -90,7 +90,7 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async validateRecoveryCode(
         @Args("data") data: RecoveryCodeInput,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         return this.twofactorService.validateRecoveryCode(data);
     }
 
@@ -98,7 +98,7 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async sendMail(
         @Args("login_id") login_id: number,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         try {
             var login = await this.loginService.getLoginById(login_id);
             var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
@@ -114,7 +114,7 @@ export class TwofactorResolver {
     @UsePipes(ValidationPipe)
     async validationCodeMail(
         @Args("data") data: ValidateCodeInput,
-        @Context() ctx) {
+        @Context() ctx): Promise<Twofactor> {
         var login = await this.loginService.getLoginById(data.login_id);
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
         return this.twofactorService.validationCodeMail(data, login, twofactor);

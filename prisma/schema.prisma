@@ -18,11 +18,11 @@ model Menus {
 }
 
 model Microservices {
-  id       Int     @id @default(autoincrement()) @db.SmallInt
-  name     String? @db.VarChar(255)
-  hostname String? @db.VarChar(255)
-  port     Int?
-  url      String? @db.VarChar(32)
+  id       Int    @id @default(autoincrement()) @db.SmallInt
+  name     String @db.VarChar(255)
+  hostname String @db.VarChar(255)
+  port     Int
+  url      String @db.VarChar(32)
   state    Int?
 }
 
@@ -89,10 +89,12 @@ model Twofactor {
 }
 
 model Audits {
-  audit_id   Int       @id @default(autoincrement()) @db.SmallInt
-  login_id   Int?      @db.SmallInt
-  status     String?   @db.VarChar(50)
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  type       String?   @db.VarChar(50)
-  username   String?   @db.VarChar(100)
+  audit_id      Int       @id @default(autoincrement()) @db.SmallInt
+  login_id      Int?      @db.SmallInt
+  status        String?   @db.VarChar(50)
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  type          String?   @db.VarChar(50)
+  username      String?   @db.VarChar(100)
+  role          String?   @db.VarChar(50)
+  has_twofactor Int?      @db.SmallInt
 }

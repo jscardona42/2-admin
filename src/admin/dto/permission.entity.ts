@@ -5,9 +5,9 @@ export class Permissions {
     @Field((type) => ID)
     id: number
 
-    @Field()
-    name: string
+    @Field((type) => String)
+    name?: string
 
-    @Field()
-    methodclass: string
+    @Field((type) => String)
+    permissions?: string
 }

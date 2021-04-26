@@ -1,10 +1,11 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Login } from './login.entity';
-import { AuditService } from 'src/audit/audit.service';
+import { AuditService } from '../audit/audit.service';
+import { Users } from '.prisma/client';
 var QRCode = require('qrcode')
 
 
@@ -16,7 +17,7 @@ export class LoginService {
     private auditService: AuditService
   ) { }
 
-  async getLogin() {
+  async getLogin(): Promise<Login[]> {
     return this.prismaService.login.findMany();
   }
 
@@ -26,20 +27,20 @@ export class LoginService {
     });
   }
 
-  async getUserById(id: number) {
+  async getUserById(id: number): Promise<Users> {
     return await this.prismaService.users.findUnique({
       where: { id: id }
     });
   }
 
-  async signInLogin(data, req) {
+  async signInLogin(data: any): Promise<Login> {
     const salt = await this.prismaService.login.findFirst({
       where: { username: data.username },
       select: { salt: true },
     })
 
     if (salt === null) {
-      this.auditService.registerAudit(data, req);
+      this.auditService.registerAudit(data);
       throw new AuthenticationError('Invalid credentials');
     }
 
@@ -50,17 +51,12 @@ export class LoginService {
       },
     })
 
-    const permiss = await this.prismaService.roles_permissions.findFirst({
-      where: { role_id: user.role_id },
-      select: { permissions: true }
-    })
-
     if (!user) {
-      this.auditService.registerAudit(data, req);
+      this.auditService.registerAudit(data);
       throw new AuthenticationError('Invalid credentials');
     }
 
-    this.auditService.registerAudit(user, req);
+    this.auditService.registerAudit(user);
 
     const token = this.jwtService.sign({ userId: user.id });
     const updToken = this.createToken(token, user);
@@ -71,13 +67,10 @@ export class LoginService {
   async signUpLogin(data): Promise<Login> {
     const salt = await bcrypt.genSalt();
 
-    const emailExists = await this.prismaService.login.findFirst({
-      where: { username: data.username },
-      select: { username: true }
-    })
+    const usernameExists = await this.usernameExists(data.username);
 
-    if (emailExists) {
-      throw new UserInputError('El usuario ya se encuentra registrado');
+    if (usernameExists) {
+      throw new UnauthorizedException('El usuario ya se encuentra registrado');
     }
 
     const user = this.prismaService.login.create({
@@ -90,22 +83,33 @@ export class LoginService {
       }
     })
 
-    if (!user) {
-      throw new UserInputError('El usuario no existe');
+    if (user === null) {
+      throw new UnauthorizedException('El usuario no existe');
     }
 
     return user;
   }
 
-  private async hashPassword(password: string, salt: string): Promise<string> {
+  async usernameExists(username) {
+    const user = await this.prismaService.login.findFirst({
+      where: { username: username },
+      select: { username: true }
+    })
+
+    if (user === null) {
+      return false;
+    } else {
+      return true;
+    }
+  }
+  async hashPassword(password: string, salt: string): Promise<string> {
     return bcrypt.hash(password, salt);
   }
 
-  async createToken(token: string, user) {
+  async createToken(token: string, user): Promise<Login> {
     const updToken = await this.prismaService.login.update({
       where: { id: user.id, },
       data: { token: token, },
-      select: { token: true, id: true, active_two_factor: true }
     })
 
     return updToken;

@@ -1,16 +1,16 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { PrismaService } from 'src/prisma.service';
+import { PrismaService } from '../prisma.service';
 import { authenticator } from 'otplib';
-import { JwtService } from "@nestjs/jwt";
 import { AuthenticationError } from 'apollo-server-express';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as bcrypt from "bcrypt";
+import { Twofactor } from './twofactor.entity';
 var QRCode = require('qrcode')
 
 
 @Injectable()
 export class TwofactorService {
-    constructor(private prismaService: PrismaService, private jwtService: JwtService, private readonly mailerService: MailerService) { }
+    constructor(private prismaService: PrismaService, private readonly mailerService: MailerService) { }
 
     public async generateTwoFactorAuthenticationSecret(user) {
         authenticator.options = { window: 0 };
@@ -26,13 +26,13 @@ export class TwofactorService {
         })
     }
 
-    async createTwoFactor(data: any) {
+    async createTwoFactor(data: any): Promise<Twofactor> {
         return await this.prismaService.twofactor.create({
             data: { login_id: data.login_id, validation_method_id: data.validation_method_id },
         })
     }
 
-    async configTwoFactor(secret: string, login_id: number, qrCodeUrl) {
+    async configTwoFactor(secret: string, login_id: number, qrCodeUrl): Promise<Twofactor> {
         var twofactor = await this.prismaService.twofactor.findFirst({
             where: { login_id: login_id },
             select: { twofactor_id: true }
@@ -48,7 +48,7 @@ export class TwofactorService {
         })
     }
 
-    async setActivateConfigTwofactorTOTP(twofactor) {
+    async setActivateConfigTwofactorTOTP(twofactor): Promise<Twofactor> {
         try {
             var recoveryCode = this.generateRecoveryCode(20);
 
@@ -63,19 +63,19 @@ export class TwofactorService {
         }
     }
 
-    async getTwoFactorByLoginId(login_id: number) {
+    async getTwoFactorByLoginId(login_id: number): Promise<Twofactor> {
         return await this.prismaService.twofactor.findFirst({
             where: { login_id: login_id }
         })
     }
 
-    async getTwoFactorById(twofactor_id) {
+    async getTwoFactorById(twofactor_id): Promise<Twofactor> {
         return await this.prismaService.twofactor.findUnique({
             where: { twofactor_id: twofactor_id }
         })
     }
 
-    async validateRecoveryCode(data) {
+    async validateRecoveryCode(data): Promise<Twofactor> {
         var twofactor = await this.prismaService.twofactor.findFirst({
             where: { twofactor_id: data.twofactor_id, recovery_code: data.recovery_code }
         })
@@ -113,7 +113,7 @@ export class TwofactorService {
         return data;
     }
 
-    public async validationCodeMail(data, login, twofactor) {
+    public async validationCodeMail(data, login, twofactor): Promise<Twofactor> {
 
         let date1 = new Date(twofactor.time_creation_code);
         let date2 = new Date();
@@ -137,7 +137,7 @@ export class TwofactorService {
         return twofactorRtn;
     }
 
-    async buildQrCodeUrl(str) {
+    async buildQrCodeUrl(str): Promise<Object> {
         return new Promise(function (resolve, reject) {
             QRCode.toDataURL(str, function (err, url) {
                 if (err) {
@@ -150,7 +150,7 @@ export class TwofactorService {
         });
     }
 
-    async sendQrCodeTOTP(twofactor, login, user, recoveryCodes) {
+    async sendQrCodeTOTP(twofactor, login, user, recoveryCodes){
         try {
             var codes = JSON.stringify(recoveryCodes);
             codes = codes.split('"').join('');
@@ -177,14 +177,14 @@ export class TwofactorService {
         }
     }
 
-    generateCodeAuthentication() {
+    generateCodeAuthentication(): string {
         var min = 0;
         var max = 9999999999;
         var recoveryCode = Math.floor(Math.random() * (max - min)) + min;
         return recoveryCode.toString();
     }
 
-    generateRecoveryCode(max) {
+    generateRecoveryCode(max): string {
         var text = "";
         var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 
