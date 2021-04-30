@@ -18,9 +18,9 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         const authorization = req.headers.authorization;
         const referer = req.headers.authorization_url;
 
-        if ((referer === undefined) || (query !== "signInLogin" && authorization === undefined)) {
+        if ((referer === undefined) || (query !== "signInLogin" && query !== "logOutLogin" && authorization === undefined)) {
             throw new UnauthorizedException("Unauthorized");
-        } else if (query === "signInLogin") {
+        } else if (query === "signInLogin" || query === "logOutLogin") {
             return true;
         }
 
@@ -31,7 +31,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
             throw new UnauthorizedException("Unauthorized");
         }
 
-        if ((authorization === undefined && query !== "signInLogin") || url !== process.env.JWT_URL) {
+        if (url !== process.env.JWT_URL) {
             throw new UnauthorizedException("Unauthorized");
         } else {
             return true;

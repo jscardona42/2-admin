@@ -120,6 +120,7 @@ input ValidateCodeInput {
 
 type Mutation {
   signUpLogin(data: SignUpUserInput!): Login!
+  logOutLogin(login_id: Float!): Login!
   createRootMenu: Menu!
   createFolder(folderName: String!, parentId: Float!): Menu!
   insertEntityToFolder(entityName: String!, parentId: Float!): Menu!

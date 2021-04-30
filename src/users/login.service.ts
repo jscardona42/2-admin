@@ -90,6 +90,13 @@ export class LoginService {
     return user;
   }
 
+  async logOutLogin(login_id) {
+    return await this.prismaService.login.update({
+      where: { id: login_id },
+      data: { token: null }
+    })
+  }
+
   async usernameExists(username) {
     const user = await this.prismaService.login.findMany({
       where: { username: username },

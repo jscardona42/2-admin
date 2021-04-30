@@ -37,4 +37,11 @@ export class LoginResolver {
     return this.loginService.signUpLogin(data);
   }
 
+  @Mutation(returns => Login)
+  @UsePipes(ValidationPipe)
+  async logOutLogin(
+    @Args("login_id") login_id: number): Promise<Login> {
+    return this.loginService.logOutLogin(login_id);
+  }
+
 }
