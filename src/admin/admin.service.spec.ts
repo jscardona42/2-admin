@@ -17,9 +17,7 @@ describe('Admin Service', () => {
                     provide: PrismaService,
                     useFactory: () => ({
                         permissions: {
-                            findFirst: jest.fn(() => {
-                                return { moduleData: Boolean }
-                            }),
+                            findFirst: jest.fn(() => false),
                             usernameExists: jest.fn(() => {
                                 return false;
                             }),
@@ -81,7 +79,7 @@ describe('Admin Service', () => {
     });
 
     describe('createPermissions method', () => {
-        it('should invoke prismaService.permissions.update', async () => {
+        it('should invoke prismaService.permissions.create', async () => {
             const testParams = {
                 cls: [
                     {
@@ -93,7 +91,7 @@ describe('Admin Service', () => {
             await adminService.createPermissions(
                 testParams.cls
             );
-            expect(prismaService.permissions.update).toHaveBeenCalled();
+            expect(prismaService.permissions.create).toHaveBeenCalled();
         });
     });
 

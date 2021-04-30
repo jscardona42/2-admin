@@ -70,7 +70,7 @@ export class LoginService {
     const usernameExists = await this.usernameExists(data.username);
 
     if (usernameExists) {
-      throw new UnauthorizedException('El usuario ya se encuentra registrado');
+      throw new UnauthorizedException('The user is already registered');
     }
 
     const user = this.prismaService.login.create({
@@ -84,14 +84,14 @@ export class LoginService {
     })
 
     if (user === null) {
-      throw new UnauthorizedException('El usuario no existe');
+      throw new UnauthorizedException('User does not exist');
     }
 
     return user;
   }
 
   async usernameExists(username) {
-    const user = await this.prismaService.login.findFirst({
+    const user = await this.prismaService.login.findMany({
       where: { username: username },
       select: { username: true }
     })

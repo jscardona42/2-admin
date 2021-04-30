@@ -14,20 +14,22 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     async canActivate(context: ExecutionContext): Promise<any> {
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req;
-        if (req.headers.authorization === undefined && req.headers.authorization_url === undefined) {
-            throw new UnauthorizedException("Unauthorized");
-        }
+        let query = context.getHandler().name;
         const authorization = req.headers.authorization;
         const referer = req.headers.authorization_url;
 
+        if ((referer === undefined) || (query !== "signInLogin" && authorization === undefined)) {
+            throw new UnauthorizedException("Unauthorized");
+        } else if (query === "signInLogin") {
+            return true;
+        }
+
         try {
-            var token = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
+            jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
             var url = jwt.verify(referer, process.env.JWT_SECRET_URL);
         } catch (error) {
             throw new UnauthorizedException("Unauthorized");
         }
-
-        let query = context.getHandler().name;
 
         if ((authorization === undefined && query !== "signInLogin") || url !== process.env.JWT_URL) {
             throw new UnauthorizedException("Unauthorized");

@@ -4,7 +4,7 @@ import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 import { MailerService } from '@nestjs-modules/mailer';
 import * as bcrypt from "bcrypt";
-import { Twofactor } from './twofactor.entity';
+import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput } from './twofactor.entity';
 var QRCode = require('qrcode')
 
 
@@ -19,27 +19,27 @@ export class TwofactorService {
         return { secret, otpauthUrl }
     }
 
-    public validateTwoFactorCode(data: any, twofactor) {
+    public validateTwoFactorCode(data: TwoFactorAuthenticateInput, twofactor: Twofactor) {
         return authenticator.verify({
             token: data.code,
             secret: twofactor.twofactor_secret
         })
     }
 
-    async createTwoFactor(data: any): Promise<Twofactor> {
+    async createTwoFactor(data: configTwoFactorInput): Promise<Twofactor> {
         return await this.prismaService.twofactor.create({
             data: { login_id: data.login_id, validation_method_id: data.validation_method_id },
         })
     }
 
-    async configTwoFactor(secret: string, login_id: number, qrCodeUrl): Promise<Twofactor> {
+    async configTwoFactor(secret: string, login_id: number): Promise<Twofactor> {
         var twofactor = await this.prismaService.twofactor.findFirst({
             where: { login_id: login_id },
             select: { twofactor_id: true }
         })
 
         if (twofactor === null) {
-            throw new UnauthorizedException("El usuario no tiene activa la autenticación de dos factores");
+            throw new UnauthorizedException("User does not have two-factor authentication enabled.");
         }
 
         return await this.prismaService.twofactor.update({
@@ -48,7 +48,7 @@ export class TwofactorService {
         })
     }
 
-    async setActivateConfigTwofactorTOTP(twofactor): Promise<Twofactor> {
+    async setActivateConfigTwofactorTOTP(twofactor: Twofactor): Promise<Twofactor> {
         try {
             var recoveryCode = this.generateRecoveryCode(20);
 
@@ -56,10 +56,8 @@ export class TwofactorService {
                 where: { twofactor_id: twofactor.twofactor_id },
                 data: { config_twofactor: 1, recovery_code: recoveryCode }
             })
-            // this.sendQrCodeTOTP(twofactor, login, user, recoveryCode);
-
         } catch (error) {
-            throw new UnauthorizedException("No es posible generar los códigos de recuperación");
+            throw new UnauthorizedException("Unable to generate recovery codes");
         }
     }
 
@@ -75,7 +73,7 @@ export class TwofactorService {
         })
     }
 
-    async validateRecoveryCode(data): Promise<Twofactor> {
+    async validateRecoveryCode(data: RecoveryCodeInput): Promise<Twofactor> {
         var twofactor = await this.prismaService.twofactor.findFirst({
             where: { twofactor_id: data.twofactor_id, recovery_code: data.recovery_code }
         })
@@ -83,13 +81,13 @@ export class TwofactorService {
         if (twofactor !== null) {
             return twofactor;
         } else {
-            throw new UnauthorizedException("Código de recuperación inválido");
+            throw new UnauthorizedException("Invalid recovery code");
         }
     }
 
-    public async sendCodeMail(user, twofactor, login) {
+    public async sendCodeMail(user, twofactor: Twofactor, login: any) {
         if (twofactor.validation_method_id !== 2) {
-            throw new UnauthorizedException("El usuario no tiene habilitada la función de doble factor");
+            throw new UnauthorizedException("User does not have the dual factor function enabled.");
         }
         var recoveryCode = this.generateCodeAuthentication().padStart(8, "0");
         var hashRecoveryCode = bcrypt.hash(recoveryCode, login.salt);
@@ -108,7 +106,7 @@ export class TwofactorService {
                 html: `<b>Su código de verificación es ${recoveryCode} </b>`,
             })
         } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el código de verificación" + error);
+            throw new UnauthorizedException("Unable to send verification code " + error);
         }
         return data;
     }
@@ -122,7 +120,7 @@ export class TwofactorService {
         var minutes = Math.round(time / (1000 * 60));
 
         if (minutes > 15) {
-            throw new UnauthorizedException("El código de validación expiró");
+            throw new UnauthorizedException("Validation code expired");
         }
 
         var twofactorRtn = await this.prismaService.twofactor.findFirst({
@@ -132,7 +130,7 @@ export class TwofactorService {
             },
         })
         if (twofactorRtn === null) {
-            throw new UnauthorizedException("El código de validación es incorrecto");
+            throw new UnauthorizedException("Incorrect validation code");
         }
         return twofactorRtn;
     }
@@ -141,7 +139,7 @@ export class TwofactorService {
         return new Promise(function (resolve, reject) {
             QRCode.toDataURL(str, function (err, url) {
                 if (err) {
-                    throw new AuthenticationError("No se pudo construir el qr");
+                    throw new AuthenticationError("Could not build the qr");
                     reject(err);
                     return;
                 }
@@ -150,7 +148,7 @@ export class TwofactorService {
         });
     }
 
-    async sendQrCodeTOTP(twofactor, login, user, recoveryCodes){
+    async sendQrCodeTOTP(twofactor, login, user, recoveryCodes) {
         try {
             var codes = JSON.stringify(recoveryCodes);
             codes = codes.split('"').join('');
@@ -173,7 +171,7 @@ export class TwofactorService {
                 }]
             })
         } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el código de verificación" + error);
+            throw new UnauthorizedException("Unable to send verification code " + error);
         }
     }
 

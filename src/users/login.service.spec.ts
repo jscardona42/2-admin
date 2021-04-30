@@ -29,10 +29,8 @@ describe('Login Service', () => {
                             findFirst: jest.fn(() => {
                                 return { salt: String }
                             }),
-                            usernameExists: jest.fn(() => {
-                                return false;
-                            }),
-                            findMany: jest.fn(),
+                            usernameExists: jest.fn(() => null),
+                            findMany: jest.fn(() => null),
                             findUnique: jest.fn(),
                             create: jest.fn(() => {
                                 return {
@@ -96,14 +94,14 @@ describe('Login Service', () => {
     });
 
     describe('usernameExists method', () => {
-        it('should invoke prismaService.login.findFirst', async () => {
+        it('should invoke prismaService.login.findMany', async () => {
             const testParams = {
                 username: "usuario1"
             };
             await loginService.usernameExists(
                 testParams.username
             );
-            expect(prismaService.login.findFirst).toHaveBeenCalled();
+            expect(prismaService.login.findMany).toHaveBeenCalled();
         });
     })
 
@@ -115,30 +113,28 @@ describe('Login Service', () => {
                     pasword: "123456"
                 }
             };
-            await loginService.signInLogin(
-                testParams.data
-            );
+            await loginService.signInLogin(testParams.data);
             expect(prismaService.login.findFirst).toHaveBeenCalled();
         });
     })
 
-    // describe('signUpLogin method', () => {
-    //     it('should invoke prismaService.login.create', async () => {
-    //         const testParams = {
-    //             data: {
-    //                 username: null,
-    //                 password: "123456",
-    //                 salt: "",
-    //                 token: "",
-    //                 role_id: 3
-    //             }
-    //         };
-    //         await loginService.signUpLogin(
-    //             testParams.data,
-    //         );
-    //         expect(prismaService.login.create).toHaveBeenCalled();
-    //     });
-    // });
+    describe('signUpLogin method', () => {
+        it('should invoke prismaService.login.create', async () => {
+            const testParams = {
+                data: {
+                    username: null,
+                    password: "123456",
+                    salt: "",
+                    token: "",
+                    role_id: 3
+                }
+            };
+            await loginService.signUpLogin(
+                testParams.data,
+            );
+            expect(prismaService.login.create).toHaveBeenCalled();
+        });
+    });
 
     describe('createToken method', () => {
         it('should invoke prismaService.login.update', async () => {

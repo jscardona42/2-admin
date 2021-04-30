@@ -19,28 +19,26 @@ export class TwofactorResolver {
     @Mutation(returns => Twofactor)
     @UsePipes(ValidationPipe)
     async createTwoFactor(
-        @Args("data") data: configTwoFactorInput,
-        @Context() ctx): Promise<Twofactor> {
+        @Args("data") data: configTwoFactorInput): Promise<Twofactor> {
         return this.twofactorService.createTwoFactor(data);
     }
 
     @Query(returns => Twofactor)
     @UsePipes(ValidationPipe)
     async getTwoFactorById(
-        @Args("twofactor_id") twofactor_id: number,
-        @Context() ctx): Promise<Twofactor> {
+        @Args("twofactor_id") twofactor_id: number): Promise<Twofactor> {
         return this.twofactorService.getTwoFactorById(twofactor_id);
     }
 
     @Query(returns => Twofactor)//Válido para 2FA
     @UsePipes(ValidationPipe)
     async configTwoFactor(
-        @Args("login_id") login_id: number, @Context('res') res: Response): Promise<Object> {
+        @Args("login_id") login_id: number): Promise<Object> {
 
         var twofactorReturn = {};
         var login = await this.loginService.getLoginById(login_id);
         if (!login.active_two_factor) {
-            throw new UnauthorizedException("Debe activar la autenticación de dos factores para el usuario");
+            throw new UnauthorizedException("You must enable two-factor authentication for the user.");
         }
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
         var user = await this.loginService.getUserById(login.user_id);
@@ -48,7 +46,7 @@ export class TwofactorResolver {
         if (!twofactor.config_twofactor) {
             const { otpauthUrl, secret } = await this.twofactorService.generateTwoFactorAuthenticationSecret(user);
             const qrCodeUrl = await this.twofactorService.buildQrCodeUrl(otpauthUrl);
-            twofactorReturn = await this.twofactorService.configTwoFactor(secret, login_id, qrCodeUrl);
+            twofactorReturn = await this.twofactorService.configTwoFactor(secret, login_id);
             return Object.assign(twofactorReturn, { qr_code: JSON.stringify(qrCodeUrl) });
         }
 
@@ -59,7 +57,7 @@ export class TwofactorResolver {
     @Query(returns => Login)//Válido para 2FA
     @UsePipes(ValidationPipe)
     async validateTwoFactorCode(
-        @Args("data") data: TwoFactorAuthenticateInput, @Context('res') res: Response): Promise<Login> {
+        @Args("data") data: TwoFactorAuthenticateInput): Promise<Login> {
 
         const login = await this.loginService.getLoginById(data.login_id);
         const twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
@@ -77,8 +75,7 @@ export class TwofactorResolver {
     @Mutation(returns => Twofactor)//Válido para 2FA // Recovery-Codes
     @UsePipes(ValidationPipe)
     async setActivateConfigTwofactorTOTP(
-        @Args("login_id") login_id: number,
-        @Context() ctx): Promise<Twofactor> {
+        @Args("login_id") login_id: number): Promise<Twofactor> {
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(login_id);
         if (!twofactor.config_twofactor) {
             return this.twofactorService.setActivateConfigTwofactorTOTP(twofactor);
@@ -89,8 +86,7 @@ export class TwofactorResolver {
     @Query(returns => Twofactor)
     @UsePipes(ValidationPipe)
     async validateRecoveryCode(
-        @Args("data") data: RecoveryCodeInput,
-        @Context() ctx): Promise<Twofactor> {
+        @Args("data") data: RecoveryCodeInput): Promise<Twofactor> {
         return this.twofactorService.validateRecoveryCode(data);
     }
 
@@ -106,15 +102,14 @@ export class TwofactorResolver {
             var data = await this.twofactorService.sendCodeMail(user, twofactor, login);
             return data;
         } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el código de verificación" + error);
+            throw new UnauthorizedException("Unable to send verification code " + error);
         }
     }
 
     @Query(returns => Twofactor)
     @UsePipes(ValidationPipe)
     async validationCodeMail(
-        @Args("data") data: ValidateCodeInput,
-        @Context() ctx): Promise<Twofactor> {
+        @Args("data") data: ValidateCodeInput): Promise<Twofactor> {
         var login = await this.loginService.getLoginById(data.login_id);
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);
         return this.twofactorService.validationCodeMail(data, login, twofactor);
