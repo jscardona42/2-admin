@@ -2,6 +2,7 @@
 import { CanActivate, Injectable, ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
+import * as jwt from 'jsonwebtoken'
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
@@ -13,18 +14,28 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     async canActivate(context: ExecutionContext): Promise<any> {
         const ctx = GqlExecutionContext.create(context);
         const req = ctx.getContext().req;
-        if (req.headers.authorization === undefined && req.headers.authorization_url === undefined) {
-            throw new UnauthorizedException("Unauthorized");
-        }
+        let query = context.getHandler().name;
         const authorization = req.headers.authorization;
         const referer = req.headers.authorization_url;
 
-        let query = context.getHandler().name;
+        if ((referer === undefined) || (query !== "signInLogin" && query !== "logOutLogin" && authorization === undefined)) {
+            throw new UnauthorizedException("Unauthorized");
+        } else if (query === "signInLogin" || query === "logOutLogin") {
+            return true;
+        }
 
-        if ((authorization === undefined && query !== "signInLogin") || referer !== "http://localhost:4000/graphql") {
+        try {
+            jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET);
+            var url = jwt.verify(referer, process.env.JWT_SECRET_URL);
+        } catch (error) {
+            throw new UnauthorizedException("Unauthorized");
+        }
+
+        if (url !== process.env.JWT_URL) {
             throw new UnauthorizedException("Unauthorized");
         } else {
             return true;
         }
     }
 }
+

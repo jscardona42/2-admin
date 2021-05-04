@@ -11,4 +11,7 @@ export class RolesPermissions {
     @Field((type) => [String])
     permissions_menu: string[]
 
+    @Field((type) => String)
+    permissions?: string
+
 }

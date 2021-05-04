@@ -3,9 +3,9 @@ import { PrismaService } from '../prisma.service';
 
 @Injectable()
 export class MenuService {
-  constructor(private prismaService: PrismaService) {}
+  constructor(private prismaService: PrismaService) { }
 
-  async rootMenu() {
+  async rootMenu(): Promise<Object> {
     return await this.prismaService.menus.findFirst({
       where: {
         parentMenuId: null,
@@ -28,7 +28,7 @@ export class MenuService {
     });
   }
 
-  async createRootMenu() {
+  async createRootMenu(): Promise<Object>  {
     return await this.prismaService.menus.create({
       data: {
         title: 'menu',
@@ -39,7 +39,7 @@ export class MenuService {
     });
   }
 
-  async createFolder(parentId: number, folderName: string) {
+  async createFolder(parentId: number, folderName: string): Promise<Object>  {
     await this.doesParentFolderExist(parentId);
     const createdFolder = await this.prismaService.menus.create({
       data: {
@@ -56,7 +56,7 @@ export class MenuService {
     return await this.updateFolderPath(createdFolder.id, folderName);
   }
 
-  async insertEntityToFolder(parentId: number, entityName: string) {
+  async insertEntityToFolder(parentId: number, entityName: string): Promise<Object>  {
     const createdEntity = await this.prismaService.menus.create({
       data: {
         title: entityName,
@@ -72,7 +72,7 @@ export class MenuService {
     return await this.updateFolderPath(createdEntity.id, entityName);
   }
 
-  async doesParentFolderExist(parentId: number) {
+  async doesParentFolderExist(parentId: number): Promise<void>  {
     await this.prismaService.menus.findUnique({
       where: {
         id: parentId,
@@ -82,7 +82,7 @@ export class MenuService {
     });
   }
 
-  async updateFolderPath(folderId: number, folderName: string) {
+  async updateFolderPath(folderId: number, folderName: string): Promise<Object>  {
     let path: string;
     const parent = await this.prismaService.menus
       .findUnique({
@@ -110,7 +110,7 @@ export class MenuService {
     });
   }
 
-  async filterMenu(roleId: number) {
+  async filterMenu(roleId: number): Promise<Object>  {
     const permissions = await this.prismaService.roles_permissions.findMany({
       where: {
         role_id: roleId,
