@@ -23,7 +23,10 @@ export class LoginService {
 
   async getLoginById(login_id: number): Promise<Login> {
     return await this.prismaService.login.findUnique({
-      where: { id: login_id }
+      where: { id: login_id },
+      include: {
+        Users: true,
+      }
     });
   }
 
@@ -117,6 +120,9 @@ export class LoginService {
     const updToken = await this.prismaService.login.update({
       where: { id: user.id, },
       data: { token: token, },
+      include: {
+        Users: true,
+      }
     })
 
     return updToken;

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { ObjectType, Field, ID, InputType, InterfaceType, Int } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
+import { User } from './user.entity';
 
 @ObjectType()
 export class Login {
@@ -29,6 +30,9 @@ export class Login {
 
   @Field((type) => Number, { nullable: true })
   user_id?: number | null
+
+  @Field((type) => User)
+  Users?: User
 }
 
 @InputType()
