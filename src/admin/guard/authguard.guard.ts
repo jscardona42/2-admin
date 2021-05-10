@@ -13,8 +13,15 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
     async canActivate(context: ExecutionContext): Promise<any> {
         const ctx = GqlExecutionContext.create(context);
-        const req = ctx.getContext().req;
         let query = context.getHandler().name;
+        var req;
+        req = ctx.getContext().req;
+
+        if (query === "getMethods") {
+            req = ctx.getArgs().req;
+            return true;
+        }
+
         const authorization = req.headers.authorization;
         const referer = req.headers.authorization_url;
 
