@@ -6,7 +6,6 @@ import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Login } from './login.entity';
 import { AuditService } from '../audit/audit.service';
 import { Users } from '.prisma/client';
-var QRCode = require('qrcode')
 
 
 @Injectable()

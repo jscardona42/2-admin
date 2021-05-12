@@ -48,6 +48,7 @@ type User {
   name: String!
   email: String!
   state: Float
+  empresa_id: Float
 }
 
 type Login {

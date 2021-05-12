@@ -1,8 +1,8 @@
-
-import { CanActivate, Injectable, ExecutionContext, UnauthorizedException } from "@nestjs/common";
+import { Injectable, ExecutionContext, UnauthorizedException } from "@nestjs/common";
 import { GqlExecutionContext } from "@nestjs/graphql";
 import { AuthGuard } from "@nestjs/passport";
-import * as jwt from 'jsonwebtoken'
+import * as jwt from 'jsonwebtoken';
+import { createDecipheriv, randomBytes } from 'crypto';
 
 @Injectable()
 export class GqlAuthGuard extends AuthGuard('jwt') {
@@ -18,8 +18,18 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         req = ctx.getContext().req;
 
         if (query === "getMethods") {
+
             req = ctx.getArgs().req;
-            return true;
+
+            // console.log(this.decrypt(req.headers.authorization_url));
+            try {
+                var url = jwt.verify(req.headers.authorization_url, process.env.JWT_SECRET_URL);
+                if (url === process.env.JWT_URL) {
+                    return true;
+                }
+            } catch (error) {
+                console.log(error);
+            }
         }
 
         const authorization = req.headers.authorization;
@@ -44,5 +54,17 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
             return true;
         }
     }
-}
 
+    decrypt(text) {
+        const key = randomBytes(32);
+        let iv = Buffer.from(text.iv, 'hex');
+        let encryptedText = Buffer.from(text.encryptedData, 'hex');
+
+        let decipher = createDecipheriv('aes-256-cbc', Buffer.from(key), iv);
+
+        let decrypted = decipher.update(encryptedText);
+        decrypted = Buffer.concat([decrypted, decipher.final()]);
+
+        return decrypted.toString();
+    }
+}
