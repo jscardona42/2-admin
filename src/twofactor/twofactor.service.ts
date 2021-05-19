@@ -27,6 +27,16 @@ export class TwofactorService {
     }
 
     async createTwoFactor(data: configTwoFactorInput): Promise<Twofactor> {
+        var twofactor = await this.prismaService.twofactor.findFirst({
+            where: { login_id: data.login_id }
+        })
+
+        if (twofactor) {
+            return await this.prismaService.twofactor.update({
+                where: { twofactor_id: twofactor.twofactor_id },
+                data: { validation_method_id: data.validation_method_id },
+            })
+        }
         return await this.prismaService.twofactor.create({
             data: { login_id: data.login_id, validation_method_id: data.validation_method_id },
         })
@@ -100,7 +110,7 @@ export class TwofactorService {
         try {
             await this.mailerService.sendMail({
                 to: user.email,
-                from: "tiresiatest@gmail.com1",
+                from: "tiresiatest@gmail.com",
                 subject: 'Código de verificación',
                 text: 'Código de verificación',
                 html: `<b>Su código de verificación es ${recoveryCode} </b>`,
