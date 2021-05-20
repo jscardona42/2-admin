@@ -61,6 +61,7 @@ type Login {
   active_two_factor: Float
   user_id: Float
   Users: User!
+  Twofactor: [Twofactor!]
 }
 
 type Twofactor {
@@ -100,6 +101,7 @@ type Query {
   rootMenu: Menu!
   filteredMenuForRoleId(roleId: Float!): Menu!
   getTwoFactorById(twofactor_id: Float!): Twofactor!
+  getTwoFactorByLoginId(login_id: Float!): Twofactor!
   configTwoFactor(login_id: Float!): Twofactor!
   validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
   validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!

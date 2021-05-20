@@ -31,6 +31,13 @@ export class TwofactorResolver {
         return this.twofactorService.getTwoFactorById(twofactor_id);
     }
 
+    @Query(returns => Twofactor)
+    @UsePipes(ValidationPipe)
+    async getTwoFactorByLoginId(
+        @Args("login_id") login_id: number): Promise<Twofactor> {
+        return this.twofactorService.getTwoFactorByLoginId(login_id);
+    }
+
     @Query(returns => Twofactor)//Válido para 2FA
     @UsePipes(ValidationPipe)
     async configTwoFactor(

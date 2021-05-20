@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { ObjectType, Field, ID, InputType, InterfaceType, Int } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { User } from './user.entity';
+import { Twofactor } from 'src/twofactor/twofactor.entity';
 
 @ObjectType()
 export class Login {
@@ -33,6 +34,10 @@ export class Login {
 
   @Field((type) => User)
   Users?: User
+
+  @Field((type) => [Twofactor], { nullable: true })
+  Twofactor?: Twofactor[]
+
 }
 
 @InputType()
