@@ -7,6 +7,7 @@ import { TwofactorService } from '../twofactor/twofactor.service';
 import { LoginService } from '../users/login.service';
 import { Login } from '../users/login.entity';
 var QRCode = require('qrcode')
+import * as CryptoJS from 'crypto-js'
 
 @Resolver(() => Twofactor)
 export class TwofactorResolver {
@@ -83,7 +84,7 @@ export class TwofactorResolver {
         return twofactor;
     }
 
-    @Query(returns => Twofactor)
+    @Query(returns => Twofactor)// Se cambia config_two_factor a 0
     @UsePipes(ValidationPipe)
     async validateRecoveryCode(
         @Args("data") data: RecoveryCodeInput): Promise<Twofactor> {

@@ -118,7 +118,7 @@ input TwoFactorAuthenticateInput {
 }
 
 input RecoveryCodeInput {
-  twofactor_id: Float!
+  login_id: Float!
   recovery_code: String!
 }
 

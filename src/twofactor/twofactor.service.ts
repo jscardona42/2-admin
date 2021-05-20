@@ -85,8 +85,15 @@ export class TwofactorService {
 
     async validateRecoveryCode(data: RecoveryCodeInput): Promise<Twofactor> {
         var twofactor = await this.prismaService.twofactor.findFirst({
-            where: { twofactor_id: data.twofactor_id, recovery_code: data.recovery_code }
+            where: { login_id: data.login_id, recovery_code: data.recovery_code }
         })
+
+        if (twofactor) {
+            this.prismaService.twofactor.update({
+                where: { twofactor_id: twofactor.twofactor_id },
+                data: { config_twofactor: 0 }
+            })
+        }
 
         if (twofactor !== null) {
             return twofactor;

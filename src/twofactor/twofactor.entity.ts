@@ -45,7 +45,7 @@ export class TwoFactorAuthenticateInput {
 export class RecoveryCodeInput {
   @Field()
   @IsNotEmpty()
-  twofactor_id: number
+  login_id: number
 
   @Field()
   @IsNotEmpty()
