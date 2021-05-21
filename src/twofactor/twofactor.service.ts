@@ -89,7 +89,7 @@ export class TwofactorService {
         })
 
         if (twofactor) {
-            this.prismaService.twofactor.update({
+            await this.prismaService.twofactor.update({
                 where: { twofactor_id: twofactor.twofactor_id },
                 data: { config_twofactor: 0 }
             })
