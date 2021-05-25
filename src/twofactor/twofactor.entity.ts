@@ -1,6 +1,6 @@
 import 'reflect-metadata'
 import { ObjectType, Field, ID, InputType } from '@nestjs/graphql'
-import { Login } from 'src/users/login.entity'
+import { Login } from 'src/Users/login.entity'
 import { IsNotEmpty } from 'class-validator'
 
 @ObjectType()

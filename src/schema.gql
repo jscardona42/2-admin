@@ -12,24 +12,6 @@ directive @requires(fields: String!) on FIELD_DEFINITION
 
 directive @provides(fields: String!) on FIELD_DEFINITION
 
-type Permissions {
-  id: ID!
-  name: String!
-  permissions: String!
-}
-
-type Role {
-  id: ID!
-  role: String!
-}
-
-type RolesPermissions {
-  id: ID!
-  role_id: Float!
-  permissions_menu: [String!]!
-  permissions: String!
-}
-
 type Menu {
   id: ID!
   title: String!
@@ -91,13 +73,28 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Role {
+  id: ID!
+  role: String!
+}
+
+type RolesPermissions {
+  id: ID!
+  role_id: Float!
+  permission_id: Float!
+}
+
+type Permissions {
+  id: ID!
+  permission_principal_id: Float!
+  permissions: String!
+  is_public: Boolean!
+}
+
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
-  getPermissions: [Permissions!]!
-  getRoles: [Role!]!
-  getRolesPermissions: [RolesPermissions!]!
   rootMenu: Menu!
   filteredMenuForRoleId(roleId: Float!): Menu!
   getTwoFactorById(twofactor_id: Float!): Twofactor!
@@ -105,8 +102,11 @@ type Query {
   configTwoFactor(login_id: Float!): Twofactor!
   validateTwoFactorCode(data: TwoFactorAuthenticateInput!): Login!
   validateRecoveryCode(data: RecoveryCodeInput!): Twofactor!
-  validationCodeMail(data: ValidateCodeInput!): Twofactor!
+  exValidationCodeMail(data: ValidateCodeInput!): Twofactor!
   getAudits: [Audit!]!
+  getRoles: [Role!]!
+  getRolesPermissions: [RolesPermissions!]!
+  getPermissions: [Permissions!]!
 }
 
 input SignInUserInput {
@@ -137,7 +137,7 @@ type Mutation {
   insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
   createTwoFactor(data: configTwoFactorInput!): Twofactor!
   setActivateConfigTwofactorTOTP(login_id: Float!): Twofactor!
-  sendMail(login_id: Float!): Twofactor!
+  exSendMail(login_id: Float!): Twofactor!
 }
 
 input SignUpUserInput {

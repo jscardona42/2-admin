@@ -3,22 +3,27 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
-import { AdminController } from './admin/admin.controller';
-import { AdminResolver } from './admin/admin.resolver';
-import { AdminService } from './admin/admin.service';
-import { MenuResolver } from './menu/menu.resolver';
-import { MenuService } from './menu/menu.service';
+import { MenuResolver } from './Menu/menu.resolver';
+import { MenuService } from './Menu/menu.service';
 import { PrismaService } from './prisma.service';
-import { TwofactorResolver } from './twofactor/twofactor.resolver';
-import { TwofactorService } from './twofactor/twofactor.service';
-import { Login } from './users/login.entity';
-import { LoginResolver } from './users/login.resolver';
-import { LoginService } from './users/login.service';
+import { TwofactorResolver } from './Twofactor/twofactor.resolver';
+import { TwofactorService } from './Twofactor/twofactor.service';
+import { Login } from './Users/login.entity';
+import { LoginResolver } from './Users/login.resolver';
+import { LoginService } from './Users/login.service';
 import { MailerModule, MailerService } from '@nestjs-modules/mailer';
-import { AuditService } from './audit/audit.service';
-import { AuditResolver } from './audit/audit.resolver';
+import { AuditService } from './Audit/audit.service';
+import { AuditResolver } from './Audit/audit.resolver';
+import { RoleService } from './Admin/Role/role.service';
+import { RoleResolver } from './Admin/Role/role.resolver';
+import { RolePermissionService } from './Admin/RolePermission/rolepermission.service';
+import { RolePermissionResolver } from './Admin/RolePermission/rolepermission.resolver';
+import { PermissionService } from './Admin/Permission/permission.service';
+import { PermissionController } from './Admin/Permission/permission.controller';
+import { PermissionPrincipalService } from './Admin/PermissionPrincipal/permissionprincipal.service';
+import { PermissionResolver } from './Admin/Permission/permission.resolver';
 
-const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, AdminResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService, AuditService, AuditResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService, AuditService, AuditResolver, RoleService, RoleResolver, RolePermissionService, RolePermissionResolver,PermissionService, RolePermissionResolver, PermissionPrincipalService, PermissionResolver, PermissionService]
 
 @Module({
   imports: [
@@ -56,21 +61,30 @@ const MyProviders = [PrismaService, AdminService, LoginService, LoginResolver, A
       },
     })
   ],
-  controllers: [AdminController],
+  controllers: [PermissionController],
   providers: MyProviders,
   exports: [MailerModule]
 })
 
 export class AppModule {
-  constructor(private readonly adminService: AdminService) {
+  constructor(private readonly permissionService: PermissionService) {
     this.refreshMethods();
   }
   public refreshMethods() {
     for (const clsname of MyProviders) {
-      var TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(
-        item => item !== 'constructor'
+      var TMPmethods =
+        Object.getOwnPropertyNames(clsname.prototype).filter(
+          item => item !== 'constructor'
+        )
+
+      var nameMethodsTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
+      var nameMethods = nameMethodsTmp.filter(
+        (method) => !method.nameClass.includes('Service'),
       );
-      this.adminService.getMethods(TMPmethods, clsname.name);
+
+      if (nameMethods.length > 0) {
+        this.permissionService.getMethods(nameMethods);
+      }
     }
   }
 }

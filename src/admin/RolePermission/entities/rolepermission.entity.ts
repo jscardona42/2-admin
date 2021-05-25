@@ -8,10 +8,6 @@ export class RolesPermissions {
     @Field((type) => Number)
     role_id: number
 
-    @Field((type) => [String])
-    permissions_menu: string[]
-
-    @Field((type) => String)
-    permissions?: string
-
+    @Field((type) => Number)
+    permission_id?: number
 }

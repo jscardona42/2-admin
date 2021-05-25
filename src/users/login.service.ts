@@ -4,7 +4,7 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Login } from './login.entity';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../Audit/audit.service';
 import { Users } from '.prisma/client';
 
 

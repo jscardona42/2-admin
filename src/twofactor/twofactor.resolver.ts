@@ -1,13 +1,11 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 const fetch = require('node-fetch');
-import { Response } from 'express';
-import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput, ValidateCodeInput } from '../twofactor/twofactor.entity';
-import { TwofactorService } from '../twofactor/twofactor.service';
-import { LoginService } from '../users/login.service';
-import { Login } from '../users/login.entity';
+import { configTwoFactorInput, RecoveryCodeInput, Twofactor, TwoFactorAuthenticateInput, ValidateCodeInput } from './twofactor.entity';
+import { TwofactorService } from './twofactor.service';
+import { LoginService } from '../Users/login.service';
+import { Login } from '../Users/login.entity';
 var QRCode = require('qrcode')
-import * as CryptoJS from 'crypto-js'
 
 @Resolver(() => Twofactor)
 export class TwofactorResolver {
@@ -100,7 +98,7 @@ export class TwofactorResolver {
 
     @Mutation(returns => Twofactor)//Email
     @UsePipes(ValidationPipe)
-    async sendMail(
+    async exSendMail(
         @Args("login_id") login_id: number,
         @Context() ctx): Promise<Twofactor> {
         try {
@@ -116,7 +114,7 @@ export class TwofactorResolver {
 
     @Query(returns => Twofactor)
     @UsePipes(ValidationPipe)
-    async validationCodeMail(
+    async exValidationCodeMail(
         @Args("data") data: ValidateCodeInput): Promise<Twofactor> {
         var login = await this.loginService.getLoginById(data.login_id);
         var twofactor = await this.twofactorService.getTwoFactorByLoginId(data.login_id);

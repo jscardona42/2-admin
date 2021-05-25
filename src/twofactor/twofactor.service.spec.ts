@@ -1,12 +1,11 @@
 import { MailerModule } from '@nestjs-modules/mailer';
 import { Test } from '@nestjs/testing';
-import { LoginService } from '../users/login.service';
+import { LoginService } from '../Users/login.service';
 import { PrismaService } from '../prisma.service';
 import { TwofactorService } from './twofactor.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuditService } from '../audit/audit.service';
+import { AuditService } from '../Audit/audit.service';
 import { Twofactor } from './twofactor.entity';
-import { Login } from 'src/users/login.entity';
 
 describe('Twofactor Service', () => {
     let twofactorService: TwofactorService;
@@ -102,7 +101,7 @@ describe('Twofactor Service', () => {
                 validation_method_id: 1
             };
             await twofactorService.createTwoFactor(testParams);
-            expect(prismaService.twofactor.create).toHaveBeenCalled();
+            expect(prismaService.twofactor.update).toHaveBeenCalled();
         });
     });
 
@@ -155,7 +154,7 @@ describe('Twofactor Service', () => {
     describe('validateRecoveryCode', () => {
         it('should validateRecoveryCode', async () => {
             const testParams = {
-                twofactor_id: 1,
+                login_id: 1,
                 recovery_code: "5474457"
             };
             await twofactorService.validateRecoveryCode(testParams);

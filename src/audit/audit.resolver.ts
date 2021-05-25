@@ -1,6 +1,6 @@
 import { Resolver, Query, Mutation, Args, Context } from '@nestjs/graphql';
 import { AuditService } from './audit.service';
-import { Audit } from './audit.entity';
+import { Audit } from './entities/audit.entity';
 
 @Resolver(() => Audit)
 export class AuditResolver {

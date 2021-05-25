@@ -1,13 +1,11 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
 
 @ObjectType()
-export class Permissions {
+export class PermissionsPrincipal {
     @Field((type) => ID)
-    id: number
+    permissions_principal_id: number
 
     @Field((type) => String)
     name?: string
 
-    @Field((type) => String)
-    permissions?: string
 }

@@ -1,7 +1,6 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { MenuService } from './menu.service';
 import { Menu } from './menu.entity';
-import { Permissions } from 'src/admin/dto/permission.entity';
 
 @Resolver(() => Menu)
 export class MenuResolver {
