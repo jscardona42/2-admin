@@ -1,10 +1,7 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { LoginService } from './login.service';
 import { SignInUserInput, SignUpUserInput, Login } from './login.entity';
-import { UseGuards, UsePipes, ValidationPipe } from '@nestjs/common';
-import { Response } from 'express';
-import { GqlAuthGuard } from 'src/admin/guard/authguard.guard';
-var QRCode = require('qrcode')
+import { UsePipes, ValidationPipe } from '@nestjs/common';
 
 @Resolver(() => Login)
 export class LoginResolver {

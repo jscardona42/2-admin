@@ -18,4 +18,7 @@ export class User {
 
     @Field((type) => Number, { nullable: true })
     state?: number | null
+
+    @Field((type) => Number, { nullable: true })
+    empresa_id?: number | null
 }

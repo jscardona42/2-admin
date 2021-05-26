@@ -1,8 +1,8 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../prisma.service';
-import { AuditService } from '../audit/audit.service';
-import { LoginService } from '../users/login.service';
+import { AuditService } from '../Audit/audit.service';
+import { LoginService } from '../Users/login.service';
 import { TwofactorResolver } from './twofactor.resolver';
 import { TwofactorService } from './twofactor.service';
 
@@ -99,7 +99,7 @@ describe('Login Resolver', () => {
     describe('Query validateRecoveryCode()', () => {
         it('should invoke twofactorService.validateRecoveryCode()', async () => {
             const testParams = {
-                twofactor_id: 1,
+                login_id: 1,
                 recovery_code: "4457875454"
             };
 
@@ -115,7 +115,7 @@ describe('Login Resolver', () => {
                 validate_code: "4457875454"
             };
 
-            await twofactorResolver.validationCodeMail(testParams);
+            await twofactorResolver.exValidationCodeMail(testParams);
             expect(twofactorService.validationCodeMail).toHaveBeenCalled();
         });
     });

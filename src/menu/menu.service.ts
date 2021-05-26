@@ -111,7 +111,7 @@ export class MenuService {
   }
 
   async filterMenu(roleId: number): Promise<Object>  {
-    const permissions = await this.prismaService.roles_permissions.findMany({
+    const permissions = await this.prismaService.roles_menu.findMany({
       where: {
         role_id: roleId,
       },
