@@ -7,109 +7,122 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Audits {
-  audit_id      Int       @id @default(autoincrement()) @db.SmallInt
-  login_id      Int?      @db.SmallInt
-  status        String?   @db.VarChar(50)
-  created_at    DateTime? @default(now()) @db.Timestamp(6)
-  type          String?   @db.VarChar(50)
-  username      String?   @db.VarChar(100)
-  role          String?   @db.VarChar(50)
-  has_twofactor Int?      @db.SmallInt
+model Login {
+  login_id           Int              @id @default(autoincrement()) @db.SmallInt
+  username           String
+  password           String?
+  token              String?
+  salt               String?
+  rol_id             Int              @db.SmallInt
+  tiene_doble_factor Int?             @default(0) @db.SmallInt
+  usuario_id         Int?             @db.SmallInt
+  Roles              Roles            @relation(fields: [rol_id], references: [rol_id])
+  Usuarios           Usuarios?        @relation(fields: [usuario_id], references: [usuario_id])
+  DoblesFactores     DoblesFactores[]
 }
 
-model Login {
-  id                Int         @id @default(autoincrement()) @db.SmallInt
-  username          String
-  password          String?
-  token             String?
-  salt              String?
-  role_id           Int         @db.SmallInt
-  active_two_factor Int?        @default(0) @db.SmallInt
-  user_id           Int?        @db.SmallInt
-  Roles             Roles       @relation(fields: [role_id], references: [id])
-  Users             Users?      @relation(fields: [user_id], references: [id])
-  Twofactor         Twofactor[]
-}
+// model Menus {
+//   id           Int     @id @default(autoincrement())
+//   title        String
+//   path         String
+//   isEntity     Boolean
+//   parentMenuId Int?
+//   parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
+//   subMenu      Menus[] @relation("menusToMenus")
+// }
 
 model Menus {
-  id           Int     @id @default(autoincrement())
+  menu_id      Int     @id @default(autoincrement())
   title        String
   path         String
   isEntity     Boolean
   parentMenuId Int?
-  parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
-  subMenu      Menus[] @relation("menusToMenus")
-}
-
-model Microservices {
-  id       Int    @id @default(autoincrement()) @db.SmallInt
-  name     String @db.VarChar(255)
-  hostname String @db.VarChar(255)
-  port     Int
-  url      String @db.VarChar(32)
-  state    Int?
-}
-
-model Permissions {
-  id                      Int                    @id @default(autoincrement()) @db.SmallInt
-  permission_principal_id Int?                   @db.SmallInt
-  permissions             String?
-  is_public               Boolean?
-  Permissions_principal   Permissions_principal? @relation(fields: [permission_principal_id], references: [permission_principal_id])
-  Roles_permissions       Roles_permissions[]
+  Menus        Menus?  @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
+  other_Menus  Menus[] @relation("MenusToMenus_parentMenuId")
 }
 
 model Roles {
-  id         Int          @id @default(autoincrement()) @db.SmallInt
-  role       String       @db.VarChar(100)
+  rol_id        Int             @id @default(autoincrement()) @db.SmallInt
+  rol           String          @db.VarChar(100)
+  Login         Login[]
+  RolesMenus    RolesMenus[]
+  RolesPermisos RolesPermisos[]
+}
+
+model Auditorias {
+  auditoria_id       Int       @id @default(autoincrement()) @db.SmallInt
+  login_id           Int?      @db.SmallInt
+  status             String?   @db.VarChar(50)
+  fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
+  tipo               String?   @db.VarChar(50)
+  username           String?   @db.VarChar(100)
+  rol                String?   @db.VarChar(50)
+  tiene_doble_factor Boolean?
+}
+
+model DoblesFactores {
+  doble_factor_id       Int                @id @default(autoincrement()) @db.SmallInt
+  otplib_secreta        String?            @db.VarChar(255)
+  esta_configurado      Boolean?
+  login_id              Int                @db.SmallInt
+  codigo_recuperacion   String?            @db.VarChar(255)
+  metodo_validacion_id  Int?               @db.SmallInt
+  fecha_creacion_codigo DateTime?          @db.Timestamp(6)
+  Login                 Login              @relation(fields: [login_id], references: [login_id])
+  MetodosValidacion     MetodosValidacion? @relation(fields: [metodo_validacion_id], references: [metodo_validacion_id])
+}
+
+model Entidades {
+  entidad_id Int        @id @default(autoincrement()) @db.SmallInt
+  nombre     String     @db.VarChar(255)
+  resolver   String?    @db.VarChar(255)
+  Permisos   Permisos[]
+}
+
+model MetodosValidacion {
+  metodo_validacion_id Int              @id @default(autoincrement()) @db.SmallInt
+  metodo               String           @db.VarChar(255)
+  activo               Boolean?
+  DoblesFactores       DoblesFactores[]
+}
+
+model Microservicios {
+  microservicio_id Int      @id @default(autoincrement()) @db.SmallInt
+  nombre           String   @db.VarChar(255)
+  hostname         String   @db.VarChar(255)
+  puerto           Int
+  url              String   @db.VarChar(32)
+  activo           Boolean?
+}
+
+model Permisos {
+  permiso_id    Int             @id @default(autoincrement()) @db.SmallInt
+  entidad_id    Int?            @db.SmallInt
+  permiso       String?
+  es_publico    Boolean?
+  Entidades     Entidades?      @relation(fields: [entidad_id], references: [entidad_id])
+  RolesPermisos RolesPermisos[]
+}
+
+model RolesMenus {
+  rol_menu_id   Int      @id @default(autoincrement()) @db.SmallInt
+  rol_id        Int?     @db.SmallInt
+  permisos_menu String[]
+  Roles         Roles?   @relation(fields: [rol_id], references: [rol_id])
+}
+
+model RolesPermisos {
+  rol_permiso_id Int       @id @default(autoincrement()) @db.SmallInt
+  rol_id         Int       @db.SmallInt
+  permiso_id     Int?      @db.SmallInt
+  Permisos       Permisos? @relation(fields: [permiso_id], references: [permiso_id])
+  Roles          Roles     @relation(fields: [rol_id], references: [rol_id])
+}
+
+model Usuarios {
+  usuario_id Int      @id @default(autoincrement()) @db.SmallInt
+  nombre     String   @db.VarChar(100)
+  email      String   @db.VarChar(100)
+  activo     Boolean?
   Login      Login[]
-  Roles_menu Roles_menu[]
-}
-
-model Roles_menu {
-  roles_menu_id    Int      @id @default(autoincrement()) @db.SmallInt
-  role_id          Int?     @db.SmallInt
-  permissions_menu String[]
-  Roles            Roles?   @relation(fields: [role_id], references: [id])
-}
-
-model Roles_permissions {
-  id            Int          @id @default(autoincrement()) @db.SmallInt
-  role_id       Int          @db.SmallInt
-  permission_id Int?         @db.SmallInt
-  Permissions   Permissions? @relation(fields: [permission_id], references: [id])
-}
-
-model Twofactor {
-  twofactor_id         Int                 @id @default(autoincrement()) @db.SmallInt
-  twofactor_secret     String?             @db.VarChar(255)
-  config_twofactor     Int?                @default(0) @db.SmallInt
-  login_id             Int                 @db.SmallInt
-  recovery_code        String?             @db.VarChar(255)
-  validation_method_id Int?                @db.SmallInt
-  time_creation_code   DateTime?           @db.Timestamp(6)
-  Login                Login               @relation(fields: [login_id], references: [id])
-  Validation_methods   Validation_methods? @relation(fields: [validation_method_id], references: [validation_method_id])
-}
-
-model Users {
-  id    Int     @id @default(autoincrement()) @db.SmallInt
-  name  String  @db.VarChar(100)
-  email String  @db.VarChar(100)
-  state Int?    @default(1) @db.SmallInt
-  Login Login[]
-}
-
-model Validation_methods {
-  validation_method_id Int         @id @default(autoincrement()) @db.SmallInt
-  validation_method    String      @db.VarChar(255)
-  state                Int?        @default(1) @db.SmallInt
-  Twofactor            Twofactor[]
-}
-
-model Permissions_principal {
-  permission_principal_id Int           @id @default(autoincrement()) @db.SmallInt
-  name                    String        @db.VarChar(255)
-  Permissions             Permissions[]
 }
