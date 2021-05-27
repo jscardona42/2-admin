@@ -27,7 +27,7 @@ export class DoblesFactoresService {
         })
     }
 
-    async createDoblesFactores(data: configDoblesFactoresInput): Promise<DoblesFactores> {
+    async createDobleFactor(data: configDoblesFactoresInput): Promise<DoblesFactores> {
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
             where: { login_id: data.login_id }
         })
@@ -43,7 +43,7 @@ export class DoblesFactoresService {
         })
     }
 
-    async configTwoFactor(secret: string, login_id: number): Promise<DoblesFactores> {
+    async configDobleFactor(secret: string, login_id: number): Promise<DoblesFactores> {
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
             where: { login_id: login_id },
             select: { doble_factor_id: true }

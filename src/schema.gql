@@ -135,7 +135,7 @@ type Mutation {
   createRootMenu: Menu!
   createFolder(folderName: String!, parentId: Float!): Menu!
   insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
-  createDoblesFactores(data: configDoblesFactoresInput!): DoblesFactores!
+  createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!
 }

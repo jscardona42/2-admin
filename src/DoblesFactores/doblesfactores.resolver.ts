@@ -17,13 +17,6 @@ export class DoblesFactoresResolver {
         private readonly doblesFactoresService: DoblesFactoresService
     ) { }
 
-    @Mutation(returns => DoblesFactores)
-    @UsePipes(ValidationPipe)
-    async createDoblesFactores(
-        @Args("data") data: configDoblesFactoresInput): Promise<DoblesFactores> {
-        return this.doblesFactoresService.createDoblesFactores(data);
-    }
-
     @Query(returns => DoblesFactores)
     @UsePipes(ValidationPipe)
     async getDobleFactorById(
@@ -36,6 +29,13 @@ export class DoblesFactoresResolver {
     async getDobleFactorByLoginId(
         @Args("login_id") login_id: number): Promise<DoblesFactores> {
         return this.doblesFactoresService.getDobleFactorByLoginId(login_id);
+    }
+
+    @Mutation(returns => DoblesFactores)
+    @UsePipes(ValidationPipe)
+    async createDobleFactor(
+        @Args("data") data: configDoblesFactoresInput): Promise<DoblesFactores> {
+        return this.doblesFactoresService.createDobleFactor(data);
     }
 
     @Query(returns => DoblesFactores)//Válido para 2FA
@@ -54,12 +54,23 @@ export class DoblesFactoresResolver {
         if (!doblefactor.esta_configurado) {
             const { otpauthUrl, secret } = await this.doblesFactoresService.generateDobleFactorAuthenticationSecret(user);
             const qrCodeUrl = await this.doblesFactoresService.buildQrCodeUrl(otpauthUrl);
-            twofactorReturn = await this.doblesFactoresService.configTwoFactor(secret, login_id);
+            twofactorReturn = await this.doblesFactoresService.configDobleFactor(secret, login_id);
             return Object.assign(twofactorReturn, { qr_code: JSON.stringify(qrCodeUrl) });
         }
 
         twofactorReturn = await this.doblesFactoresService.getDobleFactorById(doblefactor.doble_factor_id);
         return Object.assign(twofactorReturn, { qr_code: "" });
+    }
+
+    @Mutation(returns => DoblesFactores)//Válido para 2FA // Recovery-Codes
+    @UsePipes(ValidationPipe)
+    async exSetActivateConfigDobleFactorTOTP(
+        @Args("login_id") login_id: number): Promise<DoblesFactores> {
+        var doblefactor = await this.doblesFactoresService.getDobleFactorByLoginId(login_id);
+        if (!doblefactor.esta_configurado) {
+            return this.doblesFactoresService.exSetActivateConfigTwofactorTOTP(doblefactor);
+        }
+        return doblefactor;
     }
 
     @Query(returns => Login)//Válido para 2FA
@@ -80,18 +91,7 @@ export class DoblesFactoresResolver {
         return login;
     }
 
-    @Mutation(returns => DoblesFactores)//Válido para 2FA // Recovery-Codes
-    @UsePipes(ValidationPipe)
-    async exSetActivateConfigDobleFactorTOTP(
-        @Args("login_id") login_id: number): Promise<DoblesFactores> {
-        var doblefactor = await this.doblesFactoresService.getDobleFactorByLoginId(login_id);
-        if (!doblefactor.esta_configurado) {
-            return this.doblesFactoresService.exSetActivateConfigTwofactorTOTP(doblefactor);
-        }
-        return doblefactor;
-    }
-
-    @Query(returns => DoblesFactores)// Se cambia config_two_factor a 0
+    @Query(returns => DoblesFactores)// Se cambia config_two_factor a false
     @UsePipes(ValidationPipe)
     async exValidateRecoveryCode(
         @Args("data") data: CodigoRecuperacionInput): Promise<DoblesFactores> {
