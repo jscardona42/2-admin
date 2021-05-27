@@ -3,27 +3,28 @@ import { GraphQLFederationModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
-import { MenuResolver } from './Menu/menu.resolver';
-import { MenuService } from './Menu/menu.service';
 import { PrismaService } from './prisma.service';
-import { TwofactorResolver } from './Twofactor/twofactor.resolver';
-import { TwofactorService } from './Twofactor/twofactor.service';
-import { Login } from './Users/login.entity';
-import { LoginResolver } from './Users/login.resolver';
-import { LoginService } from './Users/login.service';
-import { MailerModule, MailerService } from '@nestjs-modules/mailer';
-import { AuditService } from './Audit/audit.service';
-import { AuditResolver } from './Audit/audit.resolver';
-import { RoleService } from './Admin/Role/role.service';
-import { RoleResolver } from './Admin/Role/role.resolver';
-import { RolePermissionService } from './Admin/RolePermission/rolepermission.service';
-import { RolePermissionResolver } from './Admin/RolePermission/rolepermission.resolver';
-import { PermissionService } from './Admin/Permission/permission.service';
-import { PermissionController } from './Admin/Permission/permission.controller';
-import { PermissionPrincipalService } from './Admin/PermissionPrincipal/permissionprincipal.service';
-import { PermissionResolver } from './Admin/Permission/permission.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenuService, MenuResolver, TwofactorService, TwofactorResolver, AuditService, AuditService, AuditResolver, RoleService, RoleResolver, RolePermissionService, RolePermissionResolver,PermissionService, RolePermissionResolver, PermissionPrincipalService, PermissionResolver, PermissionService]
+import { AuditoriasService } from './Auditorias/auditorias.service';
+import { AuditoriasResolver } from './Auditorias/auditorias.resolver';
+import { LoginService } from './Usuarios/login.service';
+import { LoginResolver } from './Usuarios/login.resolver';
+import { RolesPermisosService } from './Admin/RolesPermisos/rolespermisos.service';
+import { RolesResolver } from './Admin/Roles/roles.resolver';
+import { RolesService } from './Admin/Roles/roles.service';
+import { DoblesFactoresService } from './DoblesFactores/doblesfactores.service';
+import { DoblesFactoresResolver } from './DoblesFactores/doblesfactores.resolver';
+import { RolesPermisosResolver } from './Admin/RolesPermisos/rolespermisos.resolver';
+import { PermisosService } from './Admin/Permisos/permisos.service';
+import { PermisosResolver } from './Admin/Permisos/permisos.resolver';
+import { EntidadesService } from './Admin/Entidades/entidades.service';
+import { MailerModule } from '@nestjs-modules/mailer';
+import { PermisosController } from './Admin/Permisos/permisos.controller';
+import { Login } from './Usuarios/entities/login.entity';
+import { MenusService } from './Menus/menus.service';
+import { MenusResolver } from './Menus/menus.resolver';
+
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService]
 
 @Module({
   imports: [
@@ -61,13 +62,13 @@ const MyProviders = [PrismaService, LoginService, LoginResolver, MenuService, Me
       },
     })
   ],
-  controllers: [PermissionController],
+  controllers: [PermisosController],
   providers: MyProviders,
   exports: [MailerModule]
 })
 
 export class AppModule {
-  constructor(private readonly permissionService: PermissionService) {
+  constructor(private readonly permisosService: PermisosService) {
     this.refreshMethods();
   }
   public refreshMethods() {
@@ -83,7 +84,7 @@ export class AppModule {
       );
 
       if (nameMethods.length > 0) {
-        this.permissionService.getMethods(nameMethods);
+        this.permisosService.getMethods(nameMethods);
       }
     }
   }
