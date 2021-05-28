@@ -21,16 +21,6 @@ model Login {
   DoblesFactores     DoblesFactores[]
 }
 
-// model Menus {
-//   id           Int     @id @default(autoincrement())
-//   title        String
-//   path         String
-//   isEntity     Boolean
-//   parentMenuId Int?
-//   parentMenu   Menus?  @relation("menusToMenus", fields: [parentMenuId], references: [id])
-//   subMenu      Menus[] @relation("menusToMenus")
-// }
-
 model Menus {
   menu_id      Int     @id @default(autoincrement())
   title        String

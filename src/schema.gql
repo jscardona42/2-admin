@@ -78,12 +78,12 @@ type Permisos {
   es_publico: Boolean!
 }
 
-type Menu {
+type Menus {
   menu_id: ID!
   title: String!
   path: String!
   isEntity: Boolean!
-  subMenu: JSON!
+  other_Menus: JSON!
 }
 
 """
@@ -95,8 +95,8 @@ type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
-  rootMenu: Menu!
-  filteredMenuForRoleId(roleId: Float!): Menu!
+  rootMenu: Menus!
+  filteredMenuForRoleId(roleId: Float!): Menus!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
   getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
   configDobleFactor(login_id: Float!): DoblesFactores!
@@ -132,9 +132,9 @@ input ValidarCodigoInput {
 type Mutation {
   signUpLogin(data: SignUpUserInput!): Login!
   logOutLogin(login_id: Float!): Login!
-  createRootMenu: Menu!
-  createFolder(folderName: String!, parentId: Float!): Menu!
-  insertEntityToFolder(entityName: String!, parentId: Float!): Menu!
+  createRootMenu: Menus!
+  createFolder(folderName: String!, parentId: Float!): Menus!
+  insertEntityToFolder(entityName: String!, parentId: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!

@@ -3,7 +3,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import JSON from 'graphql-type-json';
 
 @ObjectType()
-export class Menu {
+export class Menus {
     @Field(type => ID)
     menu_id: number
 
@@ -17,6 +17,6 @@ export class Menu {
     isEntity: boolean
 
     @Field(type => JSON)
-    subMenu: [JSON]
+    other_Menus: [JSON]
 
 }

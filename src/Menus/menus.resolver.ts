@@ -1,22 +1,22 @@
 import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
 import { MenusService } from './menus.service';
-import { Menu } from './entities/menus.entity';
+import { Menus } from './entities/menus.entity';
 
-@Resolver(() => Menu)
+@Resolver(() => Menus)
 export class MenusResolver {
   constructor(private readonly menuService: MenusService) { }
 
-  @Query(() => Menu)
+  @Query(() => Menus)
   async rootMenu() {
     return this.menuService.rootMenu();
   }
 
-  @Mutation((returns) => Menu)
+  @Mutation((returns) => Menus)
   async createRootMenu() {
     return this.menuService.createRootMenu();
   }
 
-  @Mutation(returns => Menu)
+  @Mutation(returns => Menus)
   async createFolder(
     @Args('parentId') parentId: number,
     @Args('folderName') folderName: string
@@ -24,7 +24,7 @@ export class MenusResolver {
     return this.menuService.createFolder(parentId, folderName)
   }
 
-  @Mutation(returns => Menu)
+  @Mutation(returns => Menus)
   async insertEntityToFolder(
     @Args('parentId') parentId: number,
     @Args('entityName') entityName: string
@@ -32,7 +32,7 @@ export class MenusResolver {
     return this.menuService.insertEntityToFolder(parentId, entityName)
   }
 
-  @Query(returns => Menu)
+  @Query(returns => Menus)
   async filteredMenuForRoleId(
     @Args('roleId') roleId: number
   ): Promise<Object>  {
