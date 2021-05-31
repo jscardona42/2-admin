@@ -57,9 +57,9 @@ const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, M
         res: res
       }),
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
-      buildSchemaOptions: {
-        orphanedTypes: [Login],
-      },
+      // buildSchemaOptions: {
+      //   orphanedTypes: [Login],
+      // },
     })
   ],
   controllers: [PermisosController],
