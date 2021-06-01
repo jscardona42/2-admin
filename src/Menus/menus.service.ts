@@ -61,6 +61,7 @@ export class MenusService {
       data: {
         title: entityName,
         isEntity: true,
+        order: 1,
         path: '',
         Menus: {
           connect: {

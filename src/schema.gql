@@ -132,6 +132,7 @@ input ValidarCodigoInput {
 type Mutation {
   signUpLogin(data: SignUpUserInput!): Login!
   logOutLogin(login_id: Float!): Login!
+  exChangePasswordLogin(data: ChangePasswordInput!): Login!
   createRootMenu: Menus!
   createFolder(folderName: String!, parentId: Float!): Menus!
   insertEntityToFolder(entityName: String!, parentId: Float!): Menus!
@@ -144,6 +145,12 @@ input SignUpUserInput {
   username: String!
   password: String!
   rol_id: Float!
+}
+
+input ChangePasswordInput {
+  login_id: Float!
+  password: String!
+  new_password: String!
 }
 
 input configDoblesFactoresInput {

@@ -99,6 +99,43 @@ export class LoginService {
     })
   }
 
+  async exChangePasswordLogin(data): Promise<any> {
+    const salt = await this.prismaService.login.findFirst({
+      where: { login_id: data.login_id },
+      select: { salt: true },
+    })
+
+    if (salt === null) {
+      throw new AuthenticationError('Invalid credentials');
+    }
+
+    const login = await this.prismaService.login.findFirst({
+      where: {
+        password: await this.hashPassword(data.password, salt.salt)
+      },
+    })
+
+    if (login === null) {
+      throw new AuthenticationError('Invalid credentials');
+    }
+
+    const new_salt = await bcrypt.genSalt();
+
+    const user = await this.prismaService.login.update({
+      where: { login_id: data.login_id },
+      data: {
+        password: await this.hashPassword(data.new_password, new_salt),
+        salt: new_salt,
+      }
+    })
+
+    if (user === null) {
+      throw new UnauthorizedException('User does not exist');
+    }
+
+    return user;
+  }
+
   async usernameExists(username) {
     const user = await this.prismaService.login.findMany({
       where: { username: username },

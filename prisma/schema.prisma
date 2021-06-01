@@ -22,13 +22,16 @@ model Login {
 }
 
 model Menus {
-  menu_id      Int     @id @default(autoincrement())
+  menu_id      Int        @id @default(autoincrement())
   title        String
   path         String
   isEntity     Boolean
   parentMenuId Int?
-  Menus        Menus?  @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
-  other_Menus  Menus[] @relation("MenusToMenus_parentMenuId")
+  entidad_id   Int?       @db.SmallInt
+  order        Int?       @db.SmallInt
+  Entidades    Entidades? @relation(fields: [entidad_id], references: [entidad_id])
+  Menus        Menus?     @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
+  other_Menus  Menus[]    @relation("MenusToMenus_parentMenuId")
 }
 
 model Roles {
@@ -66,6 +69,7 @@ model Entidades {
   entidad_id Int        @id @default(autoincrement()) @db.SmallInt
   nombre     String     @db.VarChar(255)
   resolver   String?    @db.VarChar(255)
+  Menus      Menus[]
   Permisos   Permisos[]
 }
 
@@ -78,7 +82,7 @@ model MetodosValidacion {
 
 model Microservicios {
   microservicio_id Int      @id @default(autoincrement()) @db.SmallInt
-  nombre           String   @db.VarChar(255)
+  name             String   @db.VarChar(255)
   hostname         String   @db.VarChar(255)
   puerto           Int
   url              String   @db.VarChar(32)
