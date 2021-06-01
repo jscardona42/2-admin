@@ -2,7 +2,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { LoginService } from '../Usuarios/login.service';
+import { LoginService } from '../Login/login.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { DoblesFactoresService } from './doblesfactores.service';
@@ -63,7 +63,7 @@ describe('Twofactor Service', () => {
             const testParams = {
                 twofactor_id: 1
             };
-            await twofactorService.getTwoFactorById(
+            await twofactorService.getDobleFactorById(
                 testParams.twofactor_id
             );
             expect(prismaService.doblesFactores.findUnique).toHaveBeenCalled();
@@ -75,7 +75,7 @@ describe('Twofactor Service', () => {
             const testParams = {
                 login_id: 1
             };
-            await twofactorService.getTwoFactorByLoginId(
+            await twofactorService.getDobleFactorByLoginId(
                 testParams.login_id
             );
             expect(prismaService.doblesFactores.findFirst).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('Twofactor Service', () => {
             const testParams = {
                 user: { email: "jscardona42@gmail.com" }
             };
-            const data = await twofactorService.generateTwoFactorAuthenticationSecret(testParams.user);
+            const data = await twofactorService.generateDobleFactorAuthenticationSecret(testParams.user);
             expect(data).toStrictEqual(expect.objectContaining({
                 secret: expect.any(String),
                 otpauthUrl: expect.any(String),
@@ -101,7 +101,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 metodo_validacion_id: 1
             };
-            await twofactorService.createTwoFactor(testParams);
+            await twofactorService.createDobleFactor(testParams);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -112,7 +112,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 secret: "aserefdfdass"
             };
-            await twofactorService.configTwoFactor(testParams.secret, testParams.login_id);
+            await twofactorService.configDobleFactor(testParams.secret, testParams.login_id);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -128,7 +128,7 @@ describe('Twofactor Service', () => {
                 fecha_creacion_codigo: new Date(),
                 metodo_validacion_id: 1
             };
-            await twofactorService.setActivateConfigTwofactorTOTP(testParams);
+            await twofactorService.exSetActivateConfigTwofactorTOTP(testParams);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -147,7 +147,7 @@ describe('Twofactor Service', () => {
                     metodo_validacion_id: 1
                 }
             };
-            const data = await twofactorService.validateTwoFactorCode(testParams.data, testParams.doblesfactores);
+            const data = await twofactorService.exValidateDobleFactorCode(testParams.data, testParams.doblesfactores);
             expect(data).toStrictEqual(false);
         });
     });
@@ -158,7 +158,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 codigo_recuperacion: "5474457"
             };
-            await twofactorService.validateRecoveryCode(testParams);
+            await twofactorService.exValidateRecoveryCode(testParams);
             expect(prismaService.doblesFactores.findFirst).toHaveBeenCalled();
         });
     });

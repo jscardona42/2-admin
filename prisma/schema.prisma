@@ -29,6 +29,7 @@ model Menus {
   parentMenuId Int?
   entidad_id   Int?       @db.SmallInt
   order        Int?       @db.SmallInt
+  level        Int?       @db.SmallInt
   Entidades    Entidades? @relation(fields: [entidad_id], references: [entidad_id])
   Menus        Menus?     @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
   other_Menus  Menus[]    @relation("MenusToMenus_parentMenuId")
@@ -56,7 +57,7 @@ model Auditorias {
 model DoblesFactores {
   doble_factor_id       Int                @id @default(autoincrement()) @db.SmallInt
   otplib_secreta        String?            @db.VarChar(255)
-  esta_configurado      Boolean?
+  esta_configurado      Boolean            @default(false)
   login_id              Int                @db.SmallInt
   codigo_recuperacion   String?            @db.VarChar(255)
   metodo_validacion_id  Int?               @db.SmallInt

@@ -44,7 +44,6 @@ type Usuarios {
   nombre: String!
   email: String!
   activo: Boolean
-  empresa_id: Float
 }
 
 type Login {
@@ -82,8 +81,10 @@ type Menus {
   menu_id: ID!
   title: String!
   path: String!
+  entidad_id: Float
   isEntity: Boolean!
   other_Menus: JSON!
+  order: Float
 }
 
 """
@@ -97,6 +98,7 @@ type Query {
   signInLogin(data: SignInUserInput!): Login!
   rootMenu: Menus!
   filteredMenuForRoleId(roleId: Float!): Menus!
+  getMenuByRolId(login_id: Float!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
   getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
   configDobleFactor(login_id: Float!): DoblesFactores!
@@ -107,6 +109,7 @@ type Query {
   getRoles: [Roles!]!
   getRolesPermisos: [RolesPermisos!]!
   getPermisos: [Permisos!]!
+  getUsuarios: [Usuarios!]!
 }
 
 input SignInUserInput {
@@ -134,11 +137,13 @@ type Mutation {
   logOutLogin(login_id: Float!): Login!
   exChangePasswordLogin(data: ChangePasswordInput!): Login!
   createRootMenu: Menus!
-  createFolder(folderName: String!, parentId: Float!): Menus!
-  insertEntityToFolder(entityName: String!, parentId: Float!): Menus!
+  createFolder(data: MenusCreateInput!): Menus!
+  insertEntityToFolder(data: MenusCreateInput!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!
+  createUsuario(data: CreateUsuarioInput!): Usuarios!
+  updateUsuario(data: UpdateUsuarioInput!): Usuarios!
 }
 
 input SignUpUserInput {
@@ -153,7 +158,25 @@ input ChangePasswordInput {
   new_password: String!
 }
 
+input MenusCreateInput {
+  parentId: Float!
+  entityName: String!
+  entidad_id: Float
+  order: Float
+}
+
 input configDoblesFactoresInput {
   login_id: Float!
   metodo_validacion_id: Float!
+}
+
+input CreateUsuarioInput {
+  nombre: String!
+  email: String!
+}
+
+input UpdateUsuarioInput {
+  nombre: String
+  email: String
+  usuario_id: Float!
 }

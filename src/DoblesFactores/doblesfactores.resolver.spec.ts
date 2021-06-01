@@ -1,7 +1,7 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { AuditoriasService } from 'src/Auditorias/auditorias.service';
-import { LoginService } from 'src/Usuarios/login.service';
+import { LoginService } from 'src/Login/login.service';
 import { PrismaService } from '../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';
@@ -47,8 +47,8 @@ describe('Login Resolver', () => {
             const testParams = {
                 twofactor_id: 1
             };
-            await twofactorResolver.getTwoFactorById(testParams.twofactor_id);
-            expect(twofactorService.getTwoFactorById).toHaveBeenCalled();
+            await twofactorResolver.getDobleFactorById(testParams.twofactor_id);
+            expect(twofactorService.getDobleFactorById).toHaveBeenCalled();
         });
     });
 
@@ -58,8 +58,8 @@ describe('Login Resolver', () => {
                 login_id: 1,
                 metodo_validacion_id: 1
             };
-            await twofactorResolver.createTwoFactor(testParams);
-            expect(twofactorService.createTwoFactor).toHaveBeenCalledWith(testParams);
+            await twofactorResolver.createDobleFactor(testParams);
+            expect(twofactorService.createDobleFactor).toHaveBeenCalledWith(testParams);
         });
     });
 
@@ -81,8 +81,8 @@ describe('Login Resolver', () => {
                 codigo: "4457875454"
             };
 
-            await twofactorResolver.validateTwoFactorCode(testParams);
-            expect(twofactorService.validateTwoFactorCode).toHaveBeenCalled();
+            await twofactorResolver.exValidateDobleFactorCode(testParams);
+            expect(twofactorService.exValidateDobleFactorCode).toHaveBeenCalled();
         });
     });
 
@@ -103,8 +103,8 @@ describe('Login Resolver', () => {
                 codigo_recuperacion: "4457875454"
             };
 
-            await twofactorResolver.validateRecoveryCode(testParams);
-            expect(twofactorService.validateRecoveryCode).toHaveBeenCalled();
+            await twofactorResolver.exValidateRecoveryCode(testParams);
+            expect(twofactorService.exValidateRecoveryCode).toHaveBeenCalled();
         });
     });
 

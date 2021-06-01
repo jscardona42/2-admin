@@ -5,7 +5,7 @@ import { JwtService } from "@nestjs/jwt";
 import { AuthenticationError, UserInputError } from 'apollo-server-express';
 import { Login } from './entities/login.entity';
 import { AuditoriasService } from 'src/Auditorias/auditorias.service';
-import { Usuarios } from './entities/usuarios.entity';
+import { Usuarios } from '../Usuarios/entities/usuarios.entity';
 
 
 @Injectable()
