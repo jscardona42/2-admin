@@ -44,36 +44,27 @@ describe('Menu Resolver', () => {
   describe('Mutation createFolder()', () => {
     it('should invoke menuService.createFolder with arguments', async () => {
       const testParams = {
-        parentId: 3,
-        folderName: 'test folder',
+        data: {
+          parentId: 5,
+          entityName: 'Shipping',
+        }
       };
-      await menuResolver.createFolder(
-        testParams.parentId,
-        testParams.folderName,
-      );
-      expect(menuService.createFolder).toHaveBeenCalledWith(
-        testParams.parentId,
-        testParams.folderName,
-      );
+      await menuResolver.createFolder(testParams.data);
+      expect(menuService.createFolder).toHaveBeenCalledWith(testParams.data);
     });
   });
 
-  describe('Mutation insertEntityToFolder()',()=>{
-    it('should invoke menuService.insertEntityToFolder with arguments', async()=>{
+  describe('Mutation insertEntityToFolder()', () => {
+    it('should invoke menuService.insertEntityToFolder with arguments', async () => {
       const testParams = {
-        parentId: 5,
-        entityName: 'Shipping',
+        data: {
+          parentId: 5,
+          entityName: 'Shipping',
+        }
       };
-      await menuResolver.insertEntityToFolder(testParams.parentId, testParams.entityName)
-      expect(menuService.insertEntityToFolder).toHaveBeenCalledWith(testParams.parentId, testParams.entityName)
+      await menuResolver.insertEntityToFolder(testParams.data)
+      expect(menuService.insertEntityToFolder).toHaveBeenCalledWith(testParams.data)
     })
   })
-
-  describe('Query filteredMenuForRoleId', ()=>{
-    it('should invoke menuService.filterMenu with arguments', async()=>{
-      const testRoleIdParam: number = 5
-      await menuResolver.filteredMenuForRoleId(testRoleIdParam)
-      expect(menuService.filterMenu).toHaveBeenCalledWith(testRoleIdParam)
-    })
-  })
+  
 });

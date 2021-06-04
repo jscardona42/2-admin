@@ -17,6 +17,12 @@ export class UsuariosService {
         return this.prismaService.usuarios.findMany();
     }
 
+    async getUsuarioById(usuario_id: number) {
+        return this.prismaService.usuarios.findUnique({
+            where: { usuario_id: usuario_id },
+        })
+    }
+
     async createUsuario(data): Promise<Usuarios> {
         return this.prismaService.usuarios.create({
             data: {
@@ -33,6 +39,12 @@ export class UsuariosService {
                 nombre: data.nombre,
                 email: data.email,
             }
+        })
+    }
+
+    async deleteUsuario(usuario_id): Promise<Usuarios> {
+        return this.prismaService.usuarios.delete({
+            where: { usuario_id: usuario_id },
         })
     }
 

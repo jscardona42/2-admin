@@ -1,6 +1,6 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { AuditoriasService } from 'src/Auditorias/auditorias.service';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { PrismaService } from '../prisma.service';
 import { LoginService } from './login.service';
 
@@ -86,7 +86,7 @@ describe('Login Service', () => {
             const testParams = {
                 id: 1
             };
-            await loginService.getUserById(
+            await loginService.getUsuarioById(
                 testParams.id
             );
             expect(prismaService.usuarios.findUnique).toHaveBeenCalled();

@@ -55,13 +55,12 @@ describe('Menu Service', () => {
   describe('createFolder method', () => {
     it('should invoke prismaService.menus.create', async () => {
       const testParams = {
-        parentId: 2,
-        folderName: 'test folder parent',
+        data: {
+          parentId: 2,
+          entityName: "Nombre"
+        }
       };
-      await menuService.createFolder(
-        testParams.parentId,
-        testParams.folderName,
-      );
+      await menuService.createFolder(testParams.data);
       expect(prismaService.menus.create).toHaveBeenCalled();
     });
   });
@@ -69,13 +68,12 @@ describe('Menu Service', () => {
   describe('insertEntityToFolder method', () => {
     it('should invoke prismaService.menus.create', async () => {
       const testParams = {
-        parentId: 4,
-        entityName: 'shipping',
+        data: {
+          parentId: 2,
+          entityName: "Nombre"
+        }
       };
-      await menuService.insertEntityToFolder(
-        testParams.parentId,
-        testParams.entityName,
-      );
+      await menuService.insertEntityToFolder(testParams.data);
       expect(prismaService.menus.create).toHaveBeenCalled();
     });
   });

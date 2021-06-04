@@ -1,9 +1,12 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
+import { CreateMenuInput, UpdateMenuInput } from './dto/menus.dto';
 
 @Injectable()
 export class MenusService {
-  constructor(private prismaService: PrismaService) { }
+  constructor(
+    private prismaService: PrismaService
+  ) { }
 
   async rootMenu(): Promise<Object> {
     return await this.prismaService.menus.findFirst({
@@ -28,7 +31,7 @@ export class MenusService {
     });
   }
 
-  async createRootMenu(): Promise<Object>  {
+  async createRootMenu(): Promise<Object> {
     return await this.prismaService.menus.create({
       data: {
         title: 'menu',
@@ -39,41 +42,39 @@ export class MenusService {
     });
   }
 
-  async createFolder(parentId: number, folderName: string): Promise<Object>  {
-    await this.doesParentFolderExist(parentId);
+  async createFolder(data: CreateMenuInput): Promise<Object> {
+    await this.doesParentFolderExist(data.parentId);
     const createdFolder = await this.prismaService.menus.create({
       data: {
-        title: folderName,
+        title: data.name,
         isEntity: false,
+        order: data.order,
         path: '',
         Menus: {
           connect: {
-            menu_id: parentId,
+            menu_id: data.parentId,
           },
         },
       },
     });
-    return await this.updateFolderPath(createdFolder.menu_id, folderName);
+    return await this.updateFolderPath(createdFolder.menu_id, data.name);
   }
 
-  async insertEntityToFolder(parentId: number, entityName: string): Promise<Object>  {
+  async insertEntityToFolder(data: CreateMenuInput) {
     const createdEntity = await this.prismaService.menus.create({
       data: {
-        title: entityName,
+        title: data.name,
         isEntity: true,
-        order: 1,
         path: '',
-        Menus: {
-          connect: {
-            menu_id: parentId,
-          },
-        },
+        order: data.order,
+        Menus: { connect: { menu_id: data.parentId, }, },
+        Entidades: { connect: { entidad_id: data.entidad_id } },
       },
     });
-    return await this.updateFolderPath(createdEntity.menu_id, entityName);
+    return await this.updateFolderPath(createdEntity.menu_id, data.name);
   }
 
-  async doesParentFolderExist(parentId: number): Promise<void>  {
+  async doesParentFolderExist(parentId: number): Promise<void> {
     await this.prismaService.menus.findUnique({
       where: {
         menu_id: parentId,
@@ -83,7 +84,7 @@ export class MenusService {
     });
   }
 
-  async updateFolderPath(folderId: number, folderName: string): Promise<Object>  {
+  async updateFolderPath(folderId: number, folderName: string): Promise<Object> {
     let path: string;
     const parent = await this.prismaService.menus
       .findUnique({
@@ -101,26 +102,22 @@ export class MenusService {
     } else {
       path = parent.path + '/' + folderName;
     }
+
+    var level = path.split("/").length - 1;
+
     return await this.prismaService.menus.update({
       where: {
         menu_id: folderId,
       },
       data: {
         path: path,
+        level: level
       },
     });
   }
 
-  async filterMenu(roleId: number): Promise<Object>  {
-    const permissions = await this.prismaService.rolesMenus.findMany({
-      where: {
-        rol_id: roleId,
-      },
-      select: {
-        permisos_menu: true,
-      },
-    });
-    const filteredMenu = await this.prismaService.menus.findUnique({
+  async getFilterMenu(OR: any, AND: any): Promise<Object> {
+    return await this.prismaService.menus.findMany({
       where: {
         menu_id: 1,
       },
@@ -129,40 +126,90 @@ export class MenusService {
         title: true,
         path: true,
         isEntity: true,
+        order: true,
         parentMenuId: true,
         other_Menus: {
+          where: {
+            OR: OR,
+            AND: AND
+          },
           select: {
             menu_id: true,
             title: true,
             path: true,
             isEntity: true,
+            order: true,
             other_Menus: {
               where: {
-                OR: [
-                  {
-                    title: {
-                      in: permissions[0].permisos_menu,
-                    },
-                  },
-                  { isEntity: false },
-                ],
+                OR: OR,
+                AND: AND
+
               },
               select: {
                 menu_id: true,
                 title: true,
                 path: true,
                 isEntity: true,
+                order: true,
                 other_Menus: {
                   where: {
-                    title: { in: permissions[0].permisos_menu },
+                    OR: OR,
+                    AND: AND
                   },
                 },
-              },
+              }
             },
           },
         },
       },
     });
-    return filteredMenu;
+
   }
+
+  async updateMenu(data: UpdateMenuInput) {
+
+    await this.validateLevel(data);
+
+    var is_entity = false;
+    var entidad_id = null;
+
+    if (data.entidad_id !== undefined) {
+      is_entity = true;
+      entidad_id = data.entidad_id;
+    }
+    var menu = await this.prismaService.menus.update({
+      where: { menu_id: data.menu_id },
+      data: {
+        parentMenuId: data.parentId,
+        title: data.name,
+        entidad_id: entidad_id,
+        isEntity: is_entity
+      }
+    })
+
+    await this.updateParent(data.parentId);
+
+    return await this.updateFolderPath(data.menu_id, menu.title)
+  }
+
+  async validateLevel(data) {
+    var parentMenu = await this.prismaService.menus.findFirst({
+      where: { menu_id: data.parentId },
+    })
+
+    if (data.entidad_id === undefined && parentMenu.level >= 2) {
+      throw new UnauthorizedException("At this level you can only create entities");
+    }
+  }
+
+  async updateParent(parentId) {
+    return await this.prismaService.menus.update({
+      where: { menu_id: parentId },
+      data: {
+        entidad_id: null,
+        isEntity: false,
+      }
+    })
+  }
+
 }

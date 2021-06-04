@@ -1,7 +1,7 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { AuditoriasService } from 'src/Auditorias/auditorias.service';
-import { LoginService } from 'src/Login/login.service';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
+import { LoginService } from '../Login/login.service';
 import { PrismaService } from '../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';

@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from "@nestjs/jwt";
-import { AuthenticationError, UserInputError } from 'apollo-server-express';
+import { AuthenticationError } from 'apollo-server-express';
 import { Login } from './entities/login.entity';
-import { AuditoriasService } from 'src/Auditorias/auditorias.service';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { Usuarios } from '../Usuarios/entities/usuarios.entity';
 
 

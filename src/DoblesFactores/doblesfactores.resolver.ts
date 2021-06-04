@@ -3,9 +3,9 @@ import { UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common'
 const fetch = require('node-fetch');
 import { DoblesFactores} from './entities/doblesfactores.entity';
 import { CodigoRecuperacionInput, configDoblesFactoresInput, DoblesFactoresValidarInput, ValidarCodigoInput } from './dto/doblesfactores.dto';
-import { LoginService } from 'src/Login/login.service';
+import { LoginService } from '../Login/login.service';
 import { DoblesFactoresService } from './doblesfactores.service';
-import { Login } from 'src/Login/entities/login.entity';
+import { Login } from '../Login/entities/login.entity';
 
 var QRCode = require('qrcode')
 

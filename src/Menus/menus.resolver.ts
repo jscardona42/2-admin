@@ -1,6 +1,7 @@
-import { Resolver, Query, Mutation, Args, Int, Context } from '@nestjs/graphql';
+import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { MenusService } from './menus.service';
 import { Menus } from './entities/menus.entity';
+import { CreateMenuInput, UpdateMenuInput } from './dto/menus.dto';
 
 @Resolver(() => Menus)
 export class MenusResolver {
@@ -17,26 +18,20 @@ export class MenusResolver {
   }
 
   @Mutation(returns => Menus)
-  async createFolder(
-    @Args('parentId') parentId: number,
-    @Args('folderName') folderName: string
-  ): Promise<Object> {
-    return this.menuService.createFolder(parentId, folderName)
+  async createFolder(@Args('data') data: CreateMenuInput): Promise<Object> {
+    return this.menuService.createFolder(data)
   }
 
   @Mutation(returns => Menus)
   async insertEntityToFolder(
-    @Args('parentId') parentId: number,
-    @Args('entityName') entityName: string
-  ): Promise<Object>  {
-    return this.menuService.insertEntityToFolder(parentId, entityName)
+    @Args('data') data: CreateMenuInput) {
+    return this.menuService.insertEntityToFolder(data)
   }
 
-  @Query(returns => Menus)
-  async filteredMenuForRoleId(
-    @Args('roleId') roleId: number
-  ): Promise<Object>  {
-    return this.menuService.filterMenu(roleId)
+  @Mutation(returns => Menus)
+  async updateMenu(
+    @Args('data') data: UpdateMenuInput) {
+    return this.menuService.updateMenu(data)
   }
 
 }

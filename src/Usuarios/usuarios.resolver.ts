@@ -30,4 +30,11 @@ export class UsuariosResolver {
         return this.usuariosService.updateUsuario(data);
     }
 
+    @Mutation(returns => Usuarios)
+    @UsePipes(ValidationPipe)
+    async deleteUsuario(
+        @Args("usuario_id") usuario_id: number): Promise<Usuarios> {
+        return this.usuariosService.deleteUsuario(usuario_id);
+    }
+
 }

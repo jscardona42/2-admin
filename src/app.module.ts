@@ -20,13 +20,14 @@ import { PermisosResolver } from './Admin/Permisos/permisos.resolver';
 import { EntidadesService } from './Admin/Entidades/entidades.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PermisosController } from './Admin/Permisos/permisos.controller';
-import { Login } from './Login/entities/login.entity';
 import { MenusService } from './Menus/menus.service';
 import { MenusResolver } from './Menus/menus.resolver';
 import { UsuariosService } from './Usuarios/usuarios.service';
 import { UsuariosResolver } from './Usuarios/usuarios.resolver';
+import { EmpresasMenusService } from './EmpresasMenus/empresasmenus.service';
+import { EmpresasMenusResolver } from './EmpresasMenus/empresasmenus.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver]
 
 @Module({
   imports: [
