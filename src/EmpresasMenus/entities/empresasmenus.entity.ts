@@ -1,7 +1,6 @@
 import 'reflect-metadata';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import { Empresas } from 'src/Empresas/entities/empresas.entity';
-import { Menus } from 'src/Menus/entities/menus.entity';
 
 @ObjectType()
 export class EmpresasMenus {
@@ -11,6 +10,7 @@ export class EmpresasMenus {
     @Field(type => Empresas)
     Empresas: Empresas
 
-    @Field(type => Menus)
-    Menus: Menus
+    @Field(type => Number)
+    menu_id: number
+
 }

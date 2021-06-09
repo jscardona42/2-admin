@@ -110,7 +110,7 @@ export class MenusService {
         menu_id: folderId,
       },
       data: {
-        path: path.replace(" ","").toLowerCase(),
+        path: path.replace(" ", "").toLowerCase(),
         level: level
       },
     });
@@ -129,6 +129,7 @@ export class MenusService {
         order: true,
         level: true,
         parentMenuId: true,
+        MenusPalabras: { select: { palabra: true } },
         other_Menus: {
           where: {
             OR: OR,
@@ -141,6 +142,7 @@ export class MenusService {
             isEntity: true,
             order: true,
             level: true,
+            MenusPalabras: { select: { palabra: true } },
             other_Menus: {
               where: {
                 OR: OR,
@@ -153,6 +155,7 @@ export class MenusService {
                 isEntity: true,
                 order: true,
                 level: true,
+                MenusPalabras: { select: { palabra: true } },
                 other_Menus: {
                   where: {
                     OR: OR,

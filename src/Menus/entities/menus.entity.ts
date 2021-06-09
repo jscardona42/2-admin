@@ -1,6 +1,7 @@
 import 'reflect-metadata';
-import { ObjectType, Field, ID, createUnionType } from '@nestjs/graphql';
+import { ObjectType, Field, ID } from '@nestjs/graphql';
 import JSON from 'graphql-type-json';
+import { MenusPalabras } from 'src/MenusPalabras/entities/menuspalabras.entity';
 
 @ObjectType()
 export class Menus {
@@ -24,5 +25,8 @@ export class Menus {
 
     @Field(type => Number, { nullable: true })
     order?: number
+
+    @Field(type => [MenusPalabras], { nullable: true })
+    MenusPalabras?: MenusPalabras[]
 
 }

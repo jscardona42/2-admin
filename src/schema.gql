@@ -77,6 +77,12 @@ type Permisos {
   es_publico: Boolean!
 }
 
+type MenusPalabras {
+  menu_palabra_id: ID!
+  menu_id: Float!
+  palabra: String!
+}
+
 type Menus {
   menu_id: ID!
   title: String!
@@ -85,6 +91,7 @@ type Menus {
   isEntity: Boolean!
   other_Menus: JSON!
   order: Float
+  MenusPalabras: [MenusPalabras!]
 }
 
 """
@@ -106,7 +113,7 @@ type Empresas {
 type EmpresasMenus {
   empresa_menu_id: ID!
   Empresas: Empresas!
-  Menus: Menus!
+  menu_id: Float!
 }
 
 type Query {
@@ -128,6 +135,8 @@ type Query {
   getEmpresasMenus: [EmpresasMenus!]!
   getEmpresaMenuByEmpresaId(login_id: Float!): EmpresasMenuPersonalizado!
   getEmpresaMenuByRoleId(login_id: Float!): [Menus!]!
+  getMenusPalabras: [MenusPalabras!]!
+  getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
 }
 
 input SignInUserInput {
@@ -165,6 +174,9 @@ type Mutation {
   updateUsuario(data: UpdateUsuarioInput!): Usuarios!
   deleteUsuario(usuario_id: Float!): Usuarios!
   updateMenuPersonalizado(data: UpdateMenuPersonalizadoInput!): EmpresasMenuPersonalizado!
+  createMenuPalabra(data: CreateMenuPalabrasInput!): MenusPalabras!
+  updateMenuPalabra(data: UpdateMenuPalabrasInput!): MenusPalabras!
+  deleteMenuPalabra(menu_palabra_id: Float!): MenusPalabras!
 }
 
 input SignUpUserInput {
@@ -213,4 +225,15 @@ input UpdateUsuarioInput {
 input UpdateMenuPersonalizadoInput {
   empresa_id: Float!
   menu: JSON!
+}
+
+input CreateMenuPalabrasInput {
+  menu_id: Float!
+  palabra: String!
+}
+
+input UpdateMenuPalabrasInput {
+  menu_id: Float
+  palabra: String
+  menu_palabra_id: Float!
 }
