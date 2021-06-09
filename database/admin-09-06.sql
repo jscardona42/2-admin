@@ -5,7 +5,7 @@
 -- Dumped from database version 12.6
 -- Dumped by pg_dump version 12.6
 
--- Started on 2021-06-09 09:54:28
+-- Started on 2021-06-09 17:00:49
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -27,7 +27,7 @@ CREATE EXTENSION IF NOT EXISTS adminpack WITH SCHEMA pg_catalog;
 
 
 --
--- TOC entry 3102 (class 0 OID 0)
+-- TOC entry 3105 (class 0 OID 0)
 -- Dependencies: 1
 -- Name: EXTENSION adminpack; Type: COMMENT; Schema: -; Owner: 
 --
@@ -44,7 +44,7 @@ CREATE EXTENSION IF NOT EXISTS hstore WITH SCHEMA public;
 
 
 --
--- TOC entry 3103 (class 0 OID 0)
+-- TOC entry 3106 (class 0 OID 0)
 -- Dependencies: 3
 -- Name: EXTENSION hstore; Type: COMMENT; Schema: -; Owner: 
 --
@@ -76,7 +76,7 @@ CREATE TABLE public."Auditorias" (
 ALTER TABLE public."Auditorias" OWNER TO postgres;
 
 --
--- TOC entry 227 (class 1259 OID 19138)
+-- TOC entry 225 (class 1259 OID 19138)
 -- Name: Auditorias_auditoria_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -92,8 +92,8 @@ CREATE SEQUENCE public."Auditorias_auditoria_id_seq"
 ALTER TABLE public."Auditorias_auditoria_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3104 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3107 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: Auditorias_auditoria_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -101,7 +101,7 @@ ALTER SEQUENCE public."Auditorias_auditoria_id_seq" OWNED BY public."Auditorias"
 
 
 --
--- TOC entry 221 (class 1259 OID 19117)
+-- TOC entry 219 (class 1259 OID 19117)
 -- Name: DoblesFactores; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -119,7 +119,7 @@ CREATE TABLE public."DoblesFactores" (
 ALTER TABLE public."DoblesFactores" OWNER TO postgres;
 
 --
--- TOC entry 222 (class 1259 OID 19124)
+-- TOC entry 220 (class 1259 OID 19124)
 -- Name: DoblesFactores_doble_factor_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -135,8 +135,8 @@ CREATE SEQUENCE public."DoblesFactores_doble_factor_id_seq"
 ALTER TABLE public."DoblesFactores_doble_factor_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3105 (class 0 OID 0)
--- Dependencies: 222
+-- TOC entry 3108 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: DoblesFactores_doble_factor_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -144,7 +144,7 @@ ALTER SEQUENCE public."DoblesFactores_doble_factor_id_seq" OWNED BY public."Dobl
 
 
 --
--- TOC entry 229 (class 1259 OID 21414)
+-- TOC entry 227 (class 1259 OID 21414)
 -- Name: Empresas; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -157,7 +157,7 @@ CREATE TABLE public."Empresas" (
 ALTER TABLE public."Empresas" OWNER TO postgres;
 
 --
--- TOC entry 231 (class 1259 OID 21430)
+-- TOC entry 229 (class 1259 OID 21430)
 -- Name: EmpresasMenus; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -171,7 +171,7 @@ CREATE TABLE public."EmpresasMenus" (
 ALTER TABLE public."EmpresasMenus" OWNER TO postgres;
 
 --
--- TOC entry 233 (class 1259 OID 21491)
+-- TOC entry 231 (class 1259 OID 21491)
 -- Name: MenuPersonalizado; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -185,7 +185,7 @@ CREATE TABLE public."MenuPersonalizado" (
 ALTER TABLE public."MenuPersonalizado" OWNER TO postgres;
 
 --
--- TOC entry 232 (class 1259 OID 21489)
+-- TOC entry 230 (class 1259 OID 21489)
 -- Name: EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -201,8 +201,8 @@ CREATE SEQUENCE public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_
 ALTER TABLE public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3106 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 3109 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -210,7 +210,7 @@ ALTER SEQUENCE public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_s
 
 
 --
--- TOC entry 230 (class 1259 OID 21428)
+-- TOC entry 228 (class 1259 OID 21428)
 -- Name: EmpresasMenus_empresa_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -226,8 +226,8 @@ CREATE SEQUENCE public."EmpresasMenus_empresa_menu_id_seq"
 ALTER TABLE public."EmpresasMenus_empresa_menu_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3107 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 3110 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: EmpresasMenus_empresa_menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -235,7 +235,7 @@ ALTER SEQUENCE public."EmpresasMenus_empresa_menu_id_seq" OWNED BY public."Empre
 
 
 --
--- TOC entry 228 (class 1259 OID 21412)
+-- TOC entry 226 (class 1259 OID 21412)
 -- Name: Empresas_empresa_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -251,8 +251,8 @@ CREATE SEQUENCE public."Empresas_empresa_id_seq"
 ALTER TABLE public."Empresas_empresa_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3108 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3111 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: Empresas_empresa_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -290,7 +290,7 @@ CREATE SEQUENCE public."Entidades_entidad_id_seq"
 ALTER TABLE public."Entidades_entidad_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3109 (class 0 OID 0)
+-- TOC entry 3112 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: Entidades_entidad_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -334,7 +334,7 @@ CREATE SEQUENCE public."Login_login_id_seq"
 ALTER TABLE public."Login_login_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3110 (class 0 OID 0)
+-- TOC entry 3113 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: Login_login_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -362,6 +362,70 @@ CREATE TABLE public."Menus" (
 ALTER TABLE public."Menus" OWNER TO postgres;
 
 --
+-- TOC entry 234 (class 1259 OID 21526)
+-- Name: MenusPalabras; Type: TABLE; Schema: public; Owner: postgres
+--
+
+CREATE TABLE public."MenusPalabras" (
+    menu_palabra_id smallint NOT NULL,
+    menu_id smallint NOT NULL,
+    palabra character varying(16) NOT NULL
+);
+
+
+ALTER TABLE public."MenusPalabras" OWNER TO postgres;
+
+--
+-- TOC entry 232 (class 1259 OID 21522)
+-- Name: MenusPalabras_menu_palabra_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."MenusPalabras_menu_palabra_id_seq"
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."MenusPalabras_menu_palabra_id_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3114 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: MenusPalabras_menu_palabra_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."MenusPalabras_menu_palabra_id_seq" OWNED BY public."MenusPalabras".menu_palabra_id;
+
+
+--
+-- TOC entry 233 (class 1259 OID 21524)
+-- Name: MenusPalabras_palabra_seq; Type: SEQUENCE; Schema: public; Owner: postgres
+--
+
+CREATE SEQUENCE public."MenusPalabras_palabra_seq"
+    AS smallint
+    START WITH 1
+    INCREMENT BY 1
+    NO MINVALUE
+    NO MAXVALUE
+    CACHE 1;
+
+
+ALTER TABLE public."MenusPalabras_palabra_seq" OWNER TO postgres;
+
+--
+-- TOC entry 3115 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: MenusPalabras_palabra_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
+--
+
+ALTER SEQUENCE public."MenusPalabras_palabra_seq" OWNED BY public."MenusPalabras".palabra;
+
+
+--
 -- TOC entry 208 (class 1259 OID 19076)
 -- Name: Menus_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
@@ -378,7 +442,7 @@ CREATE SEQUENCE public."Menus_menu_id_seq"
 ALTER TABLE public."Menus_menu_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3111 (class 0 OID 0)
+-- TOC entry 3116 (class 0 OID 0)
 -- Dependencies: 208
 -- Name: Menus_menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -387,7 +451,7 @@ ALTER SEQUENCE public."Menus_menu_id_seq" OWNED BY public."Menus".menu_id;
 
 
 --
--- TOC entry 225 (class 1259 OID 19132)
+-- TOC entry 223 (class 1259 OID 19132)
 -- Name: MetodosValidacion; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -401,7 +465,7 @@ CREATE TABLE public."MetodosValidacion" (
 ALTER TABLE public."MetodosValidacion" OWNER TO postgres;
 
 --
--- TOC entry 226 (class 1259 OID 19136)
+-- TOC entry 224 (class 1259 OID 19136)
 -- Name: MetodosValidacion_metodo_validacion_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -417,8 +481,8 @@ CREATE SEQUENCE public."MetodosValidacion_metodo_validacion_id_seq"
 ALTER TABLE public."MetodosValidacion_metodo_validacion_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3112 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 3117 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: MetodosValidacion_metodo_validacion_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -459,7 +523,7 @@ CREATE SEQUENCE public."Microservicios_microservicio_id_seq"
 ALTER TABLE public."Microservicios_microservicio_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3113 (class 0 OID 0)
+-- TOC entry 3118 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: Microservicios_microservicio_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -499,7 +563,7 @@ CREATE SEQUENCE public."Permisos_permiso_id_seq"
 ALTER TABLE public."Permisos_permiso_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3114 (class 0 OID 0)
+-- TOC entry 3119 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: Permisos_permiso_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -521,46 +585,7 @@ CREATE TABLE public."Roles" (
 ALTER TABLE public."Roles" OWNER TO postgres;
 
 --
--- TOC entry 217 (class 1259 OID 19104)
--- Name: RolesMenus; Type: TABLE; Schema: public; Owner: postgres
---
-
-CREATE TABLE public."RolesMenus" (
-    rol_menu_id smallint NOT NULL,
-    rol_id smallint,
-    permisos_menu text[]
-);
-
-
-ALTER TABLE public."RolesMenus" OWNER TO postgres;
-
---
--- TOC entry 218 (class 1259 OID 19110)
--- Name: RolesMenus_rol_menu_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
---
-
-CREATE SEQUENCE public."RolesMenus_rol_menu_id_seq"
-    AS smallint
-    START WITH 1
-    INCREMENT BY 1
-    NO MINVALUE
-    NO MAXVALUE
-    CACHE 1;
-
-
-ALTER TABLE public."RolesMenus_rol_menu_id_seq" OWNER TO postgres;
-
---
--- TOC entry 3115 (class 0 OID 0)
--- Dependencies: 218
--- Name: RolesMenus_rol_menu_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
---
-
-ALTER SEQUENCE public."RolesMenus_rol_menu_id_seq" OWNED BY public."RolesMenus".rol_menu_id;
-
-
---
--- TOC entry 219 (class 1259 OID 19112)
+-- TOC entry 217 (class 1259 OID 19112)
 -- Name: RolesPermisos; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -574,7 +599,7 @@ CREATE TABLE public."RolesPermisos" (
 ALTER TABLE public."RolesPermisos" OWNER TO postgres;
 
 --
--- TOC entry 220 (class 1259 OID 19115)
+-- TOC entry 218 (class 1259 OID 19115)
 -- Name: RolesPermisos_roles_permisos_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -590,8 +615,8 @@ CREATE SEQUENCE public."RolesPermisos_roles_permisos_id_seq"
 ALTER TABLE public."RolesPermisos_roles_permisos_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3116 (class 0 OID 0)
--- Dependencies: 220
+-- TOC entry 3120 (class 0 OID 0)
+-- Dependencies: 218
 -- Name: RolesPermisos_roles_permisos_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -615,7 +640,7 @@ CREATE SEQUENCE public."Roles_rol_id_seq"
 ALTER TABLE public."Roles_rol_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3117 (class 0 OID 0)
+-- TOC entry 3121 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: Roles_rol_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
@@ -624,7 +649,7 @@ ALTER SEQUENCE public."Roles_rol_id_seq" OWNED BY public."Roles".rol_id;
 
 
 --
--- TOC entry 223 (class 1259 OID 19126)
+-- TOC entry 221 (class 1259 OID 19126)
 -- Name: Usuarios; Type: TABLE; Schema: public; Owner: postgres
 --
 
@@ -640,7 +665,7 @@ CREATE TABLE public."Usuarios" (
 ALTER TABLE public."Usuarios" OWNER TO postgres;
 
 --
--- TOC entry 224 (class 1259 OID 19130)
+-- TOC entry 222 (class 1259 OID 19130)
 -- Name: Usuarios_usuario_id_seq; Type: SEQUENCE; Schema: public; Owner: postgres
 --
 
@@ -656,8 +681,8 @@ CREATE SEQUENCE public."Usuarios_usuario_id_seq"
 ALTER TABLE public."Usuarios_usuario_id_seq" OWNER TO postgres;
 
 --
--- TOC entry 3118 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 3122 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: Usuarios_usuario_id_seq; Type: SEQUENCE OWNED BY; Schema: public; Owner: postgres
 --
 
@@ -665,7 +690,7 @@ ALTER SEQUENCE public."Usuarios_usuario_id_seq" OWNED BY public."Usuarios".usuar
 
 
 --
--- TOC entry 2880 (class 2604 OID 19140)
+-- TOC entry 2881 (class 2604 OID 19140)
 -- Name: Auditorias auditoria_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -697,7 +722,7 @@ ALTER TABLE ONLY public."EmpresasMenus" ALTER COLUMN empresa_menu_id SET DEFAULT
 
 
 --
--- TOC entry 2886 (class 2604 OID 19145)
+-- TOC entry 2887 (class 2604 OID 19145)
 -- Name: Entidades entidad_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -705,7 +730,7 @@ ALTER TABLE ONLY public."Entidades" ALTER COLUMN entidad_id SET DEFAULT nextval(
 
 
 --
--- TOC entry 2882 (class 2604 OID 19141)
+-- TOC entry 2883 (class 2604 OID 19141)
 -- Name: Login login_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -721,11 +746,27 @@ ALTER TABLE ONLY public."MenuPersonalizado" ALTER COLUMN menu_pesonalizado_id SE
 
 
 --
--- TOC entry 2883 (class 2604 OID 21457)
+-- TOC entry 2884 (class 2604 OID 21457)
 -- Name: Menus menu_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."Menus" ALTER COLUMN menu_id SET DEFAULT nextval('public."Menus_menu_id_seq"'::regclass);
+
+
+--
+-- TOC entry 2898 (class 2604 OID 21529)
+-- Name: MenusPalabras menu_palabra_id; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."MenusPalabras" ALTER COLUMN menu_palabra_id SET DEFAULT nextval('public."MenusPalabras_menu_palabra_id_seq"'::regclass);
+
+
+--
+-- TOC entry 2899 (class 2604 OID 21538)
+-- Name: MenusPalabras palabra; Type: DEFAULT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."MenusPalabras" ALTER COLUMN palabra SET DEFAULT nextval('public."MenusPalabras_palabra_seq"'::regclass);
 
 
 --
@@ -737,7 +778,7 @@ ALTER TABLE ONLY public."MetodosValidacion" ALTER COLUMN metodo_validacion_id SE
 
 
 --
--- TOC entry 2884 (class 2604 OID 19143)
+-- TOC entry 2885 (class 2604 OID 19143)
 -- Name: Microservicios microservicio_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -745,7 +786,7 @@ ALTER TABLE ONLY public."Microservicios" ALTER COLUMN microservicio_id SET DEFAU
 
 
 --
--- TOC entry 2885 (class 2604 OID 19144)
+-- TOC entry 2886 (class 2604 OID 19144)
 -- Name: Permisos permiso_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
@@ -753,19 +794,11 @@ ALTER TABLE ONLY public."Permisos" ALTER COLUMN permiso_id SET DEFAULT nextval('
 
 
 --
--- TOC entry 2887 (class 2604 OID 19146)
+-- TOC entry 2888 (class 2604 OID 19146)
 -- Name: Roles rol_id; Type: DEFAULT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."Roles" ALTER COLUMN rol_id SET DEFAULT nextval('public."Roles_rol_id_seq"'::regclass);
-
-
---
--- TOC entry 2888 (class 2604 OID 19147)
--- Name: RolesMenus rol_menu_id; Type: DEFAULT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RolesMenus" ALTER COLUMN rol_menu_id SET DEFAULT nextval('public."RolesMenus_rol_menu_id_seq"'::regclass);
 
 
 --
@@ -785,7 +818,7 @@ ALTER TABLE ONLY public."Usuarios" ALTER COLUMN usuario_id SET DEFAULT nextval('
 
 
 --
--- TOC entry 3067 (class 0 OID 19057)
+-- TOC entry 3069 (class 0 OID 19057)
 -- Dependencies: 204
 -- Data for Name: Auditorias; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -925,7 +958,7 @@ COPY public."Auditorias" (auditoria_id, login_id, status, fecha_creacion, tipo, 
 
 --
 -- TOC entry 3084 (class 0 OID 19117)
--- Dependencies: 221
+-- Dependencies: 219
 -- Data for Name: DoblesFactores; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -937,7 +970,7 @@ COPY public."DoblesFactores" (doble_factor_id, otplib_secreta, esta_configurado,
 
 --
 -- TOC entry 3092 (class 0 OID 21414)
--- Dependencies: 229
+-- Dependencies: 227
 -- Data for Name: Empresas; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -949,7 +982,7 @@ COPY public."Empresas" (empresa_id, nombre) FROM stdin;
 
 --
 -- TOC entry 3094 (class 0 OID 21430)
--- Dependencies: 231
+-- Dependencies: 229
 -- Data for Name: EmpresasMenus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -976,7 +1009,7 @@ COPY public."EmpresasMenus" (empresa_menu_id, empresa_id, menu_id) FROM stdin;
 
 
 --
--- TOC entry 3076 (class 0 OID 19094)
+-- TOC entry 3078 (class 0 OID 19094)
 -- Dependencies: 213
 -- Data for Name: Entidades; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1019,6 +1052,7 @@ COPY public."Entidades" (entidad_id, nombre, resolver) FROM stdin;
 41	Usuarioservice	Usuarioservice
 42	Usuarios	UsuariosResolver
 43	EmpresasMenus	EmpresasMenusResolver
+44	MenusPalabras	MenusPalabrasResolver
 2	Roles	RolesResolver
 7	DoblesFactores	DoblesFactoresResolver
 27	Depositos	DepositosResolver
@@ -1029,7 +1063,7 @@ COPY public."Entidades" (entidad_id, nombre, resolver) FROM stdin;
 
 
 --
--- TOC entry 3068 (class 0 OID 19061)
+-- TOC entry 3070 (class 0 OID 19061)
 -- Dependencies: 205
 -- Data for Name: Login; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1043,28 +1077,28 @@ COPY public."Login" (login_id, username, password, token, salt, rol_id, tiene_do
 
 --
 -- TOC entry 3096 (class 0 OID 21491)
--- Dependencies: 233
+-- Dependencies: 231
 -- Data for Name: MenuPersonalizado; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."MenuPersonalizado" (menu_pesonalizado_id, empresa_id, menu) FROM stdin;
-7	2	{"menu_id":1,"title":"menu","path":"/","isEntity":false,"order":null,"level":null,"parentMenuId":null,"other_Menus":[{"menu_id":2,"title":"administración","path":"/administración","isEntity":false,"order":1,"level":1,"other_Menus":[{"menu_id":6,"title":"configuración","path":"/administración/configuración","isEntity":false,"order":1,"level":2,"other_Menus":[]},{"menu_id":7,"title":"usuarios","path":"/administración/usuarios","isEntity":false,"order":2,"level":2,"other_Menus":[{"menu_id":11,"title":"usuarios","path":"/administración/usuarios/usuarios","isEntity":true,"parentMenuId":7,"entidad_id":42,"order":1,"level":3}]}]},{"menu_id":5,"title":"recursos humanos","path":"/recursos humanos","isEntity":false,"order":4,"level":1,"other_Menus":[{"menu_id":18,"title":"nómina","path":"/recursos humanos/nómina","isEntity":false,"order":1,"level":2,"other_Menus":[]},{"menu_id":19,"title":"cuentas","path":"/recursos humanos/cuentas","isEntity":false,"order":2,"level":2,"other_Menus":[]}]}]}
+1	1	{"menu_id":1,"title":"menu","path":"/","isEntity":false,"order":null,"level":null,"parentMenuId":null,"MenusPalabras":[],"other_Menus":[{"menu_id":2,"title":"Administración","path":"/administración","isEntity":false,"order":1,"level":1,"MenusPalabras":[{"palabra":"administracion"},{"palabra":"admon"}],"other_Menus":[{"menu_id":6,"title":"Configuración","path":"/administración/configuración","isEntity":false,"order":1,"level":2,"MenusPalabras":[],"other_Menus":[]},{"menu_id":7,"title":"Usuarios","path":"/administración/usuarios","isEntity":false,"order":2,"level":2,"MenusPalabras":[],"other_Menus":[{"menu_id":11,"title":"Usuarios","path":"/administración/usuarios/usuarios","isEntity":true,"parentMenuId":7,"entidad_id":42,"order":1,"level":3},{"menu_id":12,"title":"Doble Factor","path":"/administración/usuarios/doblefactor","isEntity":true,"parentMenuId":7,"entidad_id":7,"order":3,"level":3}]}]},{"menu_id":5,"title":"Recursos Humanos","path":"/recursoshumanos","isEntity":false,"order":4,"level":1,"MenusPalabras":[],"other_Menus":[{"menu_id":19,"title":"Cuentas","path":"/recursoshumanos/cuentas","isEntity":false,"order":2,"level":2,"MenusPalabras":[],"other_Menus":[]}]},{"menu_id":4,"title":"Inventario","path":"/inventario","isEntity":false,"order":2,"level":1,"MenusPalabras":[{"palabra":"inventario"}],"other_Menus":[{"menu_id":10,"title":"Productos","path":"/inventario/productos","isEntity":false,"order":2,"level":2,"MenusPalabras":[],"other_Menus":[{"menu_id":14,"title":"Productos","path":"/inventario/productos/productos","isEntity":true,"parentMenuId":10,"entidad_id":8,"order":1,"level":3}]},{"menu_id":16,"title":"Bodegas","path":"/inventario/bodegas","isEntity":true,"order":3,"level":2,"MenusPalabras":[],"other_Menus":[]}]}]}
+2	2	{"menu_id":1,"title":"menu","path":"/","isEntity":false,"order":null,"level":null,"parentMenuId":null,"MenusPalabras":[],"other_Menus":[{"menu_id":2,"title":"Administración","path":"/administración","isEntity":false,"order":1,"level":1,"MenusPalabras":[{"palabra":"administracion"},{"palabra":"admon"}],"other_Menus":[{"menu_id":6,"title":"Configuración","path":"/administración/configuración","isEntity":false,"order":1,"level":2,"MenusPalabras":[],"other_Menus":[]},{"menu_id":7,"title":"Usuarios","path":"/administración/usuarios","isEntity":false,"order":2,"level":2,"MenusPalabras":[],"other_Menus":[{"menu_id":11,"title":"Usuarios","path":"/administración/usuarios/usuarios","isEntity":true,"parentMenuId":7,"entidad_id":42,"order":1,"level":3}]}]},{"menu_id":5,"title":"Recursos Humanos","path":"/recursoshumanos","isEntity":false,"order":4,"level":1,"MenusPalabras":[],"other_Menus":[{"menu_id":18,"title":"Nómina","path":"/recursoshumanos/nómina","isEntity":false,"order":1,"level":2,"MenusPalabras":[],"other_Menus":[]},{"menu_id":19,"title":"Cuentas","path":"/recursoshumanos/cuentas","isEntity":false,"order":2,"level":2,"MenusPalabras":[],"other_Menus":[]}]}]}
 \.
 
 
 --
--- TOC entry 3070 (class 0 OID 19070)
+-- TOC entry 3072 (class 0 OID 19070)
 -- Dependencies: 207
 -- Data for Name: Menus; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."Menus" (menu_id, title, path, "isEntity", "parentMenuId", entidad_id, "order", level) FROM stdin;
 1	menu	/	f	\N	\N	\N	\N
-20	Test	/recursoshumanos/test	t	5	15	3	2
+2	Administración	/administración	f	1	\N	1	1
 5	Recursos Humanos	/recursoshumanos	f	1	\N	4	1
 4	Inventario	/inventario	f	1	\N	2	1
 3	General	/general	f	1	\N	3	1
-2	Administración	/administración	f	1	\N	1	1
 6	Configuración	/administración/configuración	f	2	\N	1	2
 7	Usuarios	/administración/usuarios	f	2	\N	2	2
 8	Reportes	/general/reportes	f	3	\N	1	2
@@ -1083,8 +1117,22 @@ COPY public."Menus" (menu_id, title, path, "isEntity", "parentMenuId", entidad_i
 
 
 --
+-- TOC entry 3099 (class 0 OID 21526)
+-- Dependencies: 234
+-- Data for Name: MenusPalabras; Type: TABLE DATA; Schema: public; Owner: postgres
+--
+
+COPY public."MenusPalabras" (menu_palabra_id, menu_id, palabra) FROM stdin;
+1	2	administracion
+2	3	general
+3	4	inventario
+4	2	admon
+\.
+
+
+--
 -- TOC entry 3088 (class 0 OID 19132)
--- Dependencies: 225
+-- Dependencies: 223
 -- Data for Name: MetodosValidacion; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1096,7 +1144,7 @@ COPY public."MetodosValidacion" (metodo_validacion_id, metodo, activo) FROM stdi
 
 
 --
--- TOC entry 3072 (class 0 OID 19078)
+-- TOC entry 3074 (class 0 OID 19078)
 -- Dependencies: 209
 -- Data for Name: Microservicios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1108,20 +1156,18 @@ COPY public."Microservicios" (microservicio_id, name, hostname, puerto, url, act
 
 
 --
--- TOC entry 3074 (class 0 OID 19086)
+-- TOC entry 3076 (class 0 OID 19086)
 -- Dependencies: 211
 -- Data for Name: Permisos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
 COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
-17	1	createFolder	f
-9	3	AuditoriasResolver	f
-2	1	MenusResolver	f
+234	42	getUsuarios	f
+256	44	deleteMenuPalabra	f
 248	43	getEmpresasMenusByRoleId	f
-30	7	exSetActivateConfigDobleFactorTOTP	t
-11	7	exSendMail	t
+2	1	MenusResolver	f
 246	43	getEmpresasMenusByEmpresaId	f
-4	5	getLoginById	f
+19	7	getDobleFactorById	f
 135	37	getProductoReemplazoById	f
 53	10	deleteCaracteristica	f
 76	11	getEstanteById	f
@@ -1152,7 +1198,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 137	37	updateProductoReemplazo	f
 112	15	deleteProductoCaracteristica	f
 80	28	InvimaResolver	f
-20	3	getAuditorias	f
+30	7	exSetActivateConfigDobleFactorTOTP	t
 65	10	updateCaracteristica	f
 52	10	createCaracteristica	f
 142	30	MagnitudesResolver	f
@@ -1162,7 +1208,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 77	28	updateInvima	f
 107	20	deleteProductoProveedor	f
 13	1	filteredMenuForRoleId	f
-19	7	getDobleFactorById	f
+3	5	LoginResolver	f
 119	33	updateProductoCodigo	f
 131	33	getProductoCodigos	f
 122	35	updateProductoMargen	f
@@ -1172,13 +1218,13 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 95	13	deleteLineaBodega	f
 116	16	ProductosCategoriasContablesResolver	f
 113	32	getProductoCategoriaById	f
-6	5	signUpLogin	f
+11	7	exSendMail	t
 82	13	updateLineaBodega	f
 81	13	LineaBodegasResolver	f
 144	30	getMagnitudes	f
 92	11	createEstante	f
 124	16	deleteProductoCategoriaContable	f
-24	7	getDobleFactorByLoginId	f
+12	7	exValidateDobleFactorCode	t
 103	18	getProductoImagens	f
 115	32	deleteProductoCategoria	f
 139	20	getProductoProveedores	f
@@ -1194,41 +1240,43 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 54	10	getCaracteristicas	f
 129	32	updateProductoCategoria	f
 48	29	deleteDimension	f
+4	5	getLoginById	f
 134	17	getProductoDescuentoById	f
 61	29	getDimensions	f
 86	26	updateCategoriaDescuento	f
+6	5	signUpLogin	f
 117	16	getProductoCategoriaContables	f
 89	26	getCategoriaDescuentoById	f
 120	31	ProductosArancelesResolver	f
 58	12	deleteCategoriaPrecio	f
 70	10	getCaracteristicaById	f
-247	43	updateMenuPersonalizado	f
-79	11	updateEstante	f
 23	7	createDobleFactor	f
+79	11	updateEstante	f
+14	1	rootMenu	f
 114	32	createProductoCategoria	f
 83	28	getInvimaById	f
 126	14	getMargenById	f
 101	35	getProductoMargens	f
 33	8	getFilterProductos	f
-12	7	exValidateDobleFactorCode	t
-15	5	getLogin	f
+24	7	getDobleFactorByLoginId	f
+241	42	deleteUsuario	f
 34	8	getProductos	f
 128	15	getProductoCaracteristicaById	f
 102	34	deleteProductoDimension	f
 99	35	deleteProductoMargen	f
 22	4	PermisosResolver	f
-16	5	signInLogin	f
+17	1	createFolder	f
 240	41	Usuarioservice	f
 50	9	deleteBodega	f
 133	35	ProductosMargenesResolver	f
 98	35	createProductoMargen	f
-241	42	deleteUsuario	f
+20	3	getAuditorias	f
 143	20	updateProductoProveedor	f
-14	1	rootMenu	f
+15	5	getLogin	f
 252	5	addComment	t
-3	5	LoginResolver	f
-37	25	deleteFabricanteLinea	f
 1	1	insertEntityToFolder	f
+37	25	deleteFabricanteLinea	f
+9	3	AuditoriasResolver	f
 64	9	getBodegaById	f
 43	26	createCategoriaDescuento	f
 75	26	CategoriasDescuentosResolver	f
@@ -1238,7 +1286,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 45	27	getDepositos	f
 47	25	getFabricanteLineaById	f
 60	27	createDeposito	f
-234	42	getUsuarios	f
+16	5	signInLogin	f
 251	5	validateToken	t
 55	25	updateFabricanteLinea	f
 255	5	commentAdded	t
@@ -1272,20 +1320,24 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 194	23	deleteTipoImpuesto	f
 198	24	createUnspsc	f
 207	24	updateUnspsc	f
-253	5	getT	t
 243	1	updateMenu	f
-244	43	getEmpresasMenus	f
-5	1	createRootMenu	f
-249	43	getEmpresaMenuByEmpresaId	f
 28	4	getPermisos	f
+244	43	getEmpresasMenus	f
 231	5	exChangePasswordLogin	t
-250	43	getEmpresaMenuByRoleId	f
-254	5	addCommentHandler	t
-21	6	RolesPermisosResolver	f
-245	43	EmpresasMenusResolver	f
-238	42	createUsuario	f
-235	42	updateUsuario	f
 29	2	RolesResolver	f
+257	44	getMenusPalabras	f
+245	43	EmpresasMenusResolver	f
+250	43	getEmpresaMenuByRoleId	f
+247	43	updateMenuPersonalizado	f
+5	1	createRootMenu	f
+259	44	getMenuPalabraById	f
+21	6	RolesPermisosResolver	f
+235	42	updateUsuario	f
+238	42	createUsuario	f
+249	43	getEmpresaMenuByEmpresaId	f
+253	5	getT	t
+254	5	addCommentHandler	t
+258	44	createMenuPalabra	f
 32	8	getProductoById	f
 62	9	updateBodega	f
 71	28	getInvimas	f
@@ -1311,12 +1363,13 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 189	38	TeleferiaCantidadesResolver	f
 197	40	getUnidadMedidaById	f
 223	22	ProveedoresResolver	f
-232	1	getMenus	f
-236	41	createUsuario	f
+260	44	updateMenuPalabra	f
 7	7	DoblesFactoresResolver	f
-26	7	configDobleFactor	f
-8	2	getRoles	f
 18	5	logOutLogin	f
+232	1	getMenus	f
+8	2	getRoles	f
+26	7	configDobleFactor	f
+236	41	createUsuario	f
 41	25	getFabricanteLineas	f
 59	12	getCategoriaPrecios	f
 93	28	deleteInvima	f
@@ -1337,9 +1390,10 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 210	21	getProductoTipoImpuestoById	f
 196	40	getUnidadMedidas	f
 218	24	UnspscResolver	f
-237	42	getUsuarios	f
 27	7	exValidateRecoveryCode	t
 25	6	getRolesPermisos	f
+261	44	MenusPalabrasResolver	f
+237	42	getUsuarios	f
 57	26	deleteCategoriaDescuento	f
 67	10	CaracteristicasResolver	f
 72	13	createLineaBodega	f
@@ -1373,7 +1427,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 
 
 --
--- TOC entry 3078 (class 0 OID 19099)
+-- TOC entry 3080 (class 0 OID 19099)
 -- Dependencies: 215
 -- Data for Name: Roles; Type: TABLE DATA; Schema: public; Owner: postgres
 --
@@ -1386,20 +1440,8 @@ COPY public."Roles" (rol_id, rol) FROM stdin;
 
 
 --
--- TOC entry 3080 (class 0 OID 19104)
--- Dependencies: 217
--- Data for Name: RolesMenus; Type: TABLE DATA; Schema: public; Owner: postgres
---
-
-COPY public."RolesMenus" (rol_menu_id, rol_id, permisos_menu) FROM stdin;
-1	1	{user,comment,inventory,formularios,invoices}
-2	2	{comment,inventory}
-\.
-
-
---
 -- TOC entry 3082 (class 0 OID 19112)
--- Dependencies: 219
+-- Dependencies: 217
 -- Data for Name: RolesPermisos; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1415,12 +1457,13 @@ COPY public."RolesPermisos" (rol_permiso_id, rol_id, permiso_id) FROM stdin;
 10	2	39
 7	2	7
 11	2	245
+12	1	261
 \.
 
 
 --
 -- TOC entry 3086 (class 0 OID 19126)
--- Dependencies: 223
+-- Dependencies: 221
 -- Data for Name: Usuarios; Type: TABLE DATA; Schema: public; Owner: postgres
 --
 
@@ -1433,8 +1476,8 @@ COPY public."Usuarios" (usuario_id, nombre, email, activo, empresa_id) FROM stdi
 
 
 --
--- TOC entry 3119 (class 0 OID 0)
--- Dependencies: 227
+-- TOC entry 3123 (class 0 OID 0)
+-- Dependencies: 225
 -- Name: Auditorias_auditoria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1442,8 +1485,8 @@ SELECT pg_catalog.setval('public."Auditorias_auditoria_id_seq"', 129, true);
 
 
 --
--- TOC entry 3120 (class 0 OID 0)
--- Dependencies: 222
+-- TOC entry 3124 (class 0 OID 0)
+-- Dependencies: 220
 -- Name: DoblesFactores_doble_factor_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1451,17 +1494,17 @@ SELECT pg_catalog.setval('public."DoblesFactores_doble_factor_id_seq"', 2, true)
 
 
 --
--- TOC entry 3121 (class 0 OID 0)
--- Dependencies: 232
+-- TOC entry 3125 (class 0 OID 0)
+-- Dependencies: 230
 -- Name: EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq"', 8, true);
+SELECT pg_catalog.setval('public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq"', 2, true);
 
 
 --
--- TOC entry 3122 (class 0 OID 0)
--- Dependencies: 230
+-- TOC entry 3126 (class 0 OID 0)
+-- Dependencies: 228
 -- Name: EmpresasMenus_empresa_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1469,8 +1512,8 @@ SELECT pg_catalog.setval('public."EmpresasMenus_empresa_menu_id_seq"', 18, true)
 
 
 --
--- TOC entry 3123 (class 0 OID 0)
--- Dependencies: 228
+-- TOC entry 3127 (class 0 OID 0)
+-- Dependencies: 226
 -- Name: Empresas_empresa_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1478,16 +1521,16 @@ SELECT pg_catalog.setval('public."Empresas_empresa_id_seq"', 1, true);
 
 
 --
--- TOC entry 3124 (class 0 OID 0)
+-- TOC entry 3128 (class 0 OID 0)
 -- Dependencies: 214
 -- Name: Entidades_entidad_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Entidades_entidad_id_seq"', 43, true);
+SELECT pg_catalog.setval('public."Entidades_entidad_id_seq"', 44, true);
 
 
 --
--- TOC entry 3125 (class 0 OID 0)
+-- TOC entry 3129 (class 0 OID 0)
 -- Dependencies: 206
 -- Name: Login_login_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1496,7 +1539,25 @@ SELECT pg_catalog.setval('public."Login_login_id_seq"', 8, true);
 
 
 --
--- TOC entry 3126 (class 0 OID 0)
+-- TOC entry 3130 (class 0 OID 0)
+-- Dependencies: 232
+-- Name: MenusPalabras_menu_palabra_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."MenusPalabras_menu_palabra_id_seq"', 4, true);
+
+
+--
+-- TOC entry 3131 (class 0 OID 0)
+-- Dependencies: 233
+-- Name: MenusPalabras_palabra_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
+--
+
+SELECT pg_catalog.setval('public."MenusPalabras_palabra_seq"', 1, false);
+
+
+--
+-- TOC entry 3132 (class 0 OID 0)
 -- Dependencies: 208
 -- Name: Menus_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1505,8 +1566,8 @@ SELECT pg_catalog.setval('public."Menus_menu_id_seq"', 20, true);
 
 
 --
--- TOC entry 3127 (class 0 OID 0)
--- Dependencies: 226
+-- TOC entry 3133 (class 0 OID 0)
+-- Dependencies: 224
 -- Name: MetodosValidacion_metodo_validacion_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1514,7 +1575,7 @@ SELECT pg_catalog.setval('public."MetodosValidacion_metodo_validacion_id_seq"', 
 
 
 --
--- TOC entry 3128 (class 0 OID 0)
+-- TOC entry 3134 (class 0 OID 0)
 -- Dependencies: 210
 -- Name: Microservicios_microservicio_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1523,34 +1584,25 @@ SELECT pg_catalog.setval('public."Microservicios_microservicio_id_seq"', 2, true
 
 
 --
--- TOC entry 3129 (class 0 OID 0)
+-- TOC entry 3135 (class 0 OID 0)
 -- Dependencies: 212
 -- Name: Permisos_permiso_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Permisos_permiso_id_seq"', 255, true);
+SELECT pg_catalog.setval('public."Permisos_permiso_id_seq"', 261, true);
 
 
 --
--- TOC entry 3130 (class 0 OID 0)
+-- TOC entry 3136 (class 0 OID 0)
 -- Dependencies: 218
--- Name: RolesMenus_rol_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
---
-
-SELECT pg_catalog.setval('public."RolesMenus_rol_menu_id_seq"', 2, true);
-
-
---
--- TOC entry 3131 (class 0 OID 0)
--- Dependencies: 220
 -- Name: RolesPermisos_roles_permisos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."RolesPermisos_roles_permisos_id_seq"', 11, true);
+SELECT pg_catalog.setval('public."RolesPermisos_roles_permisos_id_seq"', 12, true);
 
 
 --
--- TOC entry 3132 (class 0 OID 0)
+-- TOC entry 3137 (class 0 OID 0)
 -- Dependencies: 216
 -- Name: Roles_rol_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
@@ -1559,8 +1611,8 @@ SELECT pg_catalog.setval('public."Roles_rol_id_seq"', 3, true);
 
 
 --
--- TOC entry 3133 (class 0 OID 0)
--- Dependencies: 224
+-- TOC entry 3138 (class 0 OID 0)
+-- Dependencies: 222
 -- Name: Usuarios_usuario_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
@@ -1595,7 +1647,7 @@ ALTER TABLE ONLY public."Empresas"
 
 
 --
--- TOC entry 2901 (class 2606 OID 19153)
+-- TOC entry 2903 (class 2606 OID 19153)
 -- Name: Login Login_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1604,7 +1656,16 @@ ALTER TABLE ONLY public."Login"
 
 
 --
--- TOC entry 2903 (class 2606 OID 21459)
+-- TOC entry 2929 (class 2606 OID 21532)
+-- Name: MenusPalabras MenusPalabras_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."MenusPalabras"
+    ADD CONSTRAINT "MenusPalabras_pkey" PRIMARY KEY (menu_palabra_id);
+
+
+--
+-- TOC entry 2905 (class 2606 OID 21459)
 -- Name: Menus Menus_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1613,7 +1674,7 @@ ALTER TABLE ONLY public."Menus"
 
 
 --
--- TOC entry 2905 (class 2606 OID 19274)
+-- TOC entry 2907 (class 2606 OID 19274)
 -- Name: Microservicios Microservices_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1622,7 +1683,7 @@ ALTER TABLE ONLY public."Microservicios"
 
 
 --
--- TOC entry 2907 (class 2606 OID 19159)
+-- TOC entry 2909 (class 2606 OID 19159)
 -- Name: Permisos Permissions_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1631,21 +1692,12 @@ ALTER TABLE ONLY public."Permisos"
 
 
 --
--- TOC entry 2909 (class 2606 OID 19161)
+-- TOC entry 2911 (class 2606 OID 19161)
 -- Name: Entidades Permissions_principal_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
 ALTER TABLE ONLY public."Entidades"
     ADD CONSTRAINT "Permissions_principal_pkey" PRIMARY KEY (entidad_id);
-
-
---
--- TOC entry 2913 (class 2606 OID 19292)
--- Name: RolesMenus Roles_menu_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RolesMenus"
-    ADD CONSTRAINT "Roles_menu_pkey" PRIMARY KEY (rol_menu_id);
 
 
 --
@@ -1658,7 +1710,7 @@ ALTER TABLE ONLY public."RolesPermisos"
 
 
 --
--- TOC entry 2911 (class 2606 OID 19167)
+-- TOC entry 2913 (class 2606 OID 19167)
 -- Name: Roles Roles_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1694,7 +1746,7 @@ ALTER TABLE ONLY public."MetodosValidacion"
 
 
 --
--- TOC entry 2899 (class 2606 OID 19175)
+-- TOC entry 2901 (class 2606 OID 19175)
 -- Name: Auditorias audits_pkey; Type: CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1703,7 +1755,7 @@ ALTER TABLE ONLY public."Auditorias"
 
 
 --
--- TOC entry 2928 (class 2606 OID 19176)
+-- TOC entry 2930 (class 2606 OID 19176)
 -- Name: Login Login_role_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1712,7 +1764,7 @@ ALTER TABLE ONLY public."Login"
 
 
 --
--- TOC entry 2929 (class 2606 OID 19181)
+-- TOC entry 2931 (class 2606 OID 19181)
 -- Name: Login Login_user_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1721,7 +1773,7 @@ ALTER TABLE ONLY public."Login"
 
 
 --
--- TOC entry 2931 (class 2606 OID 21477)
+-- TOC entry 2933 (class 2606 OID 21477)
 -- Name: Menus Menus_parentMenuId_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1730,7 +1782,7 @@ ALTER TABLE ONLY public."Menus"
 
 
 --
--- TOC entry 2936 (class 2606 OID 19196)
+-- TOC entry 2937 (class 2606 OID 19196)
 -- Name: DoblesFactores Twofactor_login_id_fkey; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1739,7 +1791,7 @@ ALTER TABLE ONLY public."DoblesFactores"
 
 
 --
--- TOC entry 2938 (class 2606 OID 21452)
+-- TOC entry 2939 (class 2606 OID 21452)
 -- Name: EmpresasMenus fk_empresa_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1748,7 +1800,7 @@ ALTER TABLE ONLY public."EmpresasMenus"
 
 
 --
--- TOC entry 2940 (class 2606 OID 21500)
+-- TOC entry 2941 (class 2606 OID 21500)
 -- Name: MenuPersonalizado fk_empresa_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1757,7 +1809,7 @@ ALTER TABLE ONLY public."MenuPersonalizado"
 
 
 --
--- TOC entry 2932 (class 2606 OID 19268)
+-- TOC entry 2934 (class 2606 OID 19268)
 -- Name: Permisos fk_entidad_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1766,7 +1818,7 @@ ALTER TABLE ONLY public."Permisos"
 
 
 --
--- TOC entry 2930 (class 2606 OID 21400)
+-- TOC entry 2932 (class 2606 OID 21400)
 -- Name: Menus fk_entidad_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1775,7 +1827,7 @@ ALTER TABLE ONLY public."Menus"
 
 
 --
--- TOC entry 2939 (class 2606 OID 21465)
+-- TOC entry 2940 (class 2606 OID 21465)
 -- Name: EmpresasMenus fk_menu_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1784,7 +1836,16 @@ ALTER TABLE ONLY public."EmpresasMenus"
 
 
 --
--- TOC entry 2935 (class 2606 OID 19300)
+-- TOC entry 2942 (class 2606 OID 21533)
+-- Name: MenusPalabras fk_menu_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
+--
+
+ALTER TABLE ONLY public."MenusPalabras"
+    ADD CONSTRAINT fk_menu_id FOREIGN KEY (menu_id) REFERENCES public."Menus"(menu_id);
+
+
+--
+-- TOC entry 2936 (class 2606 OID 19300)
 -- Name: RolesPermisos fk_permiso_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1793,7 +1854,7 @@ ALTER TABLE ONLY public."RolesPermisos"
 
 
 --
--- TOC entry 2934 (class 2606 OID 19295)
+-- TOC entry 2935 (class 2606 OID 19295)
 -- Name: RolesPermisos fk_rol_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1802,16 +1863,7 @@ ALTER TABLE ONLY public."RolesPermisos"
 
 
 --
--- TOC entry 2933 (class 2606 OID 19206)
--- Name: RolesMenus fk_role_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
---
-
-ALTER TABLE ONLY public."RolesMenus"
-    ADD CONSTRAINT fk_role_id FOREIGN KEY (rol_id) REFERENCES public."Roles"(rol_id);
-
-
---
--- TOC entry 2937 (class 2606 OID 19211)
+-- TOC entry 2938 (class 2606 OID 19211)
 -- Name: DoblesFactores fk_validation_method_id; Type: FK CONSTRAINT; Schema: public; Owner: postgres
 --
 
@@ -1819,7 +1871,7 @@ ALTER TABLE ONLY public."DoblesFactores"
     ADD CONSTRAINT fk_validation_method_id FOREIGN KEY (metodo_validacion_id) REFERENCES public."MetodosValidacion"(metodo_validacion_id);
 
 
--- Completed on 2021-06-09 09:54:29
+-- Completed on 2021-06-09 17:00:50
 
 --
 -- PostgreSQL database dump complete

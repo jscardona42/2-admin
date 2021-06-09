@@ -72,6 +72,7 @@ model Menus {
   Menus         Menus?          @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
   EmpresasMenus EmpresasMenus[]
   other_Menus   Menus[]         @relation("MenusToMenus_parentMenuId")
+  MenusPalabras MenusPalabras[]
 }
 
 model MetodosValidacion {
@@ -103,15 +104,7 @@ model Roles {
   rol_id        Int             @id @default(autoincrement()) @db.SmallInt
   rol           String          @db.VarChar(100)
   Login         Login[]
-  RolesMenus    RolesMenus[]
   RolesPermisos RolesPermisos[]
-}
-
-model RolesMenus {
-  rol_menu_id   Int      @id @default(autoincrement()) @db.SmallInt
-  rol_id        Int?     @db.SmallInt
-  permisos_menu String[]
-  Roles         Roles?   @relation(fields: [rol_id], references: [rol_id])
 }
 
 model RolesPermisos {
@@ -144,4 +137,11 @@ model MenuPersonalizado {
   empresa_id           Int      @db.SmallInt
   menu                 Json     @db.Json
   Empresas             Empresas @relation(fields: [empresa_id], references: [empresa_id])
+}
+
+model MenusPalabras {
+  menu_palabra_id Int    @id @default(autoincrement()) @db.SmallInt
+  menu_id         Int    @db.SmallInt
+  palabra         String @default(dbgenerated("nextval('\"MenusPalabras_palabra_seq\"'::regclass)")) @db.VarChar(16)
+  Menus           Menus  @relation(fields: [menu_id], references: [menu_id])
 }
