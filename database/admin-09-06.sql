@@ -5,7 +5,7 @@
 -- Dumped from database version 12.6
 -- Dumped by pg_dump version 12.6
 
--- Started on 2021-06-04 10:25:17
+-- Started on 2021-06-09 09:54:28
 
 SET statement_timeout = 0;
 SET lock_timeout = 0;
@@ -902,6 +902,24 @@ COPY public."Auditorias" (auditoria_id, login_id, status, fecha_creacion, tipo, 
 109	\N	unauthorized	2021-06-02 12:59:36.264549	signin	usuario1	\N	f
 110	\N	authorized	2021-06-02 12:59:40.552342	signin	usuario1	2-Commercial	\N
 111	\N	authorized	2021-06-04 13:25:47.927609	signin	usuario1	2-Commercial	\N
+112	\N	authorized	2021-06-04 17:22:21.538393	signin	usuario1	2-Commercial	\N
+113	\N	authorized	2021-06-04 17:24:42.255126	signin	usuario1	2-Commercial	\N
+114	\N	authorized	2021-06-04 19:28:01.069817	signin	usuario1	2-Commercial	\N
+115	\N	authorized	2021-06-08 13:11:22.381785	signin	usuario1	2-Commercial	\N
+116	\N	authorized	2021-06-08 14:10:13.830681	signin	usuario1	2-Commercial	\N
+117	\N	authorized	2021-06-08 14:11:14.338329	signin	usuario1	2-Commercial	\N
+118	\N	authorized	2021-06-08 14:11:52.727718	signin	usuario1	2-Commercial	\N
+119	\N	authorized	2021-06-08 15:04:26.579497	signin	usuario1	2-Commercial	\N
+120	\N	unauthorized	2021-06-08 15:30:31.779912	signin	usuario1	\N	f
+121	\N	authorized	2021-06-08 15:30:35.677456	signin	usuario1	2-Commercial	\N
+122	\N	authorized	2021-06-08 15:32:41.914087	signin	usuario1	2-Commercial	\N
+123	\N	authorized	2021-06-08 15:34:28.477519	signin	usuario1	2-Commercial	\N
+124	\N	authorized	2021-06-08 15:54:14.092881	signin	usuario1	2-Commercial	\N
+125	\N	authorized	2021-06-08 16:10:36.843503	signin	usuario1	2-Commercial	\N
+126	\N	authorized	2021-06-08 16:12:30.880049	signin	usuario1	2-Commercial	\N
+127	\N	authorized	2021-06-08 16:12:40.943004	signin	usuario1	2-Commercial	\N
+128	\N	authorized	2021-06-08 16:12:50.074937	signin	usuario1	2-Commercial	\N
+129	\N	authorized	2021-06-08 16:50:51.834393	signin	usuario1	2-Commercial	\N
 \.
 
 
@@ -1018,8 +1036,8 @@ COPY public."Entidades" (entidad_id, nombre, resolver) FROM stdin;
 
 COPY public."Login" (login_id, username, password, token, salt, rol_id, tiene_doble_factor, usuario_id) FROM stdin;
 3	usuario4	$2b$10$seOm91q6A/T1Vp81lgwzl.MZdm1MrVtt5clB3XHNkZtyiMyr01BUe	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjMsImlhdCI6MTYxOTAyMjIxMSwiZXhwIjoxNjE5MTk1MDExfQ.uIud3VLBAE7sfUbAFA0Y1a9b9Vje8Jem6lC6l68_YZk	$2b$10$seOm91q6A/T1Vp81lgwzl.	3	0	3
-2	usuario2	$2b$10$tto94NATru7NdjZ0lIMv5.ko1Zmms5puWonOoISgvJ62oXoGacbNy	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYyMjU5NTQxMiwiZXhwIjoxNjIyNzY4MjEyfQ.4cCBBbAsE9HlUcHWY2wKF9wlh93v57w-w9Gi3tX-Dn8	$2b$10$tto94NATru7NdjZ0lIMv5.	2	1	2
-1	usuario1	$2b$10$4nfNtxvEvo15ot5t4kJu/OGD/zRB0TO5IasIdDN/Hfp9l8cBImHLS	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyMjgxMzE0NywiZXhwIjoxNjIyOTg1OTQ3fQ.CvH5Cqh4UeMAKjvy3_o0zcqkmfsiWLJjVImA5aFpQ2g	$2b$10$4nfNtxvEvo15ot5t4kJu/O	1	1	1
+1	usuario1	$2b$10$4nfNtxvEvo15ot5t4kJu/OGD/zRB0TO5IasIdDN/Hfp9l8cBImHLS	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjEsImlhdCI6MTYyMzE3MTA1MSwiZXhwIjoxNjIzMzQzODUxfQ.s6cJyKtXfaKHOuokYYhb7-3K13WaG7T8YVS9kvsGFrg	$2b$10$4nfNtxvEvo15ot5t4kJu/O	1	0	1
+2	usuario2	$2b$10$tto94NATru7NdjZ0lIMv5.ko1Zmms5puWonOoISgvJ62oXoGacbNy	eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsImlhdCI6MTYyMjU5NTQxMiwiZXhwIjoxNjIyNzY4MjEyfQ.4cCBBbAsE9HlUcHWY2wKF9wlh93v57w-w9Gi3tX-Dn8	$2b$10$tto94NATru7NdjZ0lIMv5.	2	0	2
 \.
 
 
@@ -1030,7 +1048,7 @@ COPY public."Login" (login_id, username, password, token, salt, rol_id, tiene_do
 --
 
 COPY public."MenuPersonalizado" (menu_pesonalizado_id, empresa_id, menu) FROM stdin;
-5	1	{"menu_id":1,"title":"menu","path":"/","isEntity":false,"order":null,"parentMenuId":null,"other_Menus":[{"menu_id":2,"title":"administracion","path":"/administracion","isEntity":false,"order":3,"other_Menus":[{"menu_id":3,"title":"configuracion","path":"/administracion/configuracion","isEntity":false,"order":2,"other_Menus":[{"menu_id":7,"title":"menus","path":"/administracion/configuracion/menus","isEntity":true,"parentMenuId":3,"entidad_id":1,"order":1,"level":3}]},{"menu_id":5,"title":"usuarios","path":"/administracion/usuarios","isEntity":false,"order":1,"other_Menus":[]}]},{"menu_id":11,"title":"inventario","path":"/inventario","isEntity":false,"order":1,"other_Menus":[{"menu_id":15,"title":"bodegas","path":"/inventario/bodegas","isEntity":true,"order":3,"other_Menus":[]},{"menu_id":14,"title":"caracteristicas","path":"/inventario/caracteristicas","isEntity":false,"order":2,"other_Menus":[{"menu_id":10,"title":"doblesfactores","path":"/inventario/caracteristicas/doblesfactores","isEntity":true,"parentMenuId":14,"entidad_id":5,"order":0,"level":3}]},{"menu_id":12,"title":"productos","path":"/inventario/productos","isEntity":false,"order":1,"other_Menus":[]}]}]}
+7	2	{"menu_id":1,"title":"menu","path":"/","isEntity":false,"order":null,"level":null,"parentMenuId":null,"other_Menus":[{"menu_id":2,"title":"administración","path":"/administración","isEntity":false,"order":1,"level":1,"other_Menus":[{"menu_id":6,"title":"configuración","path":"/administración/configuración","isEntity":false,"order":1,"level":2,"other_Menus":[]},{"menu_id":7,"title":"usuarios","path":"/administración/usuarios","isEntity":false,"order":2,"level":2,"other_Menus":[{"menu_id":11,"title":"usuarios","path":"/administración/usuarios/usuarios","isEntity":true,"parentMenuId":7,"entidad_id":42,"order":1,"level":3}]}]},{"menu_id":5,"title":"recursos humanos","path":"/recursos humanos","isEntity":false,"order":4,"level":1,"other_Menus":[{"menu_id":18,"title":"nómina","path":"/recursos humanos/nómina","isEntity":false,"order":1,"level":2,"other_Menus":[]},{"menu_id":19,"title":"cuentas","path":"/recursos humanos/cuentas","isEntity":false,"order":2,"level":2,"other_Menus":[]}]}]}
 \.
 
 
@@ -1042,24 +1060,25 @@ COPY public."MenuPersonalizado" (menu_pesonalizado_id, empresa_id, menu) FROM st
 
 COPY public."Menus" (menu_id, title, path, "isEntity", "parentMenuId", entidad_id, "order", level) FROM stdin;
 1	menu	/	f	\N	\N	\N	\N
-2	administración	/administración	f	1	\N	1	1
-3	general	/general	f	1	\N	3	1
-4	inventario	/inventario	f	1	\N	2	1
-5	recursos humanos	/recursos humanos	f	1	\N	4	1
-6	configuración	/administración/configuración	f	2	\N	1	2
-7	usuarios	/administración/usuarios	f	2	\N	2	2
-8	reportes	/general/reportes	f	3	\N	1	2
-9	contabilidad	/inventario/contabilidad	f	4	\N	1	2
-10	productos	/inventario/productos	f	4	\N	2	2
-11	usuarios	/administración/usuarios/usuarios	t	7	42	1	3
-13	auditorias	/administración/usuarios/auditorias	t	7	3	2	3
-12	doble factor	/administración/usuarios/doble factor	t	7	7	3	3
-14	productos	/inventario/productos/productos	t	10	8	1	3
-15	productos descuentos	/inventario/productos/productos descuentos	t	10	17	2	3
-16	bodegas	/inventario/bodegas	t	4	9	3	2
-17	caracteristicas	/inventario/caracteristicas	t	4	10	4	2
-18	nómina	/recursos humanos/nómina	f	5	\N	1	2
-19	cuentas	/recursos humanos/cuentas	f	5	\N	2	2
+20	Test	/recursoshumanos/test	t	5	15	3	2
+5	Recursos Humanos	/recursoshumanos	f	1	\N	4	1
+4	Inventario	/inventario	f	1	\N	2	1
+3	General	/general	f	1	\N	3	1
+2	Administración	/administración	f	1	\N	1	1
+6	Configuración	/administración/configuración	f	2	\N	1	2
+7	Usuarios	/administración/usuarios	f	2	\N	2	2
+8	Reportes	/general/reportes	f	3	\N	1	2
+9	Contabilidad	/inventario/contabilidad	f	4	\N	1	2
+10	Productos	/inventario/productos	f	4	\N	2	2
+11	Usuarios	/administración/usuarios/usuarios	t	7	42	1	3
+12	Doble Factor	/administración/usuarios/doblefactor	t	7	7	3	3
+13	Auditorias	/administración/usuarios/auditorias	t	7	3	2	3
+14	Productos	/inventario/productos/productos	t	10	8	1	3
+15	Productos Descuentos	/inventario/productos/productosdescuentos	t	10	17	2	3
+16	Bodegas	/inventario/bodegas	t	4	9	3	2
+17	Caracteristicas	/inventario/caracteristicas	t	4	10	4	2
+18	Nómina	/recursoshumanos/nómina	f	5	\N	1	2
+19	Cuentas	/recursoshumanos/cuentas	f	5	\N	2	2
 \.
 
 
@@ -1095,16 +1114,14 @@ COPY public."Microservicios" (microservicio_id, name, hostname, puerto, url, act
 --
 
 COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
-30	7	exSetActivateConfigDobleFactorTOTP	t
-241	42	deleteUsuario	f
-3	5	LoginResolver	f
+17	1	createFolder	f
+9	3	AuditoriasResolver	f
 2	1	MenusResolver	f
 248	43	getEmpresasMenusByRoleId	f
-22	4	PermisosResolver	f
-12	7	exValidateDobleFactorCode	t
-246	43	getEmpresasMenusByEmpresaId	f
+30	7	exSetActivateConfigDobleFactorTOTP	t
 11	7	exSendMail	t
-15	5	getLogin	f
+246	43	getEmpresasMenusByEmpresaId	f
+4	5	getLoginById	f
 135	37	getProductoReemplazoById	f
 53	10	deleteCaracteristica	f
 76	11	getEstanteById	f
@@ -1135,7 +1152,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 137	37	updateProductoReemplazo	f
 112	15	deleteProductoCaracteristica	f
 80	28	InvimaResolver	f
-9	3	AuditoriasResolver	f
+20	3	getAuditorias	f
 65	10	updateCaracteristica	f
 52	10	createCaracteristica	f
 142	30	MagnitudesResolver	f
@@ -1145,7 +1162,7 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 77	28	updateInvima	f
 107	20	deleteProductoProveedor	f
 13	1	filteredMenuForRoleId	f
-234	42	getUsuarios	f
+19	7	getDobleFactorById	f
 119	33	updateProductoCodigo	f
 131	33	getProductoCodigos	f
 122	35	updateProductoMargen	f
@@ -1155,13 +1172,13 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 95	13	deleteLineaBodega	f
 116	16	ProductosCategoriasContablesResolver	f
 113	32	getProductoCategoriaById	f
-20	3	getAuditorias	f
+6	5	signUpLogin	f
 82	13	updateLineaBodega	f
 81	13	LineaBodegasResolver	f
 144	30	getMagnitudes	f
 92	11	createEstante	f
 124	16	deleteProductoCategoriaContable	f
-23	7	createDobleFactor	f
+24	7	getDobleFactorByLoginId	f
 103	18	getProductoImagens	f
 115	32	deleteProductoCategoria	f
 139	20	getProductoProveedores	f
@@ -1177,7 +1194,6 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 54	10	getCaracteristicas	f
 129	32	updateProductoCategoria	f
 48	29	deleteDimension	f
-19	7	getDobleFactorById	f
 134	17	getProductoDescuentoById	f
 61	29	getDimensions	f
 86	26	updateCategoriaDescuento	f
@@ -1186,29 +1202,33 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 120	31	ProductosArancelesResolver	f
 58	12	deleteCategoriaPrecio	f
 70	10	getCaracteristicaById	f
+247	43	updateMenuPersonalizado	f
 79	11	updateEstante	f
-4	5	getLoginById	f
+23	7	createDobleFactor	f
 114	32	createProductoCategoria	f
 83	28	getInvimaById	f
 126	14	getMargenById	f
 101	35	getProductoMargens	f
 33	8	getFilterProductos	f
-6	5	signUpLogin	f
-247	43	updateMenuPersonalizado	f
+12	7	exValidateDobleFactorCode	t
+15	5	getLogin	f
 34	8	getProductos	f
 128	15	getProductoCaracteristicaById	f
 102	34	deleteProductoDimension	f
 99	35	deleteProductoMargen	f
-1	1	insertEntityToFolder	f
+22	4	PermisosResolver	f
+16	5	signInLogin	f
 240	41	Usuarioservice	f
 50	9	deleteBodega	f
 133	35	ProductosMargenesResolver	f
 98	35	createProductoMargen	f
+241	42	deleteUsuario	f
 143	20	updateProductoProveedor	f
 14	1	rootMenu	f
+252	5	addComment	t
+3	5	LoginResolver	f
 37	25	deleteFabricanteLinea	f
-17	1	createFolder	f
-16	5	signInLogin	f
+1	1	insertEntityToFolder	f
 64	9	getBodegaById	f
 43	26	createCategoriaDescuento	f
 75	26	CategoriasDescuentosResolver	f
@@ -1218,9 +1238,10 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 45	27	getDepositos	f
 47	25	getFabricanteLineaById	f
 60	27	createDeposito	f
-24	7	getDobleFactorByLoginId	f
+234	42	getUsuarios	f
+251	5	validateToken	t
 55	25	updateFabricanteLinea	f
-243	1	updateMenu	f
+255	5	commentAdded	t
 31	8	ProductosResolver	f
 36	8	updateProducto	f
 44	12	createCategoriaPrecio	f
@@ -1251,18 +1272,20 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 194	23	deleteTipoImpuesto	f
 198	24	createUnspsc	f
 207	24	updateUnspsc	f
-231	5	exChangePasswordLogin	t
-29	2	RolesResolver	f
-238	42	createUsuario	f
-250	43	getEmpresaMenuByRoleId	f
-21	6	RolesPermisosResolver	f
-28	4	getPermisos	f
-245	43	EmpresasMenusResolver	f
-249	43	getEmpresaMenuByEmpresaId	f
-5	1	createRootMenu	f
+253	5	getT	t
+243	1	updateMenu	f
 244	43	getEmpresasMenus	f
+5	1	createRootMenu	f
+249	43	getEmpresaMenuByEmpresaId	f
+28	4	getPermisos	f
+231	5	exChangePasswordLogin	t
+250	43	getEmpresaMenuByRoleId	f
+254	5	addCommentHandler	t
+21	6	RolesPermisosResolver	f
+245	43	EmpresasMenusResolver	f
+238	42	createUsuario	f
 235	42	updateUsuario	f
-18	5	logOutLogin	f
+29	2	RolesResolver	f
 32	8	getProductoById	f
 62	9	updateBodega	f
 71	28	getInvimas	f
@@ -1288,11 +1311,12 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 189	38	TeleferiaCantidadesResolver	f
 197	40	getUnidadMedidaById	f
 223	22	ProveedoresResolver	f
-26	7	configDobleFactor	f
-7	7	DoblesFactoresResolver	f
-8	2	getRoles	f
 232	1	getMenus	f
 236	41	createUsuario	f
+7	7	DoblesFactoresResolver	f
+26	7	configDobleFactor	f
+8	2	getRoles	f
+18	5	logOutLogin	f
 41	25	getFabricanteLineas	f
 59	12	getCategoriaPrecios	f
 93	28	deleteInvima	f
@@ -1313,9 +1337,9 @@ COPY public."Permisos" (permiso_id, entidad_id, permiso, es_publico) FROM stdin;
 210	21	getProductoTipoImpuestoById	f
 196	40	getUnidadMedidas	f
 218	24	UnspscResolver	f
+237	42	getUsuarios	f
 27	7	exValidateRecoveryCode	t
 25	6	getRolesPermisos	f
-237	42	getUsuarios	f
 57	26	deleteCategoriaDescuento	f
 67	10	CaracteristicasResolver	f
 72	13	createLineaBodega	f
@@ -1388,8 +1412,9 @@ COPY public."RolesPermisos" (rol_permiso_id, rol_id, permiso_id) FROM stdin;
 5	1	28
 8	1	239
 9	1	245
-7	2	3
 10	2	39
+7	2	7
+11	2	245
 \.
 
 
@@ -1403,7 +1428,7 @@ COPY public."Usuarios" (usuario_id, nombre, email, activo, empresa_id) FROM stdi
 3	Yaky Sánchez	yaky0723@gmail.com	t	\N
 4	Test	test1@gmail.com	t	\N
 1	Johán Cardona	jscardona42@gmail.com	t	1
-2	Test	jscardona42@gmail.com	t	1
+2	Test	jscardona42@gmail.com	t	2
 \.
 
 
@@ -1413,7 +1438,7 @@ COPY public."Usuarios" (usuario_id, nombre, email, activo, empresa_id) FROM stdi
 -- Name: Auditorias_auditoria_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Auditorias_auditoria_id_seq"', 111, true);
+SELECT pg_catalog.setval('public."Auditorias_auditoria_id_seq"', 129, true);
 
 
 --
@@ -1431,7 +1456,7 @@ SELECT pg_catalog.setval('public."DoblesFactores_doble_factor_id_seq"', 2, true)
 -- Name: EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq"', 5, true);
+SELECT pg_catalog.setval('public."EmpresasMenusPersonalizado_empresa_menu_pesonalizado_id_seq"', 8, true);
 
 
 --
@@ -1476,7 +1501,7 @@ SELECT pg_catalog.setval('public."Login_login_id_seq"', 8, true);
 -- Name: Menus_menu_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Menus_menu_id_seq"', 19, true);
+SELECT pg_catalog.setval('public."Menus_menu_id_seq"', 20, true);
 
 
 --
@@ -1503,7 +1528,7 @@ SELECT pg_catalog.setval('public."Microservicios_microservicio_id_seq"', 2, true
 -- Name: Permisos_permiso_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."Permisos_permiso_id_seq"', 250, true);
+SELECT pg_catalog.setval('public."Permisos_permiso_id_seq"', 255, true);
 
 
 --
@@ -1521,7 +1546,7 @@ SELECT pg_catalog.setval('public."RolesMenus_rol_menu_id_seq"', 2, true);
 -- Name: RolesPermisos_roles_permisos_id_seq; Type: SEQUENCE SET; Schema: public; Owner: postgres
 --
 
-SELECT pg_catalog.setval('public."RolesPermisos_roles_permisos_id_seq"', 10, true);
+SELECT pg_catalog.setval('public."RolesPermisos_roles_permisos_id_seq"', 11, true);
 
 
 --
@@ -1794,7 +1819,7 @@ ALTER TABLE ONLY public."DoblesFactores"
     ADD CONSTRAINT fk_validation_method_id FOREIGN KEY (metodo_validacion_id) REFERENCES public."MetodosValidacion"(metodo_validacion_id);
 
 
--- Completed on 2021-06-04 10:25:17
+-- Completed on 2021-06-09 09:54:29
 
 --
 -- PostgreSQL database dump complete
