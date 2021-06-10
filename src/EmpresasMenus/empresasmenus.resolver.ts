@@ -30,5 +30,4 @@ export class EmpresasMenusResolver {
         return this.menuService.updateMenuPersonalizado(data)
     }
 
-
 }

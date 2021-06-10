@@ -6,6 +6,7 @@ import { MenusService } from 'src/Menus/menus.service';
 import { UsuariosService } from 'src/Usuarios/usuarios.service';
 import { PrismaService } from '../prisma.service';
 import { UpdateMenuPersonalizadoInput } from './dto/menupersonalizado.dto';
+import { EmpresasMenus } from './entities/empresasmenus.entity';
 
 @Injectable()
 export class EmpresasMenusService {
@@ -61,7 +62,7 @@ export class EmpresasMenusService {
         })
     }
 
-    async updateMenuPersonalizado(data: UpdateMenuPersonalizadoInput) {
+    async updateMenuPersonalizado(data: UpdateMenuPersonalizadoInput): Promise<MenuPersonalizado> {
 
         var menuPersonalizado = await this.prismaService.menuPersonalizado.findFirst({
             where: { empresa_id: data.empresa_id },
@@ -78,7 +79,7 @@ export class EmpresasMenusService {
         })
     }
 
-    async getEmpresaMenuByRoleId(login_id: number) {
+    async getEmpresaMenuByRoleId(login_id: number): Promise<any> {
         var arrayMenuIds = [];
         var arrayEntidadIds = [];
 
@@ -114,6 +115,5 @@ export class EmpresasMenusService {
 
         return menuEmpresa;
     }
-
 
 }

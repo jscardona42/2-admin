@@ -121,6 +121,7 @@ type Query {
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
   rootMenu: Menus!
+  getFilterMenuPalabra(palabra: String!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
   getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
   configDobleFactor(login_id: Float!): DoblesFactores!

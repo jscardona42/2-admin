@@ -34,4 +34,9 @@ export class MenusResolver {
     return this.menuService.updateMenu(data)
   }
 
+  @Query(() => [Menus])
+  async getFilterMenuPalabra(@Args('palabra') palabra: string) {
+    return this.menuService.getFilterMenuPalabra(palabra);
+  }
+
 }

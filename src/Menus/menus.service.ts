@@ -171,6 +171,12 @@ export class MenusService {
 
   }
 
+  async getFilterMenuPalabra(palabra: string): Promise<Object[]> {
+    return this.prismaService.menus.findMany({
+      where: { MenusPalabras: { some: { palabra: { contains: palabra, mode: "insensitive" } } } }
+    })
+  }
+
   async updateMenu(data: UpdateMenuInput) {
 
     await this.validateLevel(data);
