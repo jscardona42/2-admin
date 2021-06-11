@@ -1,8 +1,8 @@
 import 'reflect-metadata'
 import { ObjectType, Field, ID, InputType, InterfaceType, Int } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
-import { DoblesFactores } from 'src/DoblesFactores/entities/doblesfactores.entity';
-import { Usuarios } from './usuarios.entity';
+import { DoblesFactores } from '../../DoblesFactores/entities/doblesfactores.entity';
+import { Usuarios } from '../../Usuarios/entities/usuarios.entity';
 
 @ObjectType()
 export class Login {

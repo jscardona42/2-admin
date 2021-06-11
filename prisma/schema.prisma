@@ -7,6 +7,44 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Auditorias {
+  auditoria_id       Int       @id @default(autoincrement()) @db.SmallInt
+  login_id           Int?      @db.SmallInt
+  status             String?   @db.VarChar(50)
+  fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
+  tipo               String?   @db.VarChar(50)
+  username           String?   @db.VarChar(100)
+  rol                String?   @db.VarChar(50)
+  tiene_doble_factor Boolean?
+}
+
+model DoblesFactores {
+  doble_factor_id       Int                @id @default(autoincrement()) @db.SmallInt
+  otplib_secreta        String?            @db.VarChar(255)
+  esta_configurado      Boolean            @default(false)
+  login_id              Int                @db.SmallInt
+  codigo_recuperacion   String?            @db.VarChar(255)
+  metodo_validacion_id  Int?               @db.SmallInt
+  fecha_creacion_codigo DateTime?          @db.Timestamp(6)
+  Login                 Login              @relation(fields: [login_id], references: [login_id])
+  MetodosValidacion     MetodosValidacion? @relation(fields: [metodo_validacion_id], references: [metodo_validacion_id])
+}
+
+model Empresas {
+  empresa_id        Int                 @id @default(autoincrement()) @db.SmallInt
+  nombre            String?             @db.VarChar(255)
+  EmpresasMenus     EmpresasMenus[]
+  MenuPersonalizado MenuPersonalizado[]
+}
+
+model Entidades {
+  entidad_id Int        @id @default(autoincrement()) @db.SmallInt
+  nombre     String     @db.VarChar(255)
+  resolver   String?    @db.VarChar(255)
+  Menus      Menus[]
+  Permisos   Permisos[]
+}
+
 model Login {
   login_id           Int              @id @default(autoincrement()) @db.SmallInt
   username           String
@@ -22,51 +60,19 @@ model Login {
 }
 
 model Menus {
-  menu_id      Int     @id @default(autoincrement())
-  title        String
-  path         String
-  isEntity     Boolean
-  parentMenuId Int?
-  Menus        Menus?  @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
-  other_Menus  Menus[] @relation("MenusToMenus_parentMenuId")
-}
-
-model Roles {
-  rol_id        Int             @id @default(autoincrement()) @db.SmallInt
-  rol           String          @db.VarChar(100)
-  Login         Login[]
-  RolesMenus    RolesMenus[]
-  RolesPermisos RolesPermisos[]
-}
-
-model Auditorias {
-  auditoria_id       Int       @id @default(autoincrement()) @db.SmallInt
-  login_id           Int?      @db.SmallInt
-  status             String?   @db.VarChar(50)
-  fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
-  tipo               String?   @db.VarChar(50)
-  username           String?   @db.VarChar(100)
-  rol                String?   @db.VarChar(50)
-  tiene_doble_factor Boolean?
-}
-
-model DoblesFactores {
-  doble_factor_id       Int                @id @default(autoincrement()) @db.SmallInt
-  otplib_secreta        String?            @db.VarChar(255)
-  esta_configurado      Boolean?
-  login_id              Int                @db.SmallInt
-  codigo_recuperacion   String?            @db.VarChar(255)
-  metodo_validacion_id  Int?               @db.SmallInt
-  fecha_creacion_codigo DateTime?          @db.Timestamp(6)
-  Login                 Login              @relation(fields: [login_id], references: [login_id])
-  MetodosValidacion     MetodosValidacion? @relation(fields: [metodo_validacion_id], references: [metodo_validacion_id])
-}
-
-model Entidades {
-  entidad_id Int        @id @default(autoincrement()) @db.SmallInt
-  nombre     String     @db.VarChar(255)
-  resolver   String?    @db.VarChar(255)
-  Permisos   Permisos[]
+  menu_id       Int             @id @default(autoincrement()) @db.SmallInt
+  title         String
+  path          String
+  isEntity      Boolean
+  parentMenuId  Int?            @db.SmallInt
+  entidad_id    Int?            @db.SmallInt
+  order         Int?            @db.SmallInt
+  level         Int?            @db.SmallInt
+  Entidades     Entidades?      @relation(fields: [entidad_id], references: [entidad_id])
+  Menus         Menus?          @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
+  EmpresasMenus EmpresasMenus[]
+  other_Menus   Menus[]         @relation("MenusToMenus_parentMenuId")
+  MenusPalabras MenusPalabras[]
 }
 
 model MetodosValidacion {
@@ -78,7 +84,7 @@ model MetodosValidacion {
 
 model Microservicios {
   microservicio_id Int      @id @default(autoincrement()) @db.SmallInt
-  nombre           String   @db.VarChar(255)
+  name             String   @db.VarChar(255)
   hostname         String   @db.VarChar(255)
   puerto           Int
   url              String   @db.VarChar(32)
@@ -94,11 +100,11 @@ model Permisos {
   RolesPermisos RolesPermisos[]
 }
 
-model RolesMenus {
-  rol_menu_id   Int      @id @default(autoincrement()) @db.SmallInt
-  rol_id        Int?     @db.SmallInt
-  permisos_menu String[]
-  Roles         Roles?   @relation(fields: [rol_id], references: [rol_id])
+model Roles {
+  rol_id        Int             @id @default(autoincrement()) @db.SmallInt
+  rol           String          @db.VarChar(100)
+  Login         Login[]
+  RolesPermisos RolesPermisos[]
 }
 
 model RolesPermisos {
@@ -113,6 +119,29 @@ model Usuarios {
   usuario_id Int      @id @default(autoincrement()) @db.SmallInt
   nombre     String   @db.VarChar(100)
   email      String   @db.VarChar(100)
-  activo     Boolean?
+  activo     Boolean? @default(true)
+  empresa_id Int?     @db.SmallInt
   Login      Login[]
+}
+
+model EmpresasMenus {
+  empresa_menu_id Int      @id @default(autoincrement()) @db.SmallInt
+  empresa_id      Int      @db.SmallInt
+  menu_id         Int      @db.SmallInt
+  Empresas        Empresas @relation(fields: [empresa_id], references: [empresa_id])
+  Menus           Menus    @relation(fields: [menu_id], references: [menu_id])
+}
+
+model MenuPersonalizado {
+  menu_pesonalizado_id Int      @id @default(autoincrement()) @db.SmallInt
+  empresa_id           Int      @db.SmallInt
+  menu                 Json     @db.Json
+  Empresas             Empresas @relation(fields: [empresa_id], references: [empresa_id])
+}
+
+model MenusPalabras {
+  menu_palabra_id Int    @id @default(autoincrement()) @db.SmallInt
+  menu_id         Int    @db.SmallInt
+  palabra         String @default(dbgenerated("nextval('\"MenusPalabras_palabra_seq\"'::regclass)")) @db.VarChar(16)
+  Menus           Menus  @relation(fields: [menu_id], references: [menu_id])
 }

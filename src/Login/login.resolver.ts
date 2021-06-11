@@ -2,7 +2,7 @@ import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
 import { LoginService } from './login.service';
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Login } from './entities/login.entity';
-import { SignInUserInput, SignUpUserInput } from './dto/login.dto';
+import { ChangePasswordInput, SignInUserInput, SignUpUserInput } from './dto/login.dto';
 
 @Resolver(() => Login)
 export class LoginResolver {
@@ -40,6 +40,13 @@ export class LoginResolver {
   async logOutLogin(
     @Args("login_id") login_id: number): Promise<Login> {
     return this.loginService.logOutLogin(login_id);
+  }
+
+  @Mutation(returns => Login)
+  @UsePipes(ValidationPipe)
+  async exChangePasswordLogin(
+    @Args("data") data: ChangePasswordInput): Promise<Login> {
+    return this.loginService.exChangePasswordLogin(data);
   }
 
 }

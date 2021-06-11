@@ -10,4 +10,11 @@ export class RolesPermisosService {
   async getRolesPermisos(): Promise<RolesPermisos[]> {
     return this.prismaService.rolesPermisos.findMany();
   }
+
+  async getEntidadesIdsByRolId(rol_id: number) {
+    return this.prismaService.rolesPermisos.findMany({
+      where: { rol_id: rol_id },
+      select: { Permisos: { select: { entidad_id: true } } }
+    });
+  }
 }

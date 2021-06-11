@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GraphQLFederationModule } from '@nestjs/graphql';
+import { GraphQLFederationModule, GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
@@ -7,8 +7,8 @@ import { PrismaService } from './prisma.service';
 
 import { AuditoriasService } from './Auditorias/auditorias.service';
 import { AuditoriasResolver } from './Auditorias/auditorias.resolver';
-import { LoginService } from './Usuarios/login.service';
-import { LoginResolver } from './Usuarios/login.resolver';
+import { LoginService } from './Login/login.service';
+import { LoginResolver } from './Login/login.resolver';
 import { RolesPermisosService } from './Admin/RolesPermisos/rolespermisos.service';
 import { RolesResolver } from './Admin/Roles/roles.resolver';
 import { RolesService } from './Admin/Roles/roles.service';
@@ -20,11 +20,16 @@ import { PermisosResolver } from './Admin/Permisos/permisos.resolver';
 import { EntidadesService } from './Admin/Entidades/entidades.service';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { PermisosController } from './Admin/Permisos/permisos.controller';
-import { Login } from './Usuarios/entities/login.entity';
 import { MenusService } from './Menus/menus.service';
 import { MenusResolver } from './Menus/menus.resolver';
+import { UsuariosService } from './Usuarios/usuarios.service';
+import { UsuariosResolver } from './Usuarios/usuarios.resolver';
+import { EmpresasMenusService } from './EmpresasMenus/empresasmenus.service';
+import { EmpresasMenusResolver } from './EmpresasMenus/empresasmenus.resolver';
+import { MenusPalabrasService } from './MenusPalabras/menuspalabras.service';
+import { MenusPalabrasResolver } from './MenusPalabras/menuspalabras.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver]
 
 @Module({
   imports: [

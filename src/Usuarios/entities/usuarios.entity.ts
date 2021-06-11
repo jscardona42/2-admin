@@ -19,6 +19,6 @@ export class Usuarios {
     @Field((type) => Boolean, { nullable: true })
     activo?: boolean | null
 
-    @Field((type) => Number, { nullable: true })
-    empresa_id?: number | null
+    // @Field((type) => Number, { nullable: true })
+    // empresa_id?: number | null
 }

@@ -25,3 +25,18 @@ export class SignInUserInput {
     @Field()
     password: string
 }
+
+@InputType()
+export class ChangePasswordInput {
+    @Field()
+    @IsNotEmpty()
+    login_id: number
+
+    @Field()
+    @IsNotEmpty()
+    password: string
+
+    @Field()
+    @IsNotEmpty()
+    new_password: string
+}
