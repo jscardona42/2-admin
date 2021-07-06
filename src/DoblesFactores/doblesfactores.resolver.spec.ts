@@ -25,13 +25,13 @@ describe('Login Resolver', () => {
                 {
                     provide: DoblesFactoresService,
                     useFactory: () => ({
-                        getTwoFactorById: jest.fn(),
-                        createTwoFactor: jest.fn(),
-                        configTwoFactor: jest.fn(),
-                        getTwoFactorByLoginId: jest.fn(() => { return { config_twofactor: 1 } }),
-                        validateTwoFactorCode: jest.fn(() => true),
-                        setActivateConfigTwofactorTOTP: jest.fn(),
-                        validateRecoveryCode: jest.fn(),
+                        getDobleFactorById: jest.fn(),
+                        createDobleFactor: jest.fn(),
+                        configDobleFactor: jest.fn(),
+                        getDobleFactorByLoginId: jest.fn(() => { return { config_twofactor: 1 } }),
+                        exValidateRecoveryCode: jest.fn(() => true),
+                        setActivateConfigDobleFactorTOTP: jest.fn(),
+                        exValidateDobleFactorCode: jest.fn(() => { return { isCodeValid: true } }),
                         validationCodeMail:jest.fn()
                     }),
                 },
@@ -74,8 +74,8 @@ describe('Login Resolver', () => {
     //     });
     // });
 
-    describe('Query validateTwoFactorCode()', () => {
-        it('should invoke twofactorService.validateTwoFactorCode()', async () => {
+    describe('Query exValidateDobleFactorCode()', () => {
+        it('should invoke twofactorService.exValidateDobleFactorCode()', async () => {
             const testParams = {
                 login_id: 1,
                 codigo: "4457875454"

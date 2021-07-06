@@ -3,8 +3,8 @@ import { PermisosResolver } from './permisos.resolver';
 import { PermisosService } from './permisos.service';
 
 describe('Permission Resolver', () => {
-  let permissionResolver: PermisosResolver;
-  let permissionService: PermisosService;
+  let permisosResolver: PermisosResolver;
+  let permisosService: PermisosService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -13,22 +13,22 @@ describe('Permission Resolver', () => {
         {
           provide: PermisosService,
           useFactory: () => ({
-            getPermissions: jest.fn(),
+            getPermisos: jest.fn(),
             getRoles: jest.fn(),
-            getRolesPermissions:jest.fn()
+            getRolesPermisos:jest.fn()
           }),
         },
       ],
     }).compile();
 
-    permissionResolver = module.get<PermisosResolver>(PermisosResolver);
-    permissionService = module.get<PermisosService>(PermisosService);
+    permisosResolver = module.get<PermisosResolver>(PermisosResolver);
+    permisosService = module.get<PermisosService>(PermisosService);
   });
 
-  describe('Query getPermissions()', () => {
+  describe('Query getPermisos()', () => {
     it('should invoke adminService.getPermissions()', async () => {
-      await permissionResolver.getPermisos();
-      expect(permissionService.getPermisos).toHaveBeenCalled();
+      await permisosResolver.getPermisos();
+      expect(permisosService.getPermisos).toHaveBeenCalled();
     });
   });
 

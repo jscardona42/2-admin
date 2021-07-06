@@ -4,7 +4,7 @@ import { RolesPermisosService } from './rolespermisos.service';
 
 
 describe('RolesPermissions Service', () => {
-    let rolePermissionService: RolesPermisosService;
+    let rolesPermisosService: RolesPermisosService;
     let prismaService: PrismaService;
 
     beforeEach(async () => {
@@ -14,7 +14,7 @@ describe('RolesPermissions Service', () => {
                 {
                     provide: PrismaService,
                     useFactory: () => ({
-                        roles_permissions: {
+                        rolesPermisos: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
@@ -25,13 +25,13 @@ describe('RolesPermissions Service', () => {
             ],
         }).compile();
 
-        rolePermissionService = module.get<RolesPermisosService>(RolesPermisosService);
+        rolesPermisosService = module.get<RolesPermisosService>(RolesPermisosService);
         prismaService = module.get<PrismaService>(PrismaService);
     });
 
-    describe('getRolesPermissions method', () => {
+    describe('getRolesPermisos method', () => {
         it('should invoke prismaService.roles_permissions.findMany', async () => {
-            await rolePermissionService.getRolesPermisos();
+            await rolesPermisosService.getRolesPermisos();
             expect(prismaService.rolesPermisos.findMany).toHaveBeenCalled();
         });
     });

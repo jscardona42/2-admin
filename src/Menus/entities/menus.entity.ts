@@ -1,9 +1,9 @@
 import 'reflect-metadata';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
 import JSON from 'graphql-type-json';
-import { MenusPalabras } from 'src/MenusPalabras/entities/menuspalabras.entity';
+import { MenusPalabras } from '../../MenusPalabras/entities/menuspalabras.entity';
 import { IsNotEmpty } from 'class-validator';
-import { MenusTraducciones } from 'src/Traducciones/entities/menustraducciones.entity';
+import { MenusTraducciones } from '../../Traducciones/entities/menustraducciones.entity';
 
 @ObjectType()
 export class Menus {

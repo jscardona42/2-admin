@@ -13,7 +13,7 @@ describe('Menu Resolver', () => {
         {
           provide: AuditoriasService,
           useFactory: () => ({
-            getAudits: jest.fn()
+            getAuditorias: jest.fn()
           }),
         },
       ],
@@ -23,10 +23,10 @@ describe('Menu Resolver', () => {
     auditService = module.get<AuditoriasService>(AuditoriasService);
   });
 
-  describe('Query getAudits()', () => {
-    it('should invoke auditService.getAudits()', async () => {
-      await auditResolver.getAudits();
-      expect(auditService.getAudits).toHaveBeenCalled();
+  describe('Query getAuditorias()', () => {
+    it('should invoke auditService.getAuditorias()', async () => {
+      await auditResolver.getAuditorias();
+      expect(auditService.getAuditorias).toHaveBeenCalled();
     });
   });
 

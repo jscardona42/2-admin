@@ -40,14 +40,14 @@ describe('Login Service', () => {
                             update: jest.fn(),
                             delete: jest.fn(),
                         },
-                        users: {
+                        usuarios: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             update: jest.fn(),
                             delete: jest.fn(),
                         },
-                        audits: {
+                        auditorias: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),

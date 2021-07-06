@@ -9,7 +9,7 @@ import { DoblesFactoresService } from './doblesfactores.service';
 
 
 describe('Twofactor Service', () => {
-    let twofactorService: DoblesFactoresService;
+    let doblesFactores: DoblesFactoresService;
     let prismaService: PrismaService;
 
     beforeEach(async () => {
@@ -37,8 +37,8 @@ describe('Twofactor Service', () => {
                 {
                     provide: PrismaService,
                     useFactory: () => ({
-                        twofactor: {
-                            findFirst: jest.fn(() => { return { twofactor_id: 1 } }),
+                        doblesFactores: {
+                            findFirst: jest.fn(() => { return { doble_factor_id: 1 } }),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             create: jest.fn(() => {
@@ -54,16 +54,16 @@ describe('Twofactor Service', () => {
             ],
         }).compile();
 
-        twofactorService = module.get<DoblesFactoresService>(DoblesFactoresService);
+        doblesFactores = module.get<DoblesFactoresService>(DoblesFactoresService);
         prismaService = module.get<PrismaService>(PrismaService);
     });
 
     describe('getTwoFactorById method', () => {
-        it('should invoke prismaService.twofactor.findUnique', async () => {
+        it('should invoke prismaService.doblesFactores.findUnique', async () => {
             const testParams = {
                 twofactor_id: 1
             };
-            await twofactorService.getDobleFactorById(
+            await doblesFactores.getDobleFactorById(
                 testParams.twofactor_id
             );
             expect(prismaService.doblesFactores.findUnique).toHaveBeenCalled();
@@ -71,11 +71,11 @@ describe('Twofactor Service', () => {
     });
 
     describe('getTwoFactorByLoginId method', () => {
-        it('should invoke prismaService.twofactor.findFirst', async () => {
+        it('should invoke prismaService.doblesFactores.findFirst', async () => {
             const testParams = {
                 login_id: 1
             };
-            await twofactorService.getDobleFactorByLoginId(
+            await doblesFactores.getDobleFactorByLoginId(
                 testParams.login_id
             );
             expect(prismaService.doblesFactores.findFirst).toHaveBeenCalled();
@@ -87,7 +87,7 @@ describe('Twofactor Service', () => {
             const testParams = {
                 user: { email: "jscardona42@gmail.com" }
             };
-            const data = await twofactorService.generateDobleFactorAuthenticationSecret(testParams.user);
+            const data = await doblesFactores.generateDobleFactorAuthenticationSecret(testParams.user);
             expect(data).toStrictEqual(expect.objectContaining({
                 secret: expect.any(String),
                 otpauthUrl: expect.any(String),
@@ -101,7 +101,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 metodo_validacion_id: 1
             };
-            await twofactorService.createDobleFactor(testParams);
+            await doblesFactores.createDobleFactor(testParams);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -112,7 +112,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 secret: "aserefdfdass"
             };
-            await twofactorService.configDobleFactor(testParams.secret, testParams.login_id);
+            await doblesFactores.configDobleFactor(testParams.secret, testParams.login_id);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -128,7 +128,7 @@ describe('Twofactor Service', () => {
                 fecha_creacion_codigo: new Date(),
                 metodo_validacion_id: 1
             };
-            await twofactorService.exSetActivateConfigTwofactorTOTP(testParams);
+            await doblesFactores.exSetActivateConfigTwofactorTOTP(testParams);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -147,7 +147,7 @@ describe('Twofactor Service', () => {
                     metodo_validacion_id: 1
                 }
             };
-            const data = await twofactorService.exValidateDobleFactorCode(testParams.data, testParams.doblesfactores);
+            const data = await doblesFactores.exValidateDobleFactorCode(testParams.data, testParams.doblesfactores);
             expect(data).toStrictEqual(false);
         });
     });
@@ -158,7 +158,7 @@ describe('Twofactor Service', () => {
                 login_id: 1,
                 codigo_recuperacion: "5474457"
             };
-            await twofactorService.exValidateRecoveryCode(testParams);
+            await doblesFactores.exValidateRecoveryCode(testParams);
             expect(prismaService.doblesFactores.findFirst).toHaveBeenCalled();
         });
     });
@@ -174,12 +174,12 @@ describe('Twofactor Service', () => {
                     otplib_secreta: "ddfdfdf0",
                     codigo_recuperacion: "101044545",
                     fecha_creacion_codigo: new Date(),
-                    metodo_validacion_id: 1
+                    metodo_validacion_id: 2
                 }, login: {
                     salt: "$2b$10$6TF0Rmnmmq9Ch60QcmbfIu"
                 }
             };
-            await twofactorService.sendCodeMail(testParams.user, testParams.twofactor, testParams.login);
+            await doblesFactores.sendCodeMail(testParams.user, testParams.twofactor, testParams.login);
             expect(prismaService.doblesFactores.update).toHaveBeenCalled();
         });
     });
@@ -187,7 +187,7 @@ describe('Twofactor Service', () => {
     describe('validationCodeMail', () => {
         it('should validationCodeMail', async () => {
             const testParams = {
-                data: { validate_code: "4485454" },
+                data: { codigo_validacion: "4485454" },
                 twofactor: {
                     login_id: 1,
                     twofactor_id: 1,
@@ -200,7 +200,7 @@ describe('Twofactor Service', () => {
                     salt: "$2b$10$6TF0Rmnmmq9Ch60QcmbfIu"
                 }
             };
-            await twofactorService.validationCodeMail(testParams.data, testParams.login, testParams.twofactor);
+            await doblesFactores.validationCodeMail(testParams.data, testParams.login, testParams.twofactor);
             expect(prismaService.doblesFactores.findFirst).toHaveBeenCalled();
         });
     });

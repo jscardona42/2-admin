@@ -13,12 +13,12 @@ describe('Audit Service', () => {
                 {
                     provide: PrismaService,
                     useFactory: () => ({
-                        audits: {
+                        auditorias: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(),
                             create: jest.fn(() => {
                                 return {
-                                    audit_id: Number,
+                                    auditoria_id: Number,
                                 };
                             }),
                             update: jest.fn(),
@@ -33,15 +33,15 @@ describe('Audit Service', () => {
         prismaService = module.get<PrismaService>(PrismaService);
     });
 
-    describe('getAudits method', () => {
-        it('should invoke prismaService.audits.findMany', async () => {
+    describe('getAuditorias method', () => {
+        it('should invoke prismaService.auditorias.findMany', async () => {
             await auditService.getAuditorias();
             expect(prismaService.auditorias.findMany).toHaveBeenCalled();
         });
     });
 
     describe('registerAudit method', () => {
-        it('should invoke prismaService.audits.create', async () => {
+        it('should invoke prismaService.auditorias.create', async () => {
             const testParams = {
                 data: {
                     auditoria_id: 2,

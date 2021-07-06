@@ -46,7 +46,7 @@ describe('Menu Resolver', () => {
       const testParams = {
         data: {
           parentId: 5,
-          entityName: 'Shipping',
+          name: 'Shipping',
         }
       };
       await menuResolver.createFolder(testParams.data);
@@ -59,7 +59,7 @@ describe('Menu Resolver', () => {
       const testParams = {
         data: {
           parentId: 5,
-          entityName: 'Shipping',
+          name: 'Shipping',
         }
       };
       await menuResolver.insertEntityToFolder(testParams.data)

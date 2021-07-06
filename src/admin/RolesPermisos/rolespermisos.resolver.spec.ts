@@ -3,8 +3,8 @@ import {  RolesPermisosResolver } from './rolespermisos.resolver';
 import { RolesPermisosService } from './rolespermisos.service';
 
 describe('RolesPermissions Resolver', () => {
-  let rolePermissionResolver: RolesPermisosResolver;
-  let rolePermissionService: RolesPermisosService;
+  let rolesPermisosResolver: RolesPermisosResolver;
+  let rolesPermisosService: RolesPermisosService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
@@ -13,21 +13,21 @@ describe('RolesPermissions Resolver', () => {
         {
           provide: RolesPermisosService,
           useFactory: () => ({
-            getRolesPermissions:jest.fn()
+            getRolesPermisos:jest.fn()
           }),
         },
       ],
     }).compile();
 
-    rolePermissionResolver = module.get<RolesPermisosResolver>(RolesPermisosResolver);
-    rolePermissionService = module.get<RolesPermisosService>(RolesPermisosService);
+    rolesPermisosResolver = module.get<RolesPermisosResolver>(RolesPermisosResolver);
+    rolesPermisosService = module.get<RolesPermisosService>(RolesPermisosService);
   });
 
 
   describe('Query getRolesPermissions()', () => {
-    it('should invoke permissionService.getRolesPermissions()', async () => {
-      await rolePermissionResolver.getRolesPermisos();
-      expect(rolePermissionService.getRolesPermisos).toHaveBeenCalled();
+    it('should invoke permissionService.getRolesPermisos()', async () => {
+      await rolesPermisosResolver.getRolesPermisos();
+      expect(rolesPermisosService.getRolesPermisos).toHaveBeenCalled();
     });
   });
 

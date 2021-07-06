@@ -17,7 +17,7 @@ describe('Menu Service', () => {
               findFirst: jest.fn(),
               findMany: jest.fn(),
               findUnique: jest.fn().mockImplementation(() => ({
-                parentMenu: jest.fn(() => {
+                Menus: jest.fn(() => {
                   return { path: String };
                 }),
               })),
@@ -57,7 +57,8 @@ describe('Menu Service', () => {
       const testParams = {
         data: {
           parentId: 2,
-          entityName: "Nombre"
+          name: "Nombre",
+          entidad_id: 1
         }
       };
       await menuService.createFolder(testParams.data);
@@ -70,7 +71,8 @@ describe('Menu Service', () => {
       const testParams = {
         data: {
           parentId: 2,
-          entityName: "Nombre"
+          name: "Nombre",
+          entidad_id: 1
         }
       };
       await menuService.insertEntityToFolder(testParams.data);
