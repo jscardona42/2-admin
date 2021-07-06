@@ -153,6 +153,8 @@ type Query {
   getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
   getTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
+  getMenusTraducciones: [MenusTraducciones!]!
+  getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
 }
 
 input SignInUserInput {
@@ -196,6 +198,9 @@ type Mutation {
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
+  createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
+  updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
+  deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
 }
 
 input SignUpUserInput {
@@ -264,4 +269,17 @@ input CreateTraduccionesInput {
 input UpdateTraduccionesInput {
   idioma: String
   traduccion_id: Float!
+}
+
+input CreateMenuTraduccionInput {
+  traduccion: String!
+  menu_id: Float!
+  traduccion_id: Float!
+}
+
+input UpdateMenuTraduccionInput {
+  traduccion: String
+  menu_id: Float
+  traduccion_id: Float
+  menu_traduccion_id: Float!
 }

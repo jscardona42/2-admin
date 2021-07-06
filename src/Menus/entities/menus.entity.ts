@@ -3,7 +3,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql';
 import JSON from 'graphql-type-json';
 import { MenusPalabras } from '../../MenusPalabras/entities/menuspalabras.entity';
 import { IsNotEmpty } from 'class-validator';
-import { MenusTraducciones } from '../../Traducciones/entities/menustraducciones.entity';
+import { MenusTraducciones } from 'src/MenusTraducciones/entities/menustraducciones.entity';
 
 @ObjectType()
 export class Menus {

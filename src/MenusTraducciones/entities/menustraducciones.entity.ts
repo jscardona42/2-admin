@@ -5,15 +5,13 @@ import { IsNotEmpty } from 'class-validator';
 @ObjectType()
 export class MenusTraducciones {
     @Field(type => ID)
-    @IsNotEmpty()
     menu_traduccion_id: number
 
     @Field()
     @IsNotEmpty()
     traduccion: string
 
-    @Field()
-    @IsNotEmpty()
+    @Field(type => Number)
     menu_id: number
 
     @Field()
