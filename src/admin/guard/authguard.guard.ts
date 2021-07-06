@@ -17,7 +17,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
         var req;
         req = ctx.getContext().req;
 
-        if (query === "getMethods") {
+        if (req === undefined) {
             req = ctx.getArgs().req;
 
             if (req.headers.authorization_url === undefined) {

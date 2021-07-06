@@ -28,8 +28,10 @@ import { EmpresasMenusService } from './EmpresasMenus/empresasmenus.service';
 import { EmpresasMenusResolver } from './EmpresasMenus/empresasmenus.resolver';
 import { MenusPalabrasService } from './MenusPalabras/menuspalabras.service';
 import { MenusPalabrasResolver } from './MenusPalabras/menuspalabras.resolver';
+import { TraduccionesService } from './Traducciones/traducciones.service';
+import { TraduccionesResolver } from './Traducciones/traducciones.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver]
 
 @Module({
   imports: [

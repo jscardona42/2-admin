@@ -21,8 +21,8 @@ export class EmpresasMenusResolver {
     }
 
     @Query(() => [Menus])
-    async getEmpresaMenuByRoleId(@Args('login_id') login_id: number) {
-        return this.menuService.getEmpresaMenuByRoleId(login_id);
+    async getEmpresaMenuByRoleId(@Args('login_id') login_id: number, @Args('traduccion_id') traduccion_id: number) {
+        return this.menuService.getEmpresaMenuByRoleId(login_id, traduccion_id);
     }
 
     @Mutation(returns => EmpresasMenuPersonalizado)

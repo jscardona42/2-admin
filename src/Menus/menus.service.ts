@@ -116,7 +116,21 @@ export class MenusService {
     });
   }
 
-  async getFilterMenu(OR: any, AND: any): Promise<Object> {
+  async getFilterMenu(OR: any, AND: any, traduccion_id: number): Promise<Object> {
+    var traducciones = [];
+    var traduccionesIds = [];
+    traduccionesIds[0] = traduccion_id;
+
+    if (traduccion_id === 0) {
+      traducciones = await this.prismaService.traducciones.findMany({
+        select: { traduccion_id: true }
+      })
+
+      traducciones.forEach(function (traduccion, index) {
+        traduccionesIds[index] = traduccion.traduccion_id;
+      });
+    }
+
     return await this.prismaService.menus.findMany({
       where: {
         menu_id: 1,
@@ -130,6 +144,7 @@ export class MenusService {
         level: true,
         parentMenuId: true,
         MenusPalabras: { select: { palabra: true } },
+        MenusTraducciones: { select: { traduccion: true }, where: { traduccion_id: { in: traduccionesIds } } },
         other_Menus: {
           where: {
             OR: OR,
@@ -143,6 +158,7 @@ export class MenusService {
             order: true,
             level: true,
             MenusPalabras: { select: { palabra: true } },
+            MenusTraducciones: { select: { traduccion: true }, where: { traduccion_id: { in: traduccionesIds } } },
             other_Menus: {
               where: {
                 OR: OR,
@@ -156,6 +172,7 @@ export class MenusService {
                 order: true,
                 level: true,
                 MenusPalabras: { select: { palabra: true } },
+                MenusTraducciones: { select: { traduccion: true }, where: { traduccion_id: { in: traduccionesIds } } },
                 other_Menus: {
                   where: {
                     OR: OR,

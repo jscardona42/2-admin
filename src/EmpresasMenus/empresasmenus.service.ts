@@ -46,7 +46,7 @@ export class EmpresasMenusService {
         const OR = [{ menu_id: { in: arrayMenuIds }, }];
         const AND = [];
 
-        var menuEmpresa = await this.menusService.getFilterMenu(OR, AND);
+        var menuEmpresa = await this.menusService.getFilterMenu(OR, AND, 0);
 
         var menuPersonalizado = await this.prismaService.menuPersonalizado.findFirst({
             where: { empresa_id: usuario.empresa_id }
@@ -79,7 +79,7 @@ export class EmpresasMenusService {
         })
     }
 
-    async getEmpresaMenuByRoleId(login_id: number): Promise<any> {
+    async getEmpresaMenuByRoleId(login_id: number, traduccion_id: number): Promise<any> {
         var arrayMenuIds = [];
         var arrayEntidadIds = [];
 
@@ -111,7 +111,7 @@ export class EmpresasMenusService {
         const OR = [{ entidad_id: { in: arrayEntidadIds }, }, { isEntity: false },];
         const AND = [{ menu_id: { in: arrayMenuIds } }];
 
-        var menuEmpresa = await this.menusService.getFilterMenu(OR, AND);
+        var menuEmpresa = await this.menusService.getFilterMenu(OR, AND, traduccion_id);
 
         return menuEmpresa;
     }

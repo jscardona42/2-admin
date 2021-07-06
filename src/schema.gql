@@ -83,6 +83,13 @@ type MenusPalabras {
   palabra: String!
 }
 
+type MenusTraducciones {
+  menu_traduccion_id: ID!
+  traduccion: String!
+  menu_id: Float!
+  traduccion_id: Float!
+}
+
 type Menus {
   menu_id: ID!
   title: String!
@@ -92,6 +99,7 @@ type Menus {
   other_Menus: JSON!
   order: Float
   MenusPalabras: [MenusPalabras!]
+  MenusTraducciones: [MenusTraducciones!]
 }
 
 """
@@ -116,6 +124,11 @@ type EmpresasMenus {
   menu_id: Float!
 }
 
+type Traducciones {
+  traduccion_id: ID!
+  idioma: String!
+}
+
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
@@ -135,9 +148,11 @@ type Query {
   getUsuarios: [Usuarios!]!
   getEmpresasMenus: [EmpresasMenus!]!
   getEmpresaMenuByEmpresaId(login_id: Float!): EmpresasMenuPersonalizado!
-  getEmpresaMenuByRoleId(login_id: Float!): [Menus!]!
+  getEmpresaMenuByRoleId(traduccion_id: Float!, login_id: Float!): [Menus!]!
   getMenusPalabras: [MenusPalabras!]!
   getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
+  getTraducciones: [Traducciones!]!
+  getTraduccionById(traduccion_id: Float!): Traducciones!
 }
 
 input SignInUserInput {
@@ -178,6 +193,9 @@ type Mutation {
   createMenuPalabra(data: CreateMenuPalabrasInput!): MenusPalabras!
   updateMenuPalabra(data: UpdateMenuPalabrasInput!): MenusPalabras!
   deleteMenuPalabra(menu_palabra_id: Float!): MenusPalabras!
+  createTraduccion(data: CreateTraduccionesInput!): Traducciones!
+  updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
+  deleteTraduccion(traduccion_id: Float!): Traducciones!
 }
 
 input SignUpUserInput {
@@ -237,4 +255,13 @@ input UpdateMenuPalabrasInput {
   menu_id: Float
   palabra: String
   menu_palabra_id: Float!
+}
+
+input CreateTraduccionesInput {
+  idioma: String!
+}
+
+input UpdateTraduccionesInput {
+  idioma: String
+  traduccion_id: Float!
 }
