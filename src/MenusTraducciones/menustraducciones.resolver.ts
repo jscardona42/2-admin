@@ -5,7 +5,7 @@ import { MenusTraduccionesService } from './menustraducciones.service';
 
 
 @Resolver(() => MenusTraducciones)
-export class MenusTraduccionessResolver {
+export class MenusTraduccionesResolver {
     constructor(private readonly menusTraduccionesService: MenusTraduccionesService) { }
 
     @Query(() => [MenusTraducciones])
