@@ -117,6 +117,7 @@ export class MenusService {
   }
 
   async getFilterMenu(OR: any, AND: any, traduccion_id: number): Promise<Object> {
+    console.log(traduccion_id);
     var traducciones = [];
     var traduccionesIds = [];
     traduccionesIds[0] = traduccion_id;

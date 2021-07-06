@@ -148,7 +148,7 @@ type Query {
   getUsuarios: [Usuarios!]!
   getEmpresasMenus: [EmpresasMenus!]!
   getEmpresaMenuByEmpresaId(login_id: Float!): EmpresasMenuPersonalizado!
-  getEmpresaMenuByRoleId(traduccion_id: Float!, login_id: Float!): [Menus!]!
+  getEmpresaMenuByRoleId(traduccion_id: Float, login_id: Float!): [Menus!]!
   getMenusPalabras: [MenusPalabras!]!
   getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
   getTraducciones: [Traducciones!]!

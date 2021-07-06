@@ -80,6 +80,7 @@ export class EmpresasMenusService {
     }
 
     async getEmpresaMenuByRoleId(login_id: number, traduccion_id: number): Promise<any> {
+
         var arrayMenuIds = [];
         var arrayEntidadIds = [];
 
