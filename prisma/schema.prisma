@@ -41,7 +41,6 @@ model Entidades {
   entidad_id Int        @id @default(autoincrement())
   nombre     String     @db.VarChar(255)
   resolver   String?    @db.VarChar(255)
-  Menus      Menus[]
   Permisos   Permisos[]
 }
 
@@ -69,7 +68,6 @@ model Menus {
   order             Int?
   level             Int?
   icon              String?             @db.VarChar(255)
-  Entidades         Entidades?          @relation(fields: [entidad_id], references: [entidad_id])
   Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
   EmpresasMenus     EmpresasMenus[]
   other_Menus       Menus[]             @relation("MenusToMenus_parentMenuId")

@@ -68,7 +68,7 @@ export class MenusService {
         path: '',
         order: data.order,
         Menus: { connect: { menu_id: data.parentId, }, },
-        Entidades: { connect: { entidad_id: data.entidad_id } },
+        entidad_id: data.entidad_id
       },
     });
     return await this.updateFolderPath(createdEntity.menu_id, data.name);
