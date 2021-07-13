@@ -32,8 +32,10 @@ import { TraduccionesService } from './Traducciones/traducciones.service';
 import { TraduccionesResolver } from './Traducciones/traducciones.resolver';
 import { MenusTraduccionesService } from './MenusTraducciones/menustraducciones.service';
 import { MenusTraduccionesResolver } from './MenusTraducciones/menustraducciones.resolver';
+import { ValidacionesService } from './Admin/Validaciones/validaciones.service';
+import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver]
 
 @Module({
   imports: [

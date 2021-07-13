@@ -8,7 +8,7 @@ export class TraduccionesResolver {
     constructor(private readonly traduccionesService: TraduccionesService) { }
 
     @Query(() => [Traducciones])
-    async getTraducciones() {
+    async exGetTraducciones() {
         return this.traduccionesService.getTraducciones();
     }
 

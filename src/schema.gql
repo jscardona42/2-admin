@@ -129,6 +129,28 @@ type Traducciones {
   idioma: String!
 }
 
+type Microservicios {
+  microservicio_id: ID!
+  name: String!
+  hostname: String!
+  puerto: Float!
+  url: String!
+  activo: Boolean
+}
+
+type PermisosValidaciones {
+  permiso_validacion_id: ID!
+  Permisos: Permisos!
+  validacion_id: Float!
+}
+
+type Validaciones {
+  validacion_id: ID!
+  Microservicios: Microservicios!
+  id_referenciado: String!
+  PermisosValidaciones: [PermisosValidaciones!]!
+}
+
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
@@ -151,10 +173,12 @@ type Query {
   getEmpresaMenuByRoleId(traduccion_id: Float, login_id: Float!): [Menus!]!
   getMenusPalabras: [MenusPalabras!]!
   getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
-  getTraducciones: [Traducciones!]!
+  exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getMenusTraducciones: [MenusTraducciones!]!
   getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
+  getValidaciones: [Validaciones!]!
+  getValidacionById(validacion_id: Float!): Validaciones!
 }
 
 input SignInUserInput {
@@ -201,6 +225,8 @@ type Mutation {
   createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
   updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
   deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
+  updateValidacion(data: UpdateValidacionInput!): Validaciones!
+  deleteValidacion(validacion_id: Float!): Validaciones!
 }
 
 input SignUpUserInput {
@@ -282,4 +308,10 @@ input UpdateMenuTraduccionInput {
   menu_id: Float
   traduccion_id: Float
   menu_traduccion_id: Float!
+}
+
+input UpdateValidacionInput {
+  microservicio_id: Float
+  id_referenciado: String
+  validacion_id: Float!
 }

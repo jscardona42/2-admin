@@ -160,11 +160,9 @@ model PermisosValidaciones {
 
 model Validaciones {
   validacion_id        Int                    @id @default(autoincrement())
-  microservicio_id     Int
-  mensaje_error        String                 @db.VarChar(255)
-  id_referenciado      String                 @db.VarChar(255)
-  controlador          String                 @db.VarChar(255)
-  Microservicios       Microservicios         @relation(fields: [microservicio_id], references: [microservicio_id])
+  microservicio_id     Int?
+  id_referenciado      String?                @db.VarChar(255)
+  Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id])
   PermisosValidaciones PermisosValidaciones[]
 }
 
