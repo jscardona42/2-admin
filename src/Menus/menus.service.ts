@@ -49,6 +49,7 @@ export class MenusService {
         title: data.name,
         isEntity: false,
         order: data.order,
+        icon: data.icon,
         path: '',
         Menus: {
           connect: {
@@ -67,6 +68,7 @@ export class MenusService {
         isEntity: true,
         path: '',
         order: data.order,
+        icon: data.icon,
         Menus: { connect: { menu_id: data.parentId, }, },
         entidad_id: data.entidad_id
       },
@@ -210,6 +212,7 @@ export class MenusService {
       data: {
         parentMenuId: data.parentId,
         title: data.name,
+        icon: data.icon,
         entidad_id: entidad_id,
         isEntity: is_entity
       }

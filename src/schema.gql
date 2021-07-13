@@ -246,6 +246,7 @@ input CreateMenuInput {
   name: String!
   entidad_id: Float
   order: Float
+  icon: String
 }
 
 input UpdateMenuInput {
@@ -253,6 +254,7 @@ input UpdateMenuInput {
   name: String
   entidad_id: Float
   order: Float
+  icon: String
   menu_id: Float!
 }
 

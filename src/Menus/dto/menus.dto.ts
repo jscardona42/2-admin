@@ -19,6 +19,9 @@ export class CreateMenuInput {
     @Field((type) => Number, { nullable: true })
     order?: number
 
+    @Field((type) => String, { nullable: true })
+    icon?: string
+
 }
 
 @InputType()
