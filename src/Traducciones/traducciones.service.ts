@@ -20,14 +20,14 @@ export class TraduccionesService {
 
     async createTraduccion(data: CreateTraduccionesInput) {
         return this.prismaService.traducciones.create({
-            data: { idioma: data.idioma }
+            data: { idioma: data.idioma, sigla: data.sigla }
         });
     }
 
     async updateTraduccion(data: UpdateTraduccionesInput) {
         return this.prismaService.traducciones.update({
             where: { traduccion_id: data.traduccion_id },
-            data: { idioma: data.idioma }
+            data: { idioma: data.idioma, sigla: data.sigla }
         });
     }
 

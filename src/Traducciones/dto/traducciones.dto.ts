@@ -9,6 +9,10 @@ export class CreateTraduccionesInput {
     @Field()
     @IsNotEmpty()
     idioma: string
+
+    @Field()
+    @IsNotEmpty()
+    sigla: string
 }
 
 @InputType()

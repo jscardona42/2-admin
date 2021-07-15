@@ -24,8 +24,6 @@ import { MenusService } from './Menus/menus.service';
 import { MenusResolver } from './Menus/menus.resolver';
 import { UsuariosService } from './Usuarios/usuarios.service';
 import { UsuariosResolver } from './Usuarios/usuarios.resolver';
-import { EmpresasMenusService } from './EmpresasMenus/empresasmenus.service';
-import { EmpresasMenusResolver } from './EmpresasMenus/empresasmenus.resolver';
 import { MenusPalabrasService } from './MenusPalabras/menuspalabras.service';
 import { MenusPalabrasResolver } from './MenusPalabras/menuspalabras.resolver';
 import { TraduccionesService } from './Traducciones/traducciones.service';
@@ -35,7 +33,7 @@ import { MenusTraduccionesResolver } from './MenusTraducciones/menustraducciones
 import { ValidacionesService } from './Admin/Validaciones/validaciones.service';
 import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, EmpresasMenusService, EmpresasMenusResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver]
 
 @Module({
   imports: [
@@ -68,9 +66,6 @@ const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, M
         res: res
       }),
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
-      // buildSchemaOptions: {
-      //   orphanedTypes: [Login],
-      // },
     })
   ],
   controllers: [PermisosController],
