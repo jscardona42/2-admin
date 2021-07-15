@@ -31,10 +31,8 @@ model DoblesFactores {
 }
 
 model Empresas {
-  empresa_id        Int                 @id @default(autoincrement())
-  nombre            String?             @db.VarChar(255)
-  EmpresasMenus     EmpresasMenus[]
-  MenuPersonalizado MenuPersonalizado[]
+  empresa_id Int     @id @default(autoincrement())
+  nombre     String? @db.VarChar(255)
 }
 
 model Entidades {
@@ -69,7 +67,6 @@ model Menus {
   level             Int?
   icon              String?             @db.VarChar(255)
   Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
-  EmpresasMenus     EmpresasMenus[]
   other_Menus       Menus[]             @relation("MenusToMenus_parentMenuId")
   MenusPalabras     MenusPalabras[]
   MenusTraducciones MenusTraducciones[]
@@ -126,21 +123,6 @@ model Usuarios {
   Login      Login[]
 }
 
-model EmpresasMenus {
-  empresa_menu_id Int      @id @default(autoincrement())
-  empresa_id      Int
-  menu_id         Int
-  Empresas        Empresas @relation(fields: [empresa_id], references: [empresa_id])
-  Menus           Menus    @relation(fields: [menu_id], references: [menu_id])
-}
-
-model MenuPersonalizado {
-  menu_pesonalizado_id Int      @id @default(autoincrement())
-  empresa_id           Int
-  menu                 Json     @db.Json
-  Empresas             Empresas @relation(fields: [empresa_id], references: [empresa_id])
-}
-
 model MenusPalabras {
   menu_palabra_id Int    @id @default(autoincrement())
   menu_id         Int
@@ -176,5 +158,6 @@ model MenusTraducciones {
 model Traducciones {
   traduccion_id     Int                 @id @default(autoincrement())
   idioma            String              @db.VarChar(255)
+  sigla             String              @db.VarChar(10)
   MenusTraducciones MenusTraducciones[]
 }
