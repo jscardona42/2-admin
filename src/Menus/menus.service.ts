@@ -314,10 +314,10 @@ export class MenusService {
 
   }
 
-  async modifyMenuEstado(menu_id: number): Promise<Object> {
+  async modifyMenuEstado(menu_id: number, activo: boolean): Promise<Object> {
     return await this.prismaService.menus.update({
       where: { menu_id: menu_id },
-      data: { activo: false }
+      data: { activo: activo }
     })
   }
 

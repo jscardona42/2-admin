@@ -164,7 +164,7 @@ model Traducciones {
 }
 
 model Iconos {
-  icon_id Int     @id @default(autoincrement())
-  nombre  String  @db.VarChar(255)
-  activo  Boolean @default(true)
+  icono_id Int     @id @default(autoincrement())
+  nombre   String  @db.VarChar(255)
+  activo   Boolean @default(true)
 }

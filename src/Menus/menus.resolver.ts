@@ -51,7 +51,8 @@ export class MenusResolver {
 
   @Mutation(returns => Menus)
   async modifyMenuEstado(
-    @Args('menu_id') menu_id: number): Promise<Object> {
-    return this.menuService.modifyMenuEstado(menu_id)
+    @Args('menu_id') menu_id: number,
+    @Args('activo') activo: boolean): Promise<Object> {
+    return this.menuService.modifyMenuEstado(menu_id, activo)
   }
 }

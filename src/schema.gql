@@ -98,6 +98,7 @@ type Menus {
   isEntity: Boolean!
   other_Menus: JSON!
   order: Float
+  activo: Float
   MenusPalabras: [MenusPalabras!]
   MenusTraducciones: [MenusTraducciones!]
 }
@@ -135,6 +136,12 @@ type Validaciones {
   PermisosValidaciones: [PermisosValidaciones!]!
 }
 
+type Iconos {
+  icono_id: ID!
+  nombre: String!
+  activo: Boolean
+}
+
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
@@ -162,6 +169,8 @@ type Query {
   getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
   getValidaciones: [Validaciones!]!
   getValidacionById(validacion_id: Float!): Validaciones!
+  getIconos: [Iconos!]!
+  getIconoById(icono_id: Float!): Iconos!
 }
 
 input SignInUserInput {
@@ -192,7 +201,7 @@ type Mutation {
   createFolder(data: CreateMenuInput!): Menus!
   insertEntityToFolder(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
-  modifyMenuEstado(menu_id: Float!): Menus!
+  modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!
@@ -210,6 +219,9 @@ type Mutation {
   deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
   updateValidacion(data: UpdateValidacionInput!): Validaciones!
   deleteValidacion(validacion_id: Float!): Validaciones!
+  createIcono(data: CreateIconoInput!): Iconos!
+  updateIcono(data: UpdateIconoInput!): Iconos!
+  modifyIconoEstado(activo: Boolean!, icono_id: Float!): Iconos!
 }
 
 input SignUpUserInput {
@@ -288,4 +300,15 @@ input UpdateValidacionInput {
   microservicio_id: Float
   id_referenciado: String
   validacion_id: Float!
+}
+
+input CreateIconoInput {
+  nombre: String!
+  activo: String
+}
+
+input UpdateIconoInput {
+  nombre: String
+  activo: String
+  icono_id: Float!
 }
