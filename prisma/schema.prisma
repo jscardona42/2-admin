@@ -66,6 +66,7 @@ model Menus {
   order             Int?
   level             Int?
   icon              String?             @db.VarChar(255)
+  activo            Boolean?            @default(true)
   Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
   other_Menus       Menus[]             @relation("MenusToMenus_parentMenuId")
   MenusPalabras     MenusPalabras[]
@@ -160,4 +161,10 @@ model Traducciones {
   idioma            String              @db.VarChar(255)
   sigla             String              @db.VarChar(10)
   MenusTraducciones MenusTraducciones[]
+}
+
+model Iconos {
+  icon_id Int     @id @default(autoincrement())
+  nombre  String  @db.VarChar(255)
+  activo  Boolean @default(true)
 }

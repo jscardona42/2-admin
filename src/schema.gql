@@ -140,6 +140,7 @@ type Query {
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
   getMenus: [Menus!]!
+  getMenusInactivos: [Menus!]!
   getMenuByRoleId(login_id: Float!): [Menus!]!
   getFilterMenuPalabra(palabra: String!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
@@ -191,6 +192,7 @@ type Mutation {
   createFolder(data: CreateMenuInput!): Menus!
   insertEntityToFolder(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
+  modifyMenuEstado(menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!

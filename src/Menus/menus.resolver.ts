@@ -13,6 +13,11 @@ export class MenusResolver {
   }
 
   @Query(() => [Menus])
+  async getMenusInactivos() {
+    return this.menuService.getMenusInactivos();
+  }
+
+  @Query(() => [Menus])
   async getMenuByRoleId(@Args('login_id') login_id: number): Promise<Object[]> {
     return this.menuService.getMenuByRoleId(login_id);
   }
@@ -42,5 +47,11 @@ export class MenusResolver {
   async updateMenu(
     @Args('data') data: string): Promise<Object[]> {
     return this.menuService.updateMenu(data)
+  }
+
+  @Mutation(returns => Menus)
+  async modifyMenuEstado(
+    @Args('menu_id') menu_id: number): Promise<Object> {
+    return this.menuService.modifyMenuEstado(menu_id)
   }
 }
