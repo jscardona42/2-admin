@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
-import { Microservicios } from "src/Admin/Microservicios/entities/microservicios.entity"
+import { Microservicios } from "../../../Admin/Microservicios/entities/microservicios.entity"
 import { PermisosValidaciones } from "./permisosvalidaciones.entity"
 
 @ObjectType()

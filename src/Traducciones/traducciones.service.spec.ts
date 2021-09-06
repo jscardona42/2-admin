@@ -53,7 +53,8 @@ describe('Traducciones Service', () => {
         it('should invoke prismaService.traducciones.create', async () => {
             const testParams = {
                 data: {
-                    idioma: "Palabra"
+                    idioma: "Palabra",
+                    sigla: "a"
                 }
             };
             await traduccionesService.createTraduccion(

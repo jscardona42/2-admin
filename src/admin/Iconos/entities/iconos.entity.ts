@@ -11,4 +11,7 @@ export class Iconos {
     @Field((type) => Boolean, { nullable: true })
     activo?: boolean
 
+    @Field((type) => String)
+    unicode: string
+
 }

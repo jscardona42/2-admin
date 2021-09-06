@@ -34,8 +34,13 @@ import { ValidacionesService } from './Admin/Validaciones/validaciones.service';
 import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver';
 import { IconosService } from './Admin/Iconos/iconos.service';
 import { IconosResolver } from './Admin/Iconos/iconos.resolver';
+import { MicroserviciosService } from './Admin/Microservicios/microservicios.service';
+import { MicroserviciosResolver } from './Admin/Microservicios/microservicios.resolver';
+import { MetodosValidacionService } from './Admin/MetodosValidacion/metodosvalidacion.service';
+import { MetodosValidacionResolver } from './Admin/MetodosValidacion/metodosvalidacion.resolver';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver]
+
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, IconosService, IconosResolver, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, ValidacionesService, ValidacionesResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
 
 @Module({
   imports: [

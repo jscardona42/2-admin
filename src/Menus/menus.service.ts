@@ -4,8 +4,8 @@ import { LoginService } from '../Login/login.service';
 import { UsuariosService } from '../Usuarios/usuarios.service';
 import { PrismaService } from '../prisma.service';
 import { CreateMenuInput } from './dto/menus.dto';
-import { prisma } from '@prisma/client';
-import { Menus } from './entities/menus.entity';
+import { EntidadesService } from '../Admin/Entidades/entidades.service';
+
 
 @Injectable()
 export class MenusService {
@@ -13,7 +13,8 @@ export class MenusService {
     private prismaService: PrismaService,
     private rolesPermisosService: RolesPermisosService,
     private loginService: LoginService,
-    private usuariosService: UsuariosService
+    private usuariosService: UsuariosService,
+    private entidadesService: EntidadesService
   ) { }
 
   // Obtener todos los menús
@@ -44,6 +45,12 @@ export class MenusService {
           }
         }
       }
+    });
+  }
+
+  async getMenuById(menu_id: number): Promise<any> {
+    return await this.prismaService.menus.findUnique({
+      where: { menu_id: menu_id }
     });
   }
 
@@ -153,6 +160,9 @@ export class MenusService {
 
   // Crear entidad
   async insertEntityToFolder(data: CreateMenuInput): Promise<Object> {
+
+    await this.entidadesService.getEntidadeById(data.entidad_id);
+
     const createdEntity = await this.prismaService.menus.create({
       data: {
         title: data.name,
@@ -216,6 +226,7 @@ export class MenusService {
     var menu = JSON.parse(data);
 
     menu.other_Menus.forEach(async nivel1 => {
+      await this.entidadesService.getEntidadeById(nivel1.entidad_id);
       if (nivel1.menu_id !== 0) {
         await this.prismaService.menus.update({
           where: { menu_id: nivel1.menu_id },
@@ -247,6 +258,7 @@ export class MenusService {
 
 
       nivel1.other_Menus.forEach(async nivel2 => {
+        await this.entidadesService.getEntidadeById(nivel2.entidad_id);
         if (nivel2.menu_id !== 0) {
           await this.prismaService.menus.update({
             where: { menu_id: nivel2.menu_id },
@@ -277,6 +289,7 @@ export class MenusService {
         }
 
         nivel2.other_Menus.forEach(async nivel3 => {
+          await this.entidadesService.getEntidadeById(nivel3.entidad_id);
           if (nivel3.menu_id !== 0) {
             await this.prismaService.menus.update({
               where: { menu_id: nivel3.menu_id },

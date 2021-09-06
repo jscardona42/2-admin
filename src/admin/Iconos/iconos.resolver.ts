@@ -19,6 +19,13 @@ export class IconosResolver {
         return this.iconosService.getIconoById(icono_id);
     }
 
+    @Query(() => [Iconos])
+    async getFilterIconos(
+        @Args("nombre", { nullable: true }) nombre: string,
+        @Args("unicode", { nullable: true }) unicode: string): Promise<Iconos[]> {
+        return await this.iconosService.getFilterIconos(nombre, unicode);
+    }
+
     @Mutation((returns) => Iconos)
     async createIcono(@Args("data") data: CreateIconoInput): Promise<Iconos> {
         return this.iconosService.createIcono(data);
@@ -30,10 +37,7 @@ export class IconosResolver {
     }
 
     @Mutation((returns) => Iconos)
-    async modifyIconoEstado(
-        @Args("icono_id") icono_id: number,
-        @Args("activo") activo: boolean
-    ): Promise<Iconos> {
-        return this.iconosService.modifyIconoEstado(icono_id, activo);
+    async deleteIcono(@Args("icono_id") icono_id: number): Promise<Iconos> {
+        return this.iconosService.deleteIcono(icono_id);
     }
 }

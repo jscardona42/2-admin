@@ -1,6 +1,15 @@
 import { Test } from '@nestjs/testing';
+import { RolesPermisosService } from '../Admin/RolesPermisos/rolespermisos.service';
+import { LoginService } from '../Login/login.service';
+import { UsuariosService } from '../Usuarios/usuarios.service';
 import { PrismaService } from '../prisma.service';
 import { MenusService } from './menus.service';
+import { JwtModule } from '@nestjs/jwt';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
+import { EntidadesService } from '../Admin/Entidades/entidades.service';
+import { RolesService } from '../Admin/Roles/roles.service';
+import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 
 describe('Menu Service', () => {
   let menuService: MenusService;
@@ -8,8 +17,16 @@ describe('Menu Service', () => {
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
+      imports: [
+        JwtModule.register({
+          secret: process.env.JWT_SECRET,
+          signOptions: {
+            expiresIn: process.env.JWT_EXPIRESIN
+          }
+        }),
+      ],
       providers: [
-        MenusService,
+        MenusService, RolesPermisosService, LoginService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
         {
           provide: PrismaService,
           useFactory: () => ({
@@ -29,6 +46,9 @@ describe('Menu Service', () => {
               update: jest.fn(),
               delete: jest.fn(),
             },
+            entidades: {
+              findUnique: jest.fn(() => { return { entidad_id: 1 } }),
+            },
           }),
         },
       ],
@@ -36,13 +56,6 @@ describe('Menu Service', () => {
 
     menuService = module.get<MenusService>(MenusService);
     prismaService = module.get<PrismaService>(PrismaService);
-  });
-
-  describe('rootMenu method', () => {
-    it('should invoke prismaService.menus.findFirst', async () => {
-      await menuService.rootMenu();
-      expect(prismaService.menus.findFirst).toHaveBeenCalled();
-    });
   });
 
   describe('createRootMenu method', () => {
