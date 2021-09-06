@@ -81,13 +81,14 @@ model MetodosValidacion {
 }
 
 model Microservicios {
-  microservicio_id Int            @id @default(autoincrement())
-  name             String         @db.VarChar(255)
-  hostname         String         @db.VarChar(255)
-  puerto           Int
-  url              String         @db.VarChar(32)
-  activo           Boolean?
-  Validaciones     Validaciones[]
+  microservicio_id     Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  hostname             String                 @db.VarChar(255)
+  puerto               Int
+  url                  String                 @db.VarChar(32)
+  activo               Boolean
+  ProveedoresServicios ProveedoresServicios[]
+  Validaciones         Validaciones[]
 }
 
 model Permisos {
@@ -167,4 +168,12 @@ model Iconos {
   icono_id Int     @id @default(autoincrement())
   nombre   String  @db.VarChar(255)
   activo   Boolean @default(true)
+  unicode  String  @db.VarChar(255)
+}
+
+model ProveedoresServicios {
+  proveedor_servicio_id Int            @id @default(autoincrement())
+  microservicio_id      Int
+  lista_proveedores     String
+  Microservicios        Microservicios @relation(fields: [microservicio_id], references: [microservicio_id])
 }
