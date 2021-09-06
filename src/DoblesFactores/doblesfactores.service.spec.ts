@@ -6,6 +6,8 @@ import { LoginService } from '../Login/login.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { DoblesFactoresService } from './doblesfactores.service';
+import { MetodosValidacionService } from '../Admin/MetodosValidacion/metodosvalidacion.service';
+import { RolesService } from '../Admin/Roles/roles.service';
 
 
 describe('Twofactor Service', () => {
@@ -33,7 +35,7 @@ describe('Twofactor Service', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresService, MailerModule, LoginService, AuditoriasService,
+                DoblesFactoresService, MailerModule, LoginService, AuditoriasService, MetodosValidacionService, LoginService, RolesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -49,6 +51,12 @@ describe('Twofactor Service', () => {
                             update: jest.fn(() => "ewewererer"),
                             delete: jest.fn(),
                         },
+                        login: {
+                            findUnique: jest.fn(() => { return { login_id: 1 } }),
+                        },
+                        metodosValidacion: {
+                            findUnique: jest.fn(() => { return { metodo_validacion: 1 } })
+                        },
                     }),
                 },
             ],
@@ -58,7 +66,7 @@ describe('Twofactor Service', () => {
         prismaService = module.get<PrismaService>(PrismaService);
     });
 
-    describe('getTwoFactorById method', () => {
+    describe('getDobleFactorById method', () => {
         it('should invoke prismaService.doblesFactores.findUnique', async () => {
             const testParams = {
                 twofactor_id: 1
@@ -70,7 +78,7 @@ describe('Twofactor Service', () => {
         });
     });
 
-    describe('getTwoFactorByLoginId method', () => {
+    describe('getDobleFactorByLoginId method', () => {
         it('should invoke prismaService.doblesFactores.findFirst', async () => {
             const testParams = {
                 login_id: 1
@@ -95,8 +103,8 @@ describe('Twofactor Service', () => {
         });
     });
 
-    describe('createTwoFactor', () => {
-        it('should create twofactor', async () => {
+    describe('createDobleFactor', () => {
+        it('should createDobleFactor', async () => {
             const testParams = {
                 login_id: 1,
                 metodo_validacion_id: 1
@@ -106,8 +114,8 @@ describe('Twofactor Service', () => {
         });
     });
 
-    describe('configTwoFactor', () => {
-        it('should configTwoFactor', async () => {
+    describe('configDobleFactor', () => {
+        it('should configDobleFactor', async () => {
             const testParams = {
                 login_id: 1,
                 secret: "aserefdfdass"
@@ -166,7 +174,7 @@ describe('Twofactor Service', () => {
     describe('sendCodeMail', () => {
         it('should sendCodeMail', async () => {
             const testParams = {
-                user: { email: "code@gmail.com" },
+                user: { email: "usuario1@gmail.com" },
                 twofactor: {
                     login_id: 1,
                     doble_factor_id: 1,

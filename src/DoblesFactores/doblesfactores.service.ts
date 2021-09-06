@@ -3,15 +3,22 @@ import { PrismaService } from '../prisma.service';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 import { MailerService } from '@nestjs-modules/mailer';
-import * as bcrypt from "bcrypt";
+import * as bcrypt from "bcryptjs";
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { CodigoRecuperacionInput, configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
+import { LoginService } from '../Login/login.service';
+import { MetodosValidacionService } from '../Admin/MetodosValidacion/metodosvalidacion.service';
 var QRCode = require('qrcode')
 
 
 @Injectable()
 export class DoblesFactoresService {
-    constructor(private prismaService: PrismaService, private readonly mailerService: MailerService) { }
+    constructor(
+        private prismaService: PrismaService, 
+        private readonly mailerService: MailerService,
+        private readonly loginService: LoginService,
+        private readonly metValService: MetodosValidacionService
+        ) { }
 
     public async generateDobleFactorAuthenticationSecret(user) {
         authenticator.options = { window: 0 };
@@ -28,6 +35,10 @@ export class DoblesFactoresService {
     }
 
     async createDobleFactor(data: configDoblesFactoresInput): Promise<DoblesFactores> {
+
+        await this.metValService.getMetodoValidacionById(data.metodo_validacion_id);
+        await this.loginService.getLoginById(data.login_id);
+
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
             where: { login_id: data.login_id }
         })
@@ -79,9 +90,15 @@ export class DoblesFactoresService {
     }
 
     async getDobleFactorById(doblefactor_id: number): Promise<DoblesFactores> {
-        return await this.prismaService.doblesFactores.findUnique({
+        var doblesFactores = await this.prismaService.doblesFactores.findUnique({
             where: { doble_factor_id: doblefactor_id }
         })
+
+        if (doblesFactores === null) {
+            throw new UnauthorizedException(`El doble factor con id ${doblefactor_id} no existe`);
+        }
+
+        return doblesFactores;
     }
 
     async exValidateRecoveryCode(data: CodigoRecuperacionInput): Promise<DoblesFactores> {
@@ -179,7 +196,7 @@ export class DoblesFactoresService {
                 subject: 'Verification code',
                 text: 'welcome',
                 html: `<h2>Escanee el código QR con una aplicación de autenticación de dos factores</h2>
-                        <div><img src="cid:code_qr"/></div>
+                        <div><img ..="cid:code_qr"/></div>
                         <h2>Códigos de recuperación: <br></h2>
                         <h3>${codes.split(',').join('<br>')}</h3>`,
                 attachments: [{

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import { EntidadesService } from '../Entidades/entidades.service';
 import { ValidacionesService } from '../Validaciones/validaciones.service';
@@ -53,6 +53,26 @@ export class PermisosService {
     return JSON.stringify({ status: 200 });
   }
 
+  async getPermisoById(permiso_id: number): Promise<Permisos> {
+    var permisos = await this.prismaService.permisos.findUnique({
+      where: { permiso_id: permiso_id },
+      include: { Entidades: true }
+    });
+
+    if (permisos === null) {
+      throw new UnauthorizedException(`El permiso con id ${permiso_id} no existe`);
+    }
+
+    return permisos;
+  }
+
+  async getFilterPermisos(permiso: string): Promise<Permisos[]> {
+    return await this.prismaService.permisos.findMany({
+      where: { OR: [{ permiso: { contains: permiso, mode: "insensitive" } }] },
+      include: { Entidades: true }
+    });
+  }
+
   async createPermisos(cls): Promise<Permisos> {
     var entidad = await this.prismaService.entidades.findFirst({
       where: { resolver: cls.name },
@@ -66,11 +86,13 @@ export class PermisosService {
     if (entidad !== null && permiso === null) {
       return this.prismaService.permisos.create({
         data: { entidad_id: entidad.entidad_id, permiso: cls.permiso, es_publico: cls.is_public },
+        include: { Entidades: true }
       });
     } else {
       return this.prismaService.permisos.update({
         where: { permiso_id: permiso.permiso_id },
         data: { entidad_id: entidad.entidad_id, permiso: cls.permiso, es_publico: cls.is_public },
+        include: { Entidades: true }
       });
     }
   }

@@ -23,6 +23,7 @@ export class Microservicios {
     @IsNotEmpty()
     url: string
 
-    @Field((type) => Boolean, { nullable: true })
+    @Field((type) => Boolean)
+    @IsNotEmpty()
     activo: boolean
 }

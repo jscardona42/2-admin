@@ -29,7 +29,7 @@ describe('Traducciones Resolver', () => {
 
     describe('Query getTraducciones()', () => {
         it('should invoke traduccionesService.getTraducciones()', async () => {
-            await traduccionesResolver.getTraducciones();
+            await traduccionesResolver.exGetTraducciones();
             expect(traduccionesService.getTraducciones).toHaveBeenCalled();
         });
     });
@@ -48,7 +48,8 @@ describe('Traducciones Resolver', () => {
         it('should invoke traduccionesService.createTraduccion', async () => {
             const testParams = {
                 data: {
-                    idioma: "Palabra"
+                    idioma: "Palabra",
+                    sigla:"A"
                 }
             };
             await traduccionesResolver.createTraduccion(testParams.data);

@@ -31,6 +31,9 @@ export class Menus {
     @Field(type => Number, { nullable: true })
     order?: number
 
+    @Field(type => Number, { nullable: true })
+    activo?: number
+
     @Field(type => [MenusPalabras], { nullable: true })
     MenusPalabras?: MenusPalabras[]
 

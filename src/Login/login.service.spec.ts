@@ -1,5 +1,6 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
+import { RolesService } from '../Admin/Roles/roles.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { PrismaService } from '../prisma.service';
 import { LoginService } from './login.service';
@@ -8,7 +9,6 @@ import { LoginService } from './login.service';
 describe('Login Service', () => {
     let loginService: LoginService;
     let prismaService: PrismaService;
-    let auditService: AuditoriasService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
@@ -21,7 +21,7 @@ describe('Login Service', () => {
                 }),
             ],
             providers: [
-                LoginService, AuditoriasService,
+                LoginService, AuditoriasService, RolesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -52,6 +52,9 @@ describe('Login Service', () => {
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             create: jest.fn()
+                        },
+                        roles: {
+                            findUnique: jest.fn(() => { return { rol_id: 1 } })
                         },
                     }),
                 },
@@ -126,7 +129,7 @@ describe('Login Service', () => {
                     password: "123456",
                     salt: "",
                     token: "",
-                    role_id: 3
+                    rol_id: 3
                 }
             };
             await loginService.signUpLogin(

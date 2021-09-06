@@ -1,6 +1,16 @@
 import { Test } from '@nestjs/testing';
+import { LoginService } from '../Login/login.service';
+import { RolesPermisosService } from '../Admin/RolesPermisos/rolespermisos.service';
+import { MenusService } from '../Menus/menus.service';
 import { PrismaService } from '../prisma.service';
 import { MenusPalabrasService } from './menuspalabras.service';
+import { UsuariosService } from '../Usuarios/usuarios.service';
+import { EntidadesService } from '../Admin/Entidades/entidades.service';
+import { RolesService } from '../Admin/Roles/roles.service';
+import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { JwtModule } from '@nestjs/jwt';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
+import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 
 describe('MenusPalabras Service', () => {
     let menusPalabrasService: MenusPalabrasService;
@@ -8,8 +18,16 @@ describe('MenusPalabras Service', () => {
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
+            imports: [
+                JwtModule.register({
+                    secret: process.env.JWT_SECRET,
+                    signOptions: {
+                        expiresIn: process.env.JWT_EXPIRESIN
+                    }
+                }),
+            ],
             providers: [
-                MenusPalabrasService,
+                MenusPalabrasService, MenusService, RolesPermisosService, LoginService, UsuariosService, EntidadesService, RolesService, PermisosService, AuditoriasService, ValidacionesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -20,6 +38,9 @@ describe('MenusPalabras Service', () => {
                             create: jest.fn(),
                             update: jest.fn(),
                             delete: jest.fn(),
+                        },
+                        menus: {
+                            findUnique: jest.fn(() => { return { menu_id: 1 } }),
                         },
                     }),
                 },

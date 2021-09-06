@@ -13,4 +13,8 @@ export class Traducciones {
     @Field()
     @IsNotEmpty()
     idioma: string
+
+    @Field()
+    @IsNotEmpty()
+    sigla: string
 }

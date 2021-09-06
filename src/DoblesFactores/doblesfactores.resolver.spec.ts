@@ -1,12 +1,13 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
+import { RolesService } from '../Admin/Roles/roles.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { LoginService } from '../Login/login.service';
 import { PrismaService } from '../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';
 
-describe('Login Resolver', () => {
+describe('Dobles factores Resolver', () => {
     let twofactorResolver: DoblesFactoresResolver;
     let twofactorService: DoblesFactoresService;
 
@@ -21,7 +22,7 @@ describe('Login Resolver', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresResolver, LoginService, AuditoriasService, PrismaService,
+                DoblesFactoresResolver, LoginService, AuditoriasService, PrismaService, RolesService,
                 {
                     provide: DoblesFactoresService,
                     useFactory: () => ({
@@ -32,7 +33,7 @@ describe('Login Resolver', () => {
                         exValidateRecoveryCode: jest.fn(() => true),
                         setActivateConfigDobleFactorTOTP: jest.fn(),
                         exValidateDobleFactorCode: jest.fn(() => { return { isCodeValid: true } }),
-                        validationCodeMail:jest.fn()
+                        validationCodeMail: jest.fn()
                     }),
                 },
             ],

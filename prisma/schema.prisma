@@ -31,10 +31,8 @@ model DoblesFactores {
 }
 
 model Empresas {
-  empresa_id        Int                 @id @default(autoincrement())
-  nombre            String?             @db.VarChar(255)
-  EmpresasMenus     EmpresasMenus[]
-  MenuPersonalizado MenuPersonalizado[]
+  empresa_id Int     @id @default(autoincrement())
+  nombre     String? @db.VarChar(255)
 }
 
 model Entidades {
@@ -68,8 +66,8 @@ model Menus {
   order             Int?
   level             Int?
   icon              String?             @db.VarChar(255)
+  activo            Boolean?            @default(true)
   Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id])
-  EmpresasMenus     EmpresasMenus[]
   other_Menus       Menus[]             @relation("MenusToMenus_parentMenuId")
   MenusPalabras     MenusPalabras[]
   MenusTraducciones MenusTraducciones[]
@@ -83,13 +81,14 @@ model MetodosValidacion {
 }
 
 model Microservicios {
-  microservicio_id Int            @id @default(autoincrement())
-  name             String         @db.VarChar(255)
-  hostname         String         @db.VarChar(255)
-  puerto           Int
-  url              String         @db.VarChar(32)
-  activo           Boolean?
-  Validaciones     Validaciones[]
+  microservicio_id     Int                    @id @default(autoincrement())
+  name                 String                 @db.VarChar(255)
+  hostname             String                 @db.VarChar(255)
+  puerto               Int
+  url                  String                 @db.VarChar(32)
+  activo               Boolean
+  ProveedoresServicios ProveedoresServicios[]
+  Validaciones         Validaciones[]
 }
 
 model Permisos {
@@ -124,21 +123,6 @@ model Usuarios {
   activo     Boolean? @default(true)
   empresa_id Int?     @db.SmallInt
   Login      Login[]
-}
-
-model EmpresasMenus {
-  empresa_menu_id Int      @id @default(autoincrement())
-  empresa_id      Int
-  menu_id         Int
-  Empresas        Empresas @relation(fields: [empresa_id], references: [empresa_id])
-  Menus           Menus    @relation(fields: [menu_id], references: [menu_id])
-}
-
-model MenuPersonalizado {
-  menu_pesonalizado_id Int      @id @default(autoincrement())
-  empresa_id           Int
-  menu                 Json     @db.Json
-  Empresas             Empresas @relation(fields: [empresa_id], references: [empresa_id])
 }
 
 model MenusPalabras {
@@ -176,5 +160,20 @@ model MenusTraducciones {
 model Traducciones {
   traduccion_id     Int                 @id @default(autoincrement())
   idioma            String              @db.VarChar(255)
+  sigla             String              @db.VarChar(10)
   MenusTraducciones MenusTraducciones[]
+}
+
+model Iconos {
+  icono_id Int     @id @default(autoincrement())
+  nombre   String  @db.VarChar(255)
+  activo   Boolean @default(true)
+  unicode  String  @db.VarChar(255)
+}
+
+model ProveedoresServicios {
+  proveedor_servicio_id Int            @id @default(autoincrement())
+  microservicio_id      Int
+  lista_proveedores     String
+  Microservicios        Microservicios @relation(fields: [microservicio_id], references: [microservicio_id])
 }

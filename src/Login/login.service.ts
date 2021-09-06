@@ -6,6 +6,8 @@ import { AuthenticationError } from 'apollo-server-express';
 import { Login } from './entities/login.entity';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { Usuarios } from '../Usuarios/entities/usuarios.entity';
+import { RolesService } from '../Admin/Roles/roles.service';
+import { SignUpUserInput } from './dto/login.dto';
 
 
 @Injectable()
@@ -13,7 +15,8 @@ export class LoginService {
   constructor(
     private prismaService: PrismaService,
     private jwtService: JwtService,
-    private auditService: AuditoriasService
+    private auditService: AuditoriasService,
+    private rolesService: RolesService
   ) { }
 
   async getLogin(): Promise<Login[]> {
@@ -21,12 +24,18 @@ export class LoginService {
   }
 
   async getLoginById(login_id: number): Promise<Login> {
-    return await this.prismaService.login.findUnique({
+    var login = await this.prismaService.login.findUnique({
       where: { login_id: login_id },
       include: {
         Usuarios: true,
       }
     });
+
+    if (login === null) {
+      throw new UnauthorizedException(`El login con id ${login_id} no existe`);
+    }
+
+    return login;
   }
 
   async getUsuarioById(id: number): Promise<Usuarios> {
@@ -43,7 +52,7 @@ export class LoginService {
 
     if (salt === null) {
       this.auditService.registerAuditoria(data);
-      throw new AuthenticationError('Invalid credentials');
+      throw new AuthenticationError('Credenciales inválidas');
     }
 
     const user = await this.prismaService.login.findFirst({
@@ -55,7 +64,7 @@ export class LoginService {
 
     if (!user) {
       this.auditService.registerAuditoria(data);
-      throw new AuthenticationError('Invalid credentials');
+      throw new AuthenticationError('Credenciales inválidas');
     }
 
     this.auditService.registerAuditoria(user);
@@ -66,13 +75,16 @@ export class LoginService {
     return updToken;
   }
 
-  async signUpLogin(data): Promise<any> {
+  async signUpLogin(data: SignUpUserInput): Promise<any> {
+
+    await this.rolesService.getRolById(data.rol_id);
+
     const salt = await bcrypt.genSalt();
 
     const usernameExists = await this.usernameExists(data.username);
 
     if (usernameExists) {
-      throw new UnauthorizedException('The user is already registered');
+      throw new UnauthorizedException('El usuario ya se encuentra registrado');
     }
 
     const user = this.prismaService.login.create({
@@ -80,13 +92,12 @@ export class LoginService {
         username: data.username,
         password: await this.hashPassword(data.password, salt),
         salt: salt,
-        token: data.token,
-        rol_id: data.role_id
+        rol_id: data.rol_id
       }
     })
 
     if (user === null) {
-      throw new UnauthorizedException('User does not exist');
+      throw new UnauthorizedException('El usuario no pudo ser creado');
     }
 
     return user;
@@ -100,6 +111,9 @@ export class LoginService {
   }
 
   async exChangePasswordLogin(data): Promise<any> {
+
+    await this.getLoginById(data.login_id);
+
     const salt = await this.prismaService.login.findFirst({
       where: { login_id: data.login_id },
       select: { salt: true },

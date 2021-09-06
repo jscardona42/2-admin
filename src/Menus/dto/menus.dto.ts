@@ -22,6 +22,9 @@ export class CreateMenuInput {
     @Field((type) => String, { nullable: true })
     icon?: string
 
+    @Field((type) => Boolean, { nullable: true })
+    base?: boolean
+
 }
 
 @InputType()

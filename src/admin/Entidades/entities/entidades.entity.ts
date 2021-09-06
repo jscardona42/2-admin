@@ -6,7 +6,7 @@ export class Entidades {
     entidad_id: number
 
     @Field((type) => String)
-    name: string
+    nombre: string
 
     @Field((type) => String, { nullable: true })
     resolver?: string

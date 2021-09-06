@@ -1,7 +1,7 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../prisma.service';
 import { JwtService } from "@nestjs/jwt";
-import { AuditoriasService } from 'src/Auditorias/auditorias.service';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { Usuarios } from '../Usuarios/entities/usuarios.entity';
 
 
@@ -9,8 +9,6 @@ import { Usuarios } from '../Usuarios/entities/usuarios.entity';
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private jwtService: JwtService,
-        private auditService: AuditoriasService
     ) { }
 
     async getUsuarios(): Promise<Usuarios[]> {
@@ -18,8 +16,20 @@ export class UsuariosService {
     }
 
     async getUsuarioById(usuario_id: number) {
-        return this.prismaService.usuarios.findUnique({
+        var usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
+        })
+
+        if (usuarios === null) {
+            throw new UnauthorizedException(`El usuario con id ${usuario_id} no existe`);
+        }
+
+        return usuarios;
+    }
+
+    async getFilterUsuarios(nombre: string, email: string): Promise<Usuarios[]> {
+        return this.prismaService.usuarios.findMany({
+            where: { OR: [{ nombre: { contains: nombre, mode: "insensitive" } }, { email: { contains: email, mode: "insensitive" } }] }
         })
     }
 
@@ -33,6 +43,9 @@ export class UsuariosService {
     }
 
     async updateUsuario(data): Promise<Usuarios> {
+
+        await this.getUsuarioById(data.usuario_id);
+
         return this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
@@ -43,6 +56,9 @@ export class UsuariosService {
     }
 
     async deleteUsuario(usuario_id): Promise<Usuarios> {
+
+        await this.getUsuarioById(usuario_id);
+
         return this.prismaService.usuarios.delete({
             where: { usuario_id: usuario_id },
         })

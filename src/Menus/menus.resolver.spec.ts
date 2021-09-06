@@ -27,13 +27,6 @@ describe('Menu Resolver', () => {
     menuService = module.get<MenusService>(MenusService);
   });
 
-  describe('Query rootMenu()', () => {
-    it('should invoke menuService.rootMenu()', async () => {
-      await menuResolver.rootMenu();
-      expect(menuService.rootMenu).toHaveBeenCalled();
-    });
-  });
-
   describe('Mutation createRootMenu()', () => {
     it('should invoke menuService.createRootMenu', async () => {
       await menuResolver.createRootMenu();

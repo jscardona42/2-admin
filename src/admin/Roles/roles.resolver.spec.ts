@@ -1,4 +1,5 @@
 import { Test } from '@nestjs/testing';
+import { CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
 
@@ -14,6 +15,11 @@ describe('Roles Resolver', () => {
           provide: RolesService,
           useFactory: () => ({
             getRoles: jest.fn(),
+            getRolById: jest.fn(),
+            getFilterRoles: jest.fn(),
+            createRol: jest.fn(),
+            updateRol: jest.fn(),
+            deleteRol: jest.fn(),
           }),
         },
       ],
@@ -25,9 +31,55 @@ describe('Roles Resolver', () => {
 
 
   describe('Query getRoles()', () => {
-    it('should invoke permissionService.getRoles()', async () => {
+    it('should invoke rolesService.getRoles()', async () => {
       await roleResolver.getRoles();
       expect(roleService.getRoles).toHaveBeenCalled();
+    });
+  });
+
+  describe('Query getRolById()', () => {
+    it('should invoke rolesService.getRolById', async () => {
+      const testParams = {
+        rol_id: 1
+      };
+      await roleResolver.getRolById(testParams.rol_id);
+      expect(roleService.getRolById).toHaveBeenCalled();
+    });
+  });
+
+  describe('Query getFilterRoles()', () => {
+    it('should invoke rolesService.getFilterRoles()', async () => {
+      const testParams = {
+        rol: "a"
+      };
+      await roleResolver.getFilterRoles(testParams.rol);
+      expect(roleService.getFilterRoles).toHaveBeenCalled();
+    });
+  });
+
+  describe('Mutation createRol()', () => {
+    it('should invoke rolesService.createRol', async () => {
+      var testParams: CreateRolInput;
+      await roleResolver.createRol(testParams);
+      expect(roleService.createRol).toHaveBeenCalledWith(testParams);
+    });
+  });
+
+  describe('Mutation updateRol()', () => {
+    it('should invoke rolesService.updateRol', async () => {
+      var testParams: UpdateRolInput;
+      await roleResolver.updateRol(testParams);
+      expect(roleService.updateRol).toHaveBeenCalledWith(testParams);
+    });
+  });
+
+  describe('Mutation deleteRol()', () => {
+    it('should invoke rolesService.deleteRol', async () => {
+      var testParams = {
+        rol_id: 1
+      };
+      await roleResolver.deleteRol(testParams.rol_id);
+      expect(roleService.deleteRol).toHaveBeenCalled();
     });
   });
 

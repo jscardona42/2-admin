@@ -64,17 +64,23 @@ type Roles {
   rol: String!
 }
 
-type RolesPermisos {
-  rol_permiso_id: ID!
-  rol_id: Float!
-  permiso_id: Float!
+type Entidades {
+  entidad_id: ID!
+  nombre: String!
+  resolver: String
 }
 
 type Permisos {
   permiso_id: ID!
-  entidad_id: Float!
+  Entidades: Entidades!
   permiso: String!
   es_publico: Boolean!
+}
+
+type RolesPermisos {
+  rol_permiso_id: ID!
+  Roles: Roles!
+  Permisos: Permisos!
 }
 
 type MenusPalabras {
@@ -98,6 +104,7 @@ type Menus {
   isEntity: Boolean!
   other_Menus: JSON!
   order: Float
+  activo: Float
   MenusPalabras: [MenusPalabras!]
   MenusTraducciones: [MenusTraducciones!]
 }
@@ -107,26 +114,16 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
-type EmpresasMenuPersonalizado {
-  menu_pesonalizado_id: ID!
-  empresa_id: Float!
-  menu: JSON!
-}
-
-type Empresas {
-  empresa_id: ID!
-  nombre: String!
-}
-
-type EmpresasMenus {
-  empresa_menu_id: ID!
-  Empresas: Empresas!
-  menu_id: Float!
-}
-
 type Traducciones {
   traduccion_id: ID!
   idioma: String!
+  sigla: String!
+}
+
+type PermisosValidaciones {
+  permiso_validacion_id: ID!
+  Permisos: Permisos!
+  validacion_id: Float!
 }
 
 type Microservicios {
@@ -135,13 +132,7 @@ type Microservicios {
   hostname: String!
   puerto: Float!
   url: String!
-  activo: Boolean
-}
-
-type PermisosValidaciones {
-  permiso_validacion_id: ID!
-  Permisos: Permisos!
-  validacion_id: Float!
+  activo: Boolean!
 }
 
 type Validaciones {
@@ -151,11 +142,26 @@ type Validaciones {
   PermisosValidaciones: [PermisosValidaciones!]!
 }
 
+type Iconos {
+  icono_id: ID!
+  nombre: String!
+  activo: Boolean
+  unicode: String!
+}
+
+type MetodosValidacion {
+  metodo_validacion_id: ID!
+  metodo: String!
+  activo: Boolean!
+}
+
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
   signInLogin(data: SignInUserInput!): Login!
-  rootMenu: Menus!
+  getMenus: [Menus!]!
+  getMenusInactivos: [Menus!]!
+  getMenuByRoleId(login_id: Float!): [Menus!]!
   getFilterMenuPalabra(palabra: String!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
   getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
@@ -165,20 +171,33 @@ type Query {
   exValidationCodeMail(data: ValidarCodigoInput!): DoblesFactores!
   getAuditorias: [Auditorias!]!
   getRoles: [Roles!]!
+  getRolById(rol_id: Float!): Roles!
+  getFilterRoles(rol: String): [Roles!]!
   getRolesPermisos: [RolesPermisos!]!
+  getRolPermisoById(icono_id: Float!): RolesPermisos!
   getPermisos: [Permisos!]!
   getUsuarios: [Usuarios!]!
-  getEmpresasMenus: [EmpresasMenus!]!
-  getEmpresaMenuByEmpresaId(login_id: Float!): EmpresasMenuPersonalizado!
-  getEmpresaMenuByRoleId(traduccion_id: Float, login_id: Float!): [Menus!]!
+  getUsuarioById(usuario_id: Float!): Usuarios!
+  getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
   getMenusPalabras: [MenusPalabras!]!
   getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getMenusTraducciones: [MenusTraducciones!]!
   getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
+  getIconos: [Iconos!]!
+  getIconoById(icono_id: Float!): Iconos!
+  getFilterIconos(unicode: String, nombre: String): [Iconos!]!
   getValidaciones: [Validaciones!]!
+  getPermisosValidaciones: [PermisosValidaciones!]!
   getValidacionById(validacion_id: Float!): Validaciones!
+  getPermisoValidacionById(permiso_validacion_id: Float!): PermisosValidaciones!
+  getMicroservicios: [Microservicios!]!
+  getMicroservicioById(microservicio_id: Float!): Microservicios!
+  getFilterMicroservicios(nombre: String): [Microservicios!]!
+  getMetodosValidacion: [MetodosValidacion!]!
+  getMetodoValidacionById(metodo_validacion_id: Float!): MetodosValidacion!
+  getFilterMetodosValidacion(metodo: String): [MetodosValidacion!]!
 }
 
 input SignInUserInput {
@@ -208,14 +227,20 @@ type Mutation {
   createRootMenu: Menus!
   createFolder(data: CreateMenuInput!): Menus!
   insertEntityToFolder(data: CreateMenuInput!): Menus!
-  updateMenu(data: UpdateMenuInput!): Menus!
+  updateMenu(data: String!): [Menus!]!
+  modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
   exSendMail(login_id: Float!): DoblesFactores!
+  createRol(data: CreateRolInput!): Roles!
+  updateRol(data: UpdateRolInput!): Roles!
+  deleteRol(rol_id: Float!): Roles!
+  createRolPermiso(data: CreateRolPermisoMany!): [RolesPermisos!]!
+  updateRolPermiso(data: UpdateRolPermisoInput!): RolesPermisos!
+  deleteRolPermiso(icono_id: Float!): RolesPermisos!
   createUsuario(data: CreateUsuarioInput!): Usuarios!
   updateUsuario(data: UpdateUsuarioInput!): Usuarios!
   deleteUsuario(usuario_id: Float!): Usuarios!
-  updateMenuPersonalizado(data: UpdateMenuPersonalizadoInput!): EmpresasMenuPersonalizado!
   createMenuPalabra(data: CreateMenuPalabrasInput!): MenusPalabras!
   updateMenuPalabra(data: UpdateMenuPalabrasInput!): MenusPalabras!
   deleteMenuPalabra(menu_palabra_id: Float!): MenusPalabras!
@@ -225,8 +250,17 @@ type Mutation {
   createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
   updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
   deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
+  createIcono(data: CreateIconoInput!): Iconos!
+  updateIcono(data: UpdateIconoInput!): Iconos!
+  deleteIcono(icono_id: Float!): Iconos!
   updateValidacion(data: UpdateValidacionInput!): Validaciones!
   deleteValidacion(validacion_id: Float!): Validaciones!
+  createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
+  updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
+  deleteMicroservicio(microservicio_id: Float!): Microservicios!
+  createMetodoValidacion(data: CreateMetodoValidacionInput!): MetodosValidacion!
+  updateMetodoValidacion(data: UpdateMetodoValidacionInput!): MetodosValidacion!
+  deleteMetodoValidacion(metodo_validacion_id: Float!): MetodosValidacion!
 }
 
 input SignUpUserInput {
@@ -247,20 +281,36 @@ input CreateMenuInput {
   entidad_id: Float
   order: Float
   icon: String
-}
-
-input UpdateMenuInput {
-  parentId: Float
-  name: String
-  entidad_id: Float
-  order: Float
-  icon: String
-  menu_id: Float!
+  base: Boolean
 }
 
 input configDoblesFactoresInput {
   login_id: Float!
   metodo_validacion_id: Float!
+}
+
+input CreateRolInput {
+  rol: String!
+}
+
+input UpdateRolInput {
+  rol: String
+  rol_id: Float!
+}
+
+input CreateRolPermisoMany {
+  data: [CreateRolPermisoInput!]!
+}
+
+input CreateRolPermisoInput {
+  rol_id: Float!
+  permiso_id: Float!
+}
+
+input UpdateRolPermisoInput {
+  rol_id: Float
+  permiso_id: Float
+  rol_permiso_id: Float!
 }
 
 input CreateUsuarioInput {
@@ -272,11 +322,6 @@ input UpdateUsuarioInput {
   nombre: String
   email: String
   usuario_id: Float!
-}
-
-input UpdateMenuPersonalizadoInput {
-  empresa_id: Float!
-  menu: JSON!
 }
 
 input CreateMenuPalabrasInput {
@@ -292,10 +337,12 @@ input UpdateMenuPalabrasInput {
 
 input CreateTraduccionesInput {
   idioma: String!
+  sigla: String!
 }
 
 input UpdateTraduccionesInput {
   idioma: String
+  sigla: String
   traduccion_id: Float!
 }
 
@@ -312,8 +359,49 @@ input UpdateMenuTraduccionInput {
   menu_traduccion_id: Float!
 }
 
+input CreateIconoInput {
+  nombre: String!
+  activo: Boolean
+  unicode: String!
+}
+
+input UpdateIconoInput {
+  nombre: String
+  activo: Boolean
+  unicode: String
+  icono_id: Float!
+}
+
 input UpdateValidacionInput {
   microservicio_id: Float
   id_referenciado: String
   validacion_id: Float!
+}
+
+input CreateMicroservicioInput {
+  name: String!
+  hostname: String!
+  puerto: Float!
+  url: String!
+  activo: Boolean
+}
+
+input UpdateMicroservicioInput {
+  name: String
+  hostname: String
+  puerto: Float
+  url: String
+  activo: Boolean
+  microservicio_id: Float!
+}
+
+input CreateMetodoValidacionInput {
+  metodo: String!
+  activo: Boolean
+}
+
+input UpdateMetodoValidacionInput {
+  metodo: String
+  activo: Boolean
+  metodo_validacion_id: Float!
 }

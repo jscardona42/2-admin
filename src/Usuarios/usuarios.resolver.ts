@@ -16,6 +16,19 @@ export class UsuariosResolver {
         return await this.usuariosService.getUsuarios();
     }
 
+    @Query(() => Usuarios)
+    async getUsuarioById(
+        @Args("usuario_id") usuario_id: number): Promise<Usuarios> {
+        return await this.usuariosService.getUsuarioById(usuario_id);
+    }
+
+    @Query(() => [Usuarios])
+    async getFilterUsuarios(
+        @Args("nombre", { nullable: true }) nombre: string,
+        @Args("email", { nullable: true }) email: string): Promise<Usuarios[]> {
+        return await this.usuariosService.getFilterUsuarios(nombre, email);
+    }
+
     @Mutation(returns => Usuarios)
     @UsePipes(ValidationPipe)
     async createUsuario(
