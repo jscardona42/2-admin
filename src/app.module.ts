@@ -19,7 +19,6 @@ import { PermisosService } from './Admin/Permisos/permisos.service';
 import { PermisosResolver } from './Admin/Permisos/permisos.resolver';
 import { EntidadesService } from './Admin/Entidades/entidades.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { PermisosController } from './Admin/Permisos/permisos.controller';
 import { MenusService } from './Menus/menus.service';
 import { MenusResolver } from './Menus/menus.resolver';
 import { UsuariosService } from './Usuarios/usuarios.service';
@@ -34,13 +33,16 @@ import { ValidacionesService } from './Admin/Validaciones/validaciones.service';
 import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver';
 import { IconosService } from './Admin/Iconos/iconos.service';
 import { IconosResolver } from './Admin/Iconos/iconos.resolver';
+import { ProveedoresServiciosService } from './Admin/ProveedoresServicios/proveedoresservicios.service';
+import { ProveedoresServiciosController } from './Admin/ProveedoresServicios/proveedoresServicios.controller';
+import { EntidadesResolver } from './Admin/Entidades/entidades.resolver';
 import { MicroserviciosService } from './Admin/Microservicios/microservicios.service';
 import { MicroserviciosResolver } from './Admin/Microservicios/microservicios.resolver';
+import { ProveedoresServiciosResolver } from './Admin/ProveedoresServicios/proveedoresservicios.resolver';
 import { MetodosValidacionService } from './Admin/MetodosValidacion/metodosvalidacion.service';
 import { MetodosValidacionResolver } from './Admin/MetodosValidacion/metodosvalidacion.resolver';
 
-
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, IconosService, IconosResolver, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, ValidacionesService, ValidacionesResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
 
 @Module({
   imports: [
@@ -75,30 +77,43 @@ const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, M
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
     })
   ],
-  controllers: [PermisosController],
+  controllers: [ProveedoresServiciosController],
   providers: MyProviders,
   exports: [MailerModule]
 })
 
 export class AppModule {
-  constructor(private readonly permisosService: PermisosService) {
-    this.refreshMethods();
+  constructor(private readonly proveedoresServiciosService: ProveedoresServiciosService) {
+    this.refreshProviders();
   }
-  public refreshMethods() {
+
+  // Esta función se encarga de crear o actualizar el listado de providers en la BD
+  public async refreshProviders() {
+    let cont = 0;
+    var myProviders = [];
+
+    // Recorremos el arreglo de proveedores
     for (const clsname of MyProviders) {
-      var TMPmethods =
-        Object.getOwnPropertyNames(clsname.prototype).filter(
-          item => item !== 'constructor'
-        )
 
-      var nameMethodsTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
-      var nameMethods = nameMethodsTmp.filter(
-        (method) => !method.nameClass.includes('Service'),
-      );
+      // Eliminamos los métodos constructores
+      var TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(item => item !== 'constructor')
 
-      if (nameMethods.length > 0) {
-        this.permisosService.getMethods(nameMethods);
+      // Damos una estructura de clase y métodos
+      var providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
+
+      // Eliminamos Servicios y mantenemos Resolver
+      var myProvidersTmp = providersTmp.filter((method) => !method.nameClass.includes('Service'));
+
+      // Eliminamos arreglos vacíos
+      if (myProvidersTmp.length > 0) {
+        myProviders[cont] = myProvidersTmp;
+        cont++;
       }
     }
+
+    var microservicio_id = 1;
+    // Envíamos arreglo de Resolver con sus métodos y el microservicio_id
+    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio_id);
   }
+
 }

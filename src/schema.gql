@@ -149,6 +149,13 @@ type Iconos {
   unicode: String!
 }
 
+type ProveedoresServicios {
+  proveedor_servicio_id: ID!
+  Microservicios: Microservicios!
+  lista_proveedores: String!
+  status: String
+}
+
 type MetodosValidacion {
   metodo_validacion_id: ID!
   metodo: String!
@@ -175,7 +182,12 @@ type Query {
   getFilterRoles(rol: String): [Roles!]!
   getRolesPermisos: [RolesPermisos!]!
   getRolPermisoById(icono_id: Float!): RolesPermisos!
+  getEntidades: [Entidades!]!
+  getEntidadeById(entidad_id: Float!): Entidades!
+  getFilterEntidades(nombre: String): [Entidades!]!
   getPermisos: [Permisos!]!
+  getPermisoById(permiso_id: Float!): Permisos!
+  getFilterPermisos(permiso: String!): [Permisos!]!
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
@@ -185,13 +197,15 @@ type Query {
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getMenusTraducciones: [MenusTraducciones!]!
   getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
-  getIconos: [Iconos!]!
-  getIconoById(icono_id: Float!): Iconos!
-  getFilterIconos(unicode: String, nombre: String): [Iconos!]!
   getValidaciones: [Validaciones!]!
   getPermisosValidaciones: [PermisosValidaciones!]!
   getValidacionById(validacion_id: Float!): Validaciones!
   getPermisoValidacionById(permiso_validacion_id: Float!): PermisosValidaciones!
+  getIconos: [Iconos!]!
+  getIconoById(icono_id: Float!): Iconos!
+  getFilterIconos(unicode: String, nombre: String): [Iconos!]!
+  getProveedoresServicios: [ProveedoresServicios!]!
+  getProveedorServicioById(proveedor_servicio_id: Float!): ProveedoresServicios!
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
@@ -238,6 +252,11 @@ type Mutation {
   createRolPermiso(data: CreateRolPermisoMany!): [RolesPermisos!]!
   updateRolPermiso(data: UpdateRolPermisoInput!): RolesPermisos!
   deleteRolPermiso(icono_id: Float!): RolesPermisos!
+  updateEntidad(data: UpdateEntidadInput!): Entidades!
+  deleteEntidad(entidad_id: Float!): Entidades!
+  updatePermiso(data: UpdatePermisoInput!): Permisos!
+  deletePermiso(permiso_id: Float!): Permisos!
+  saveEntidadesPermisosValidaciones: [Permisos!]!
   createUsuario(data: CreateUsuarioInput!): Usuarios!
   updateUsuario(data: UpdateUsuarioInput!): Usuarios!
   deleteUsuario(usuario_id: Float!): Usuarios!
@@ -250,11 +269,12 @@ type Mutation {
   createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
   updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
   deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
+  updateValidacion(data: UpdateValidacionInput!): Validaciones!
+  deleteValidacion(validacion_id: Float!): Validaciones!
   createIcono(data: CreateIconoInput!): Iconos!
   updateIcono(data: UpdateIconoInput!): Iconos!
   deleteIcono(icono_id: Float!): Iconos!
-  updateValidacion(data: UpdateValidacionInput!): Validaciones!
-  deleteValidacion(validacion_id: Float!): Validaciones!
+  deleteProveedorServicio(proveedor_servicio_id: Float!): ProveedoresServicios!
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
@@ -313,6 +333,19 @@ input UpdateRolPermisoInput {
   rol_permiso_id: Float!
 }
 
+input UpdateEntidadInput {
+  nombre: String
+  resolver: String
+  entidad_id: Float!
+}
+
+input UpdatePermisoInput {
+  entidad_id: Float
+  permiso: String
+  es_publico: Boolean
+  permiso_id: Float!
+}
+
 input CreateUsuarioInput {
   nombre: String!
   email: String!
@@ -359,6 +392,12 @@ input UpdateMenuTraduccionInput {
   menu_traduccion_id: Float!
 }
 
+input UpdateValidacionInput {
+  microservicio_id: Float
+  id_referenciado: String
+  validacion_id: Float!
+}
+
 input CreateIconoInput {
   nombre: String!
   activo: Boolean
@@ -370,12 +409,6 @@ input UpdateIconoInput {
   activo: Boolean
   unicode: String
   icono_id: Float!
-}
-
-input UpdateValidacionInput {
-  microservicio_id: Float
-  id_referenciado: String
-  validacion_id: Float!
 }
 
 input CreateMicroservicioInput {
