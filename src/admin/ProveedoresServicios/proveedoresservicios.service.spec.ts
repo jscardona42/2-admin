@@ -54,9 +54,10 @@ describe('Proveedores servicios Service', () => {
         it('should invoke prismaService.proveedoresServicios.update', async () => {
             const testParams = {
                 microservicio_id: 1,
-                myProviders: []
+                myProviders: [],
+                entitiesExc: []
             };
-            await proveedoresServiciosService.saveProveedoresServicios(testParams.microservicio_id, testParams.myProviders);
+            await proveedoresServiciosService.saveProveedoresServicios(testParams.myProviders, testParams.microservicio_id, testParams.entitiesExc);
             expect(prismaService.proveedoresServicios.update).toHaveBeenCalled();
         });
     });

@@ -153,6 +153,7 @@ type ProveedoresServicios {
   proveedor_servicio_id: ID!
   Microservicios: Microservicios!
   lista_proveedores: String!
+  lista_entidades_secundarias: String!
   status: String
 }
 

@@ -12,6 +12,9 @@ export class ProveedoresServicios {
     @Field((type) => String)
     lista_proveedores: string
 
+    @Field((type) => String)
+    lista_entidades_secundarias: string
+
     @Field((type) => String, { nullable: true })
     status?: string
 

@@ -11,7 +11,7 @@ export class PermisosService {
     private prismaService: PrismaService,
     private entidadesService: EntidadesService,
     private validacionesService: ValidacionesService,
-    ) { }
+  ) { }
 
   async getPermisos(): Promise<Permisos[]> {
     return await this.prismaService.permisos.findMany({
@@ -45,6 +45,9 @@ export class PermisosService {
       JSON.parse(provider.lista_proveedores).forEach(lista => {
         return this.saveEntidadesPermisosValidaciones(lista);
       });
+      JSON.parse(provider.lista_entidades_secundarias).forEach(lista => {
+        return this.entidadesService.createEntidadExcluida(lista);
+      });
     });
   }
 
@@ -54,6 +57,7 @@ export class PermisosService {
     var dataResolvers = [];
     var dataValidaciones = [];
     var is_public = false;
+    var k = 0;
 
     try {
       // Recorremos el arreglo con todos los resolver y sus métodos
@@ -69,8 +73,11 @@ export class PermisosService {
           if (nameMethod.startsWith("ex")) {
             is_public = true;
           }
+          if (!nameMethod.includes("Referencia")) {
+            dataPermisos[j] = { name: nameClass.nameClass, permiso: nameMethod, is_public: is_public };
+            k++;
+          }
           // Almacenamos los nombres de los métodos separados por resolver
-          dataPermisos[j] = { name: nameClass.nameClass, permiso: nameMethod, is_public: is_public };
         });
       });
 

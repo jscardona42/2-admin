@@ -32,7 +32,7 @@ describe('Permisos Service', () => {
                         },
                         proveedoresServicios: {
                             findMany: jest.fn(() => {
-                                return [{ proveedor_servicio_id: 1, microservicio_id: 2, lista_proveedores: `[[{"nameClass":"LoginResolver","methods":["getLogin","getLoginById","signInLogin","signUpLogin","logOutLogin","exChangePasswordLogin"]}]]` }]
+                                return [{ proveedor_servicio_id: 1, microservicio_id: 2, lista_proveedores: `[[{"nameClass":"LoginResolver","methods":["getLogin","getLoginById","signInLogin","signUpLogin","logOutLogin","exChangePasswordLogin"]}]]`, lista_entidades_secundarias: `[[{"nameClass":"LoginResolver","methods":["getLogin","getLoginById","signInLogin","signUpLogin","logOutLogin","exChangePasswordLogin"]}]]` }]
                             }),
                             findFirst: jest.fn(() => { return { entidad_id: 1 } }),
                         },

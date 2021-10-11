@@ -140,7 +140,7 @@ model Validaciones {
   validacion_id        Int                    @id @default(autoincrement())
   microservicio_id     Int?
   id_referenciado      String?                @db.VarChar(255)
-  MicroserviciosExc    Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_validaciones_microservicio_id")
+  Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_validaciones_microservicio_id")
   PermisosValidaciones PermisosValidaciones[]
 }
 
@@ -168,9 +168,9 @@ model Iconos {
 }
 
 model ProveedoresServicios {
-  proveedor_servicio_id     Int            @id(map: "ProveedoresServicios_pkey") @default(autoincrement())
-  microservicio_id          Int
-  lista_proveedores         String
-  lista_entidades_excluidas String?
-  Microservicios            Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_pro_ser_microservicio_id")
+  proveedor_servicio_id       Int            @id(map: "ProveedoresServicios_pkey") @default(autoincrement())
+  microservicio_id            Int
+  lista_proveedores           String
+  lista_entidades_secundarias String?
+  Microservicios              Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_pro_ser_microservicio_id")
 }

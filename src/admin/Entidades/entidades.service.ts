@@ -59,7 +59,23 @@ export class EntidadesService {
     // Guardamos el nombre de la entidad quitando la palabra Resolver y en otra columna el nombre del resolver
     if (entidades === null) {
       return this.prismaService.entidades.create({
-        data: { resolver: cls.name, nombre: cls.name.replace("Resolver", "") },
+        data: { resolver: cls.name, nombre: cls.name.replace("Resolver", ""), es_entidad: true },
+      });
+    }
+
+    return entidades;
+  }
+
+  async createEntidadExcluida(entidad) {
+
+    var entidad = entidad.replace('PadreSec', '').replace('HijoSec', '').replace('Sec', '');
+    var entidades = await this.prismaService.entidades.findFirst({
+      where: { nombre: entidad }
+    })
+
+    if (entidades === null) {
+      return this.prismaService.entidades.create({
+        data: { nombre: entidad, es_entidad: false },
       });
     }
 

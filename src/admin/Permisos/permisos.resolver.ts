@@ -37,6 +37,6 @@ export class PermisosResolver {
   @Mutation((returns) => [Permisos])
   async saveEntidadesPermisosValidaciones(): Promise<Permisos[]> {
     await this.permisosService.preparePermisos();
-    return this.permisosService.getPermisos();
+    return await this.permisosService.getPermisos();
   }
 }
