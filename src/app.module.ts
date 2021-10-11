@@ -41,6 +41,7 @@ import { MicroserviciosResolver } from './Admin/Microservicios/microservicios.re
 import { ProveedoresServiciosResolver } from './Admin/ProveedoresServicios/proveedoresservicios.resolver';
 import { MetodosValidacionService } from './Admin/MetodosValidacion/metodosvalidacion.service';
 import { MetodosValidacionResolver } from './Admin/MetodosValidacion/metodosvalidacion.resolver';
+import { Prisma } from '@prisma/client';
 
 const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
 
@@ -103,7 +104,6 @@ export class AppModule {
 
       // Eliminamos Servicios y mantenemos Resolver
       var myProvidersTmp = providersTmp.filter((method) => !method.nameClass.includes('Service'));
-
       // Eliminamos arreglos vacíos
       if (myProvidersTmp.length > 0) {
         myProviders[cont] = myProvidersTmp;
@@ -112,8 +112,23 @@ export class AppModule {
     }
 
     var microservicio_id = 1;
-    // Envíamos arreglo de Resolver con sus métodos y el microservicio_id
-    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio_id);
+    var secondaryEntities = getSecondaryEntities();
+    // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
+    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio_id, secondaryEntities);
   }
+}
 
+export function getSecondaryEntities() {
+  var data = [];
+  var cont = 0;
+
+  Prisma.dmmf.datamodel.models.forEach((model) => {
+    model.fields.forEach(field => {
+      if (field.name.endsWith('Sec')) {
+        data[cont] = field.name;
+        cont++;
+      }
+    });
+  });
+  return data;
 }
