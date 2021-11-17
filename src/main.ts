@@ -9,6 +9,6 @@ async function bootstrap() {
   app.useGlobalGuards(new GqlAuthGuard());
   app.useGlobalPipes(new ValidationPipe());
   app.use(cookieParser());
-  await app.listen(process.env.PORT);
+  await app.listen(process.env.PORT || 3000);
 }
 bootstrap();
