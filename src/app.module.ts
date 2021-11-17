@@ -34,7 +34,7 @@ import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver
 import { IconosService } from './Admin/Iconos/iconos.service';
 import { IconosResolver } from './Admin/Iconos/iconos.resolver';
 import { ProveedoresServiciosService } from './Admin/ProveedoresServicios/proveedoresservicios.service';
-import { ProveedoresServiciosController } from './Admin/ProveedoresServicios/proveedoresServicios.controller';
+import { ProveedoresServiciosController } from './Admin/ProveedoresServicios/proveedoresservicios.controller';
 import { EntidadesResolver } from './Admin/Entidades/entidades.resolver';
 import { MicroserviciosService } from './Admin/Microservicios/microservicios.service';
 import { MicroserviciosResolver } from './Admin/Microservicios/microservicios.resolver';
