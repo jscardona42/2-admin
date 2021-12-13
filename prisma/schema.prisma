@@ -81,7 +81,7 @@ model Microservicios {
   name                 String                 @db.VarChar(255)
   hostname             String                 @db.VarChar(255)
   puerto               Int
-  url                  String                 @db.VarChar(32)
+  url                  String                 @db.VarChar(255)
   activo               Boolean
   ProveedoresServicios ProveedoresServicios[]
   Validaciones         Validaciones[]
