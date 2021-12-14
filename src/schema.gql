@@ -129,8 +129,6 @@ type PermisosValidaciones {
 type Microservicios {
   microservicio_id: ID!
   name: String!
-  hostname: String!
-  puerto: Float!
   url: String!
   activo: Boolean!
 }
@@ -402,16 +400,12 @@ input UpdateIconoInput {
 
 input CreateMicroservicioInput {
   name: String!
-  hostname: String!
-  puerto: Float!
   url: String!
   activo: Boolean
 }
 
 input UpdateMicroservicioInput {
   name: String
-  hostname: String
-  puerto: Float
   url: String
   activo: Boolean
   microservicio_id: Float!

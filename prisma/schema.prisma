@@ -71,8 +71,6 @@ model Menus {
 model Microservicios {
   microservicio_id     Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(255)
-  hostname             String                 @db.VarChar(255)
-  puerto               Int
   url                  String                 @db.VarChar(32)
   activo               Boolean
   ProveedoresServicios ProveedoresServicios[]

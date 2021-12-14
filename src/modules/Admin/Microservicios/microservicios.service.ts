@@ -36,8 +36,6 @@ export class MicroserviciosService {
         return this.prismaService.microservicios.create({
             data: {
                 name: data.name,
-                hostname: data.hostname,
-                puerto: data.puerto,
                 url: data.url,
                 activo: data.activo
             }
@@ -52,8 +50,6 @@ export class MicroserviciosService {
             where: { microservicio_id: data.microservicio_id },
             data: {
                 name: data.name,
-                hostname: data.hostname,
-                puerto: data.puerto,
                 url: data.url,
                 activo: data.activo
             }

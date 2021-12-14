@@ -12,14 +12,6 @@ export class CreateMicroservicioInput {
 
     @Field((type) => String)
     @IsNotEmpty()
-    hostname: string
-
-    @Field((type) => Number)
-    @IsNotEmpty()
-    puerto: number
-
-    @Field((type) => String)
-    @IsNotEmpty()
     url: string
 
     @Field((type) => Boolean, { nullable: true })
