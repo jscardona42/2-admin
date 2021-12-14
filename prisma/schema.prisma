@@ -88,10 +88,10 @@ model Permisos {
 }
 
 model Roles {
-  rol_id        Int             @id @default(autoincrement())
-  rol           String          @db.VarChar(100)
-  Login         Login[]
-  RolesPermisos RolesPermisos[]
+  rol_id           Int             @id @default(autoincrement())
+  rol              String          @db.VarChar(100)
+  Login            Login[]
+  RolesPermisosSec RolesPermisos[]
 }
 
 model RolesPermisos {

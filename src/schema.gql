@@ -59,11 +59,6 @@ type Login {
   DoblesFactores: [DoblesFactores!]
 }
 
-type Roles {
-  rol_id: ID!
-  rol: String!
-}
-
 type Entidades {
   entidad_id: ID!
   nombre: String!
@@ -81,6 +76,12 @@ type RolesPermisos {
   rol_permiso_id: ID!
   Roles: Roles!
   Permisos: Permisos!
+}
+
+type Roles {
+  rol_id: ID!
+  rol: String!
+  RolesPermisosSec: [RolesPermisos!]!
 }
 
 type MenusPalabras {
@@ -173,8 +174,6 @@ type Query {
   getRoles: [Roles!]!
   getRolById(rol_id: Float!): Roles!
   getFilterRoles(rol: String): [Roles!]!
-  getRolesPermisos: [RolesPermisos!]!
-  getRolPermisoById(icono_id: Float!): RolesPermisos!
   getEntidades: [Entidades!]!
   getEntidadeById(entidad_id: Float!): Entidades!
   getFilterEntidades(nombre: String): [Entidades!]!
@@ -239,9 +238,7 @@ type Mutation {
   createRol(data: CreateRolInput!): Roles!
   updateRol(data: UpdateRolInput!): Roles!
   deleteRol(rol_id: Float!): Roles!
-  createRolPermiso(data: CreateRolPermisoMany!): [RolesPermisos!]!
-  updateRolPermiso(data: UpdateRolPermisoInput!): RolesPermisos!
-  deleteRolPermiso(icono_id: Float!): RolesPermisos!
+  addPermisosToRol(data: AddPermisosToRolInput!): Roles!
   updateEntidad(data: UpdateEntidadInput!): Entidades!
   deleteEntidad(entidad_id: Float!): Entidades!
   updatePermiso(data: UpdatePermisoInput!): Permisos!
@@ -298,26 +295,27 @@ input configDoblesFactoresInput {
 
 input CreateRolInput {
   rol: String!
-}
-
-input UpdateRolInput {
-  rol: String
-  rol_id: Float!
-}
-
-input CreateRolPermisoMany {
-  data: [CreateRolPermisoInput!]!
+  RolesPermisos: [CreateRolPermisoInput!]
 }
 
 input CreateRolPermisoInput {
-  rol_id: Float!
   permiso_id: Float!
 }
 
+input UpdateRolInput {
+  rol_id: Float!
+  rol: String
+  RolesPermisos: UpdateRolPermisoInput
+}
+
 input UpdateRolPermisoInput {
-  rol_id: Float
   permiso_id: Float
   rol_permiso_id: Float!
+}
+
+input AddPermisosToRolInput {
+  rol_id: Float!
+  RolesPermisos: [CreateRolPermisoInput!]
 }
 
 input UpdateEntidadInput {

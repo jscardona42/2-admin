@@ -1,6 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
-import { Permisos } from "../../../Admin/Permisos/entities/permisos.entity"
-import { Roles } from "../../../Admin/Roles/entities/roles.entity"
+import { Permisos } from "../../Permisos/entities/permisos.entity"
+import { Roles } from "./roles.entity"
 
 @ObjectType()
 export class RolesPermisos {
