@@ -38,11 +38,9 @@ import { EntidadesResolver } from './modules/Admin/Entidades/entidades.resolver'
 import { MicroserviciosService } from './modules/Admin/Microservicios/microservicios.service';
 import { MicroserviciosResolver } from './modules/Admin/Microservicios/microservicios.resolver';
 import { ProveedoresServiciosResolver } from './modules/Admin/ProveedoresServicios/proveedoresservicios.resolver';
-import { MetodosValidacionService } from './modules/Admin/MetodosValidacion/metodosvalidacion.service';
-import { MetodosValidacionResolver } from './modules/Admin/MetodosValidacion/metodosvalidacion.resolver';
 import { Prisma } from '@prisma/client';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver]
 
 @Module({
   imports: [

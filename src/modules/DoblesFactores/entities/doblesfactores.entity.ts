@@ -1,5 +1,5 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID, InputType } from '@nestjs/graphql'
+import { ObjectType, Field, ID } from '@nestjs/graphql'
 
 @ObjectType()
 export class DoblesFactores {
@@ -21,8 +21,8 @@ export class DoblesFactores {
   @Field((type) => String, { nullable: true })
   codigo_recuperacion?: string | null
 
-  @Field((type) => Number)
-  metodo_validacion_id: number
+  @Field((type) => String)
+  metodo_validacion: string
 
   @Field((type) => String, { nullable: true })
   fecha_creacion_codigo?: Date

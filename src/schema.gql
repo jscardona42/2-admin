@@ -35,7 +35,7 @@ type DoblesFactores {
   qr_code: String
   login_id: Float!
   codigo_recuperacion: String
-  metodo_validacion_id: Float!
+  metodo_validacion: String!
   fecha_creacion_codigo: String
 }
 
@@ -157,12 +157,6 @@ type ProveedoresServicios {
   status: String
 }
 
-type MetodosValidacion {
-  metodo_validacion_id: ID!
-  metodo: String!
-  activo: Boolean!
-}
-
 type Query {
   getLogin: [Login!]!
   getLoginById(id: Float!): Login!
@@ -210,9 +204,6 @@ type Query {
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
-  getMetodosValidacion: [MetodosValidacion!]!
-  getMetodoValidacionById(metodo_validacion_id: Float!): MetodosValidacion!
-  getFilterMetodosValidacion(metodo: String): [MetodosValidacion!]!
 }
 
 input SignInUserInput {
@@ -279,9 +270,6 @@ type Mutation {
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
-  createMetodoValidacion(data: CreateMetodoValidacionInput!): MetodosValidacion!
-  updateMetodoValidacion(data: UpdateMetodoValidacionInput!): MetodosValidacion!
-  deleteMetodoValidacion(metodo_validacion_id: Float!): MetodosValidacion!
 }
 
 input SignUpUserInput {
@@ -307,7 +295,7 @@ input CreateMenuInput {
 
 input configDoblesFactoresInput {
   login_id: Float!
-  metodo_validacion_id: Float!
+  metodo_validacion: String!
 }
 
 input CreateRolInput {
@@ -427,15 +415,4 @@ input UpdateMicroservicioInput {
   url: String
   activo: Boolean
   microservicio_id: Float!
-}
-
-input CreateMetodoValidacionInput {
-  metodo: String!
-  activo: Boolean
-}
-
-input UpdateMetodoValidacionInput {
-  metodo: String
-  activo: Boolean
-  metodo_validacion_id: Float!
 }

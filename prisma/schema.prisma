@@ -8,7 +8,7 @@ datasource db {
 }
 
 model Auditorias {
-  auditoria_id       Int       @id(map: "Auditorias_pkey") @default(autoincrement())
+  auditoria_id       Int       @id @default(autoincrement())
   login_id           Int?
   status             String?   @db.VarChar(50)
   fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
@@ -19,19 +19,18 @@ model Auditorias {
 }
 
 model DoblesFactores {
-  doble_factor_id       Int                @id(map: "DoblesFactores_pkey") @default(autoincrement())
+  doble_factor_id       Int                @id @default(autoincrement())
   otplib_secreta        String?            @db.VarChar(255)
   esta_configurado      Boolean            @default(false)
   login_id              Int
   codigo_recuperacion   String?            @db.VarChar(255)
-  metodo_validacion_id  Int?
+  metodo_validacion     MetodosValidacion?
   fecha_creacion_codigo DateTime?          @db.Timestamp(6)
-  Login                 Login              @relation(fields: [login_id], references: [login_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_dob_fac_login_id")
-  MetodosValidacion     MetodosValidacion? @relation(fields: [metodo_validacion_id], references: [metodo_validacion_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_validation_method_id")
+  Login                 Login              @relation(fields: [login_id], references: [login_id], map: "fk_dob_fac_login_id")
 }
 
 model Entidades {
-  entidad_id Int        @id(map: "Entidades_pkey") @default(autoincrement())
+  entidad_id Int        @id @default(autoincrement())
   nombre     String     @db.VarChar(255)
   resolver   String?    @db.VarChar(255)
   es_entidad Boolean?   @default(true)
@@ -39,7 +38,7 @@ model Entidades {
 }
 
 model Login {
-  login_id           Int              @id(map: "Login_pkey") @default(autoincrement())
+  login_id           Int              @id @default(autoincrement())
   username           String
   password           String?
   token              String?
@@ -47,13 +46,13 @@ model Login {
   rol_id             Int
   tiene_doble_factor Int?             @default(0)
   usuario_id         Int?
-  Roles              Roles            @relation(fields: [rol_id], references: [rol_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_login_rol_id")
-  Usuarios           Usuarios?        @relation(fields: [usuario_id], references: [usuario_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_login_usuario_id")
+  Roles              Roles            @relation(fields: [rol_id], references: [rol_id], map: "fk_login_rol_id")
+  Usuarios           Usuarios?        @relation(fields: [usuario_id], references: [usuario_id], onDelete: Restrict, map: "fk_login_usuario_id")
   DoblesFactores     DoblesFactores[]
 }
 
 model Menus {
-  menu_id           Int                 @id(map: "Menus_pkey") @default(autoincrement())
+  menu_id           Int                 @id @default(autoincrement())
   title             String
   path              String
   isEntity          Boolean
@@ -63,36 +62,29 @@ model Menus {
   level             Int?
   icon              String?             @db.VarChar(255)
   activo            Boolean?            @default(true)
-  Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_menus_parent_menu_id")
+  Menus             Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, map: "fk_menus_parent_menu_id")
   other_Menus       Menus[]             @relation("MenusToMenus_parentMenuId")
   MenusPalabras     MenusPalabras[]
   MenusTraducciones MenusTraducciones[]
 }
 
-model MetodosValidacion {
-  metodo_validacion_id Int              @id(map: "MetodosValidacion_pkey") @default(autoincrement())
-  metodo               String           @db.VarChar(255)
-  activo               Boolean?
-  DoblesFactores       DoblesFactores[]
-}
-
 model Microservicios {
-  microservicio_id     Int                    @id(map: "Microservicios_pkey") @default(autoincrement())
+  microservicio_id     Int                    @id @default(autoincrement())
   name                 String                 @db.VarChar(255)
   hostname             String                 @db.VarChar(255)
   puerto               Int
-  url                  String                 @db.VarChar(255)
+  url                  String                 @db.VarChar(32)
   activo               Boolean
   ProveedoresServicios ProveedoresServicios[]
   Validaciones         Validaciones[]
 }
 
 model Permisos {
-  permiso_id           Int                    @id(map: "Permisos_pkey") @default(autoincrement())
+  permiso_id           Int                    @id @default(autoincrement())
   entidad_id           Int?
   permiso              String?
   es_publico           Boolean?
-  Entidades            Entidades?             @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_permisos_entidad_id")
+  Entidades            Entidades?             @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
   PermisosValidaciones PermisosValidaciones[]
   RolesPermisos        RolesPermisos[]
 }
@@ -105,15 +97,15 @@ model Roles {
 }
 
 model RolesPermisos {
-  rol_permiso_id Int       @id(map: "RolesPermisos_pkey") @default(autoincrement())
+  rol_permiso_id Int       @id @default(autoincrement())
   rol_id         Int
   permiso_id     Int?
-  Permisos       Permisos? @relation(fields: [permiso_id], references: [permiso_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_rol_per_permiso_id")
-  Roles          Roles     @relation(fields: [rol_id], references: [rol_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_rol_per_rol_id")
+  Permisos       Permisos? @relation(fields: [permiso_id], references: [permiso_id], onDelete: Restrict, map: "fk_rol_per_permiso_id")
+  Roles          Roles     @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_per_rol_id")
 }
 
 model Usuarios {
-  usuario_id Int      @id(map: "Usuarios_pkey") @default(autoincrement())
+  usuario_id Int      @id @default(autoincrement())
   nombre     String   @db.VarChar(100)
   email      String   @db.VarChar(100)
   activo     Boolean? @default(true)
@@ -125,14 +117,14 @@ model MenusPalabras {
   menu_palabra_id Int    @id @default(autoincrement())
   menu_id         Int
   palabra         String @db.VarChar(16)
-  Menus           Menus  @relation(fields: [menu_id], references: [menu_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_men_pal_menu_id")
+  Menus           Menus  @relation(fields: [menu_id], references: [menu_id], map: "fk_men_pal_menu_id")
 }
 
 model PermisosValidaciones {
-  permiso_validacion_id Int          @id(map: "PermisosValidaciones_pkey") @default(autoincrement())
+  permiso_validacion_id Int          @id @default(autoincrement())
   permiso_id            Int
   validacion_id         Int
-  Permisos              Permisos     @relation(fields: [permiso_id], references: [permiso_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_per_val_permiso_id")
+  Permisos              Permisos     @relation(fields: [permiso_id], references: [permiso_id], map: "fk_per_val_permiso_id")
   Validaciones          Validaciones @relation(fields: [validacion_id], references: [validacion_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_per_val_validacion_id")
 }
 
@@ -140,21 +132,21 @@ model Validaciones {
   validacion_id        Int                    @id @default(autoincrement())
   microservicio_id     Int?
   id_referenciado      String?                @db.VarChar(255)
-  Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_validaciones_microservicio_id")
+  Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, map: "fk_validaciones_microservicio_id")
   PermisosValidaciones PermisosValidaciones[]
 }
 
 model MenusTraducciones {
-  menu_traduccion_id Int          @id(map: "MenusTraducciones_pkey") @default(autoincrement())
+  menu_traduccion_id Int          @id @default(autoincrement())
   traduccion         String       @db.VarChar(255)
   traduccion_id      Int
   menu_id            Int
-  Menus              Menus        @relation(fields: [menu_id], references: [menu_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_men_tra_menu_id")
-  Traducciones       Traducciones @relation(fields: [traduccion_id], references: [traduccion_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_men_tra_traduccion_id")
+  Menus              Menus        @relation(fields: [menu_id], references: [menu_id], map: "fk_men_tra_menu_id")
+  Traducciones       Traducciones @relation(fields: [traduccion_id], references: [traduccion_id], map: "fk_men_tra_traduccion_id")
 }
 
 model Traducciones {
-  traduccion_id     Int                 @id(map: "Traducciones_pkey") @default(autoincrement())
+  traduccion_id     Int                 @id @default(autoincrement())
   idioma            String              @db.VarChar(255)
   sigla             String              @db.VarChar(10)
   MenusTraducciones MenusTraducciones[]
@@ -168,9 +160,14 @@ model Iconos {
 }
 
 model ProveedoresServicios {
-  proveedor_servicio_id       Int            @id(map: "ProveedoresServicios_pkey") @default(autoincrement())
+  proveedor_servicio_id       Int            @id @default(autoincrement())
   microservicio_id            Int
   lista_proveedores           String
   lista_entidades_secundarias String?
-  Microservicios              Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, onUpdate: Cascade, map: "fk_pro_ser_microservicio_id")
+  Microservicios              Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], map: "fk_pro_ser_microservicio_id")
+}
+
+enum MetodosValidacion {
+  EMAIL
+  TOTP
 }

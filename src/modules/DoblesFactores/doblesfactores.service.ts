@@ -7,18 +7,16 @@ import * as bcrypt from "bcryptjs";
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { CodigoRecuperacionInput, configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
 import { LoginService } from '../Login/login.service';
-import { MetodosValidacionService } from '../Admin/MetodosValidacion/metodosvalidacion.service';
 var QRCode = require('qrcode')
 
 
 @Injectable()
 export class DoblesFactoresService {
     constructor(
-        private prismaService: PrismaService, 
+        private prismaService: PrismaService,
         private readonly mailerService: MailerService,
         private readonly loginService: LoginService,
-        private readonly metValService: MetodosValidacionService
-        ) { }
+    ) { }
 
     public async generateDobleFactorAuthenticationSecret(user) {
         authenticator.options = { window: 0 };
@@ -36,7 +34,6 @@ export class DoblesFactoresService {
 
     async createDobleFactor(data: configDoblesFactoresInput): Promise<DoblesFactores> {
 
-        await this.metValService.getMetodoValidacionById(data.metodo_validacion_id);
         await this.loginService.getLoginById(data.login_id);
 
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
@@ -44,13 +41,13 @@ export class DoblesFactoresService {
         })
 
         if (doblefactor) {
-            return await this.prismaService.doblesFactores.update({
+            return this.prismaService.doblesFactores.update({
                 where: { doble_factor_id: doblefactor.doble_factor_id },
-                data: { metodo_validacion_id: data.metodo_validacion_id },
+                data: { metodo_validacion: data.metodo_validacion },
             })
         }
-        return await this.prismaService.doblesFactores.create({
-            data: { login_id: data.login_id, metodo_validacion_id: data.metodo_validacion_id },
+        return this.prismaService.doblesFactores.create({
+            data: { login_id: data.login_id, metodo_validacion: data.metodo_validacion },
         })
     }
 
@@ -61,10 +58,10 @@ export class DoblesFactoresService {
         })
 
         if (doblefactor === null) {
-            throw new UnauthorizedException("User does not have two-factor authentication enabled.");
+            throw new UnauthorizedException("El usuario no tiene autenticación de doble factor habilitado");
         }
 
-        return await this.prismaService.doblesFactores.update({
+        return this.prismaService.doblesFactores.update({
             where: { doble_factor_id: doblefactor.doble_factor_id },
             data: { otplib_secreta: secret }
         })
@@ -84,7 +81,7 @@ export class DoblesFactoresService {
     }
 
     async getDobleFactorByLoginId(login_id: number): Promise<DoblesFactores> {
-        return await this.prismaService.doblesFactores.findFirst({
+        return this.prismaService.doblesFactores.findFirst({
             where: { login_id: login_id }
         })
     }
@@ -121,7 +118,7 @@ export class DoblesFactoresService {
     }
 
     public async sendCodeMail(usuario, doblefactor: DoblesFactores, login: any) {
-        if (doblefactor.metodo_validacion_id !== 2) {
+        if (doblefactor.metodo_validacion !== "EMAIL") {
             throw new UnauthorizedException("User does not have the dual factor function enabled.");
         }
         var recoveryCode = this.generateCodeAuthentication().padStart(8, "0");
