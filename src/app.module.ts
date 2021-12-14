@@ -27,7 +27,6 @@ import { TraduccionesResolver } from './modules/Traducciones/traducciones.resolv
 import { MenusTraduccionesService } from './modules/MenusTraducciones/menustraducciones.service';
 import { MenusTraduccionesResolver } from './modules/MenusTraducciones/menustraducciones.resolver';
 import { ValidacionesService } from './modules/Admin/Validaciones/validaciones.service';
-import { ValidacionesResolver } from './modules/Admin/Validaciones/validaciones.resolver';
 import { IconosService } from './modules/Admin/Iconos/iconos.service';
 import { IconosResolver } from './modules/Admin/Iconos/iconos.resolver';
 import { ProveedoresServiciosService } from './modules/Admin/ProveedoresServicios/proveedoresservicios.service';
@@ -38,7 +37,7 @@ import { MicroserviciosResolver } from './modules/Admin/Microservicios/microserv
 import { ProveedoresServiciosResolver } from './modules/Admin/ProveedoresServicios/proveedoresservicios.resolver';
 import { Prisma } from '@prisma/client';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver]
 
 @Module({
   imports: [

@@ -13,16 +13,16 @@ export class PermisosService {
     private validacionesService: ValidacionesService,
   ) { }
 
-  async getPermisos(): Promise<Permisos[]> {
-    return await this.prismaService.permisos.findMany({
-      include: { Entidades: true }
+  async getPermisos(): Promise<any[]> {
+    return this.prismaService.permisos.findMany({
+      include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
     });
   }
 
-  async getPermisoById(permiso_id: number): Promise<Permisos> {
+  async getPermisoById(permiso_id: number): Promise<any> {
     var permisos = await this.prismaService.permisos.findUnique({
       where: { permiso_id: permiso_id },
-      include: { Entidades: true }
+      include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
     });
 
     if (permisos === null) {
@@ -32,10 +32,10 @@ export class PermisosService {
     return permisos;
   }
 
-  async getFilterPermisos(permiso: string): Promise<Permisos[]> {
-    return await this.prismaService.permisos.findMany({
+  async getFilterPermisos(permiso: string): Promise<any[]> {
+    return this.prismaService.permisos.findMany({
       where: { OR: [{ permiso: { contains: permiso, mode: "insensitive" } }] },
-      include: { Entidades: true }
+      include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
     });
   }
 
@@ -52,7 +52,7 @@ export class PermisosService {
   }
 
   // Esta función se encarga de almacenar Entidades y Permisos
-  saveEntidadesPermisosValidaciones(nameMethods) {
+  saveEntidadesPermisosValidaciones(nameMethods): string | void {
     var dataPermisos: any = [];
     var dataResolvers = [];
     var dataValidaciones = [];
@@ -104,7 +104,7 @@ export class PermisosService {
   }
 
   // Esta función permite almacenar en BD el nombre los métodos por cada resolver
-  async createPermisos(cls): Promise<Permisos> {
+  async createPermisos(cls): Promise<any> {
     var entidad = await this.prismaService.entidades.findFirst({
       where: { resolver: cls.name },
       select: { entidad_id: true }
@@ -118,18 +118,18 @@ export class PermisosService {
     if (entidad !== null && permiso === null) {
       return this.prismaService.permisos.create({
         data: { entidad_id: entidad.entidad_id, permiso: cls.permiso, es_publico: cls.is_public },
-        include: { Entidades: true }
+        include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
       });
     } else {
       return this.prismaService.permisos.update({
         where: { permiso_id: permiso.permiso_id },
         data: { entidad_id: entidad.entidad_id, permiso: cls.permiso, es_publico: cls.is_public },
-        include: { Entidades: true }
+        include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
       });
     }
   }
 
-  async updatePermiso(data: UpdatePermisoInput) {
+  async updatePermiso(data: UpdatePermisoInput): Promise<any> {
 
     await this.getPermisoById(data.permiso_id);
     await this.entidadesService.getEntidadeById(data.entidad_id);
@@ -141,17 +141,17 @@ export class PermisosService {
         es_publico: data.es_publico,
         permiso: data.permiso
       },
-      include: { Entidades: true }
+      include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
     })
   }
 
-  async deletePermiso(permiso_id: number): Promise<Permisos> {
+  async deletePermiso(permiso_id: number): Promise<any> {
 
     await this.getPermisoById(permiso_id);
 
     return this.prismaService.permisos.delete({
       where: { permiso_id: permiso_id },
-      include: { Entidades: true }
+      include: { Entidades: true, PermisosValidacionesSec: { include: { ValidacionesSec: true, Permisos: true } } }
     });
   }
 }

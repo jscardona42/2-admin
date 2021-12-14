@@ -1,45 +1,9 @@
-import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service';
-import { UpdateValidacionInput } from './dto/validaciones.dto';
-import { PermisosValidaciones } from './entities/permisosvalidaciones.entity';
-import { Validaciones } from './entities/validaciones.entity';
 
 @Injectable()
 export class ValidacionesService {
     constructor(private prismaService: PrismaService) { }
-
-
-    async getValidaciones(): Promise<Validaciones[]> {
-        return await this.prismaService.validaciones.findMany({
-            include: { Microservicios: true, PermisosValidaciones: { include: { Permisos: { include: { Entidades: true } } } } }
-        });
-    }
-
-    async getPermisosValidaciones(): Promise<PermisosValidaciones[]> {
-        return this.prismaService.permisosValidaciones.findMany({
-            include: { Permisos: { include: { Entidades: true } }, Validaciones: true }
-        });
-    }
-
-    async getValidacionById(validacion_id: number): Promise<Validaciones> {
-        var validaciones = await this.prismaService.validaciones.findUnique({
-            where: { validacion_id: validacion_id },
-            include: { Microservicios: true, PermisosValidaciones: { include: { Permisos: { include: { Entidades: true } } } } }
-        });
-
-        if (validaciones === null) {
-            throw new UnauthorizedException(`La validación con id ${validacion_id} no existe`);
-        }
-
-        return validaciones;
-    }
-
-    async getPermisoValidacionById(permiso_validacion_id: number): Promise<PermisosValidaciones> {
-        return this.prismaService.permisosValidaciones.findUnique({
-            where: { permiso_validacion_id: permiso_validacion_id },
-            include: { Permisos: { include: { Entidades: true } }, Validaciones: true }
-        });
-    }
 
     // Esta función permite almacenar en BD el nombre las validaciones
     async createValidacion(referencia: any): Promise<any> {
@@ -113,28 +77,5 @@ export class ValidacionesService {
                 });
             }
         });
-    }
-
-    async updateValidacion(data: UpdateValidacionInput): Promise<Validaciones> {
-
-        await this.getValidacionById(data.validacion_id);
-
-        return this.prismaService.validaciones.update({
-            where: { validacion_id: data.validacion_id },
-            data: {
-                ...data
-            },
-            include: { Microservicios: true, PermisosValidaciones: { include: { Permisos: { include: { Entidades: true } } } } }
-        })
-    }
-
-    async deleteValidacion(validacion_id: number): Promise<Validaciones> {
-
-        await this.getValidacionById(validacion_id);
-
-        return this.prismaService.validaciones.delete({
-            where: { validacion_id: validacion_id },
-            include: { Microservicios: true, PermisosValidaciones: { include: { Permisos: { include: { Entidades: true } } } } }
-        })
     }
 }

@@ -65,11 +65,32 @@ type Entidades {
   resolver: String
 }
 
+type Microservicios {
+  microservicio_id: ID!
+  name: String!
+  url: String!
+  activo: Boolean!
+}
+
+type Validaciones {
+  validacion_id: ID!
+  Microservicios: Microservicios!
+  id_referenciado: String!
+  PermisosValidaciones: [PermisosValidaciones!]!
+}
+
+type PermisosValidaciones {
+  permiso_validacion_id: ID!
+  Permisos: Permisos!
+  ValidacionesSec: Validaciones!
+}
+
 type Permisos {
   permiso_id: ID!
   Entidades: Entidades!
   permiso: String!
   es_publico: Boolean!
+  PermisosValidacionesSec: [PermisosValidaciones!]
 }
 
 type RolesPermisos {
@@ -121,26 +142,6 @@ type Traducciones {
   sigla: String!
 }
 
-type PermisosValidaciones {
-  permiso_validacion_id: ID!
-  Permisos: Permisos!
-  validacion_id: Float!
-}
-
-type Microservicios {
-  microservicio_id: ID!
-  name: String!
-  url: String!
-  activo: Boolean!
-}
-
-type Validaciones {
-  validacion_id: ID!
-  Microservicios: Microservicios!
-  id_referenciado: String!
-  PermisosValidaciones: [PermisosValidaciones!]!
-}
-
 type Iconos {
   icono_id: ID!
   nombre: String!
@@ -189,10 +190,6 @@ type Query {
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getMenusTraducciones: [MenusTraducciones!]!
   getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
-  getValidaciones: [Validaciones!]!
-  getPermisosValidaciones: [PermisosValidaciones!]!
-  getValidacionById(validacion_id: Float!): Validaciones!
-  getPermisoValidacionById(permiso_validacion_id: Float!): PermisosValidaciones!
   getIconos: [Iconos!]!
   getIconoById(icono_id: Float!): Iconos!
   getFilterIconos(unicode: String, nombre: String): [Iconos!]!
@@ -256,8 +253,6 @@ type Mutation {
   createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
   updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
   deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
-  updateValidacion(data: UpdateValidacionInput!): Validaciones!
-  deleteValidacion(validacion_id: Float!): Validaciones!
   createIcono(data: CreateIconoInput!): Iconos!
   updateIcono(data: UpdateIconoInput!): Iconos!
   deleteIcono(icono_id: Float!): Iconos!
@@ -375,12 +370,6 @@ input UpdateMenuTraduccionInput {
   menu_id: Float
   traduccion_id: Float
   menu_traduccion_id: Float!
-}
-
-input UpdateValidacionInput {
-  microservicio_id: Float
-  id_referenciado: String
-  validacion_id: Float!
 }
 
 input CreateIconoInput {

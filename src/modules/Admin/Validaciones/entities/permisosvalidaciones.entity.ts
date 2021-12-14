@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
 import { Permisos } from "../../../Admin/Permisos/entities/permisos.entity"
+import { Validaciones } from "./validaciones.entity"
 
 @ObjectType()
 export class PermisosValidaciones {
@@ -9,7 +10,7 @@ export class PermisosValidaciones {
     @Field((type) => Permisos)
     Permisos: Permisos
 
-    @Field((type) => Number)
-    validacion_id: number
+    @Field((type) => Validaciones)
+    ValidacionesSec: Validaciones
 
 }

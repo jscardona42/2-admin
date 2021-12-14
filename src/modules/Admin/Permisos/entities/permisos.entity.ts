@@ -1,5 +1,6 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
 import { Entidades } from "../../../Admin/Entidades/entities/entidades.entity"
+import { PermisosValidaciones } from "../../Validaciones/entities/permisosvalidaciones.entity"
 
 @ObjectType()
 export class Permisos {
@@ -14,4 +15,8 @@ export class Permisos {
 
     @Field((type) => Boolean)
     es_publico: boolean
+
+    @Field((type) => [PermisosValidaciones], { nullable: true })
+    PermisosValidacionesSec?: PermisosValidaciones[]
+
 }
