@@ -69,12 +69,12 @@ model Menus {
 }
 
 model Microservicios {
-  microservicio_id     Int                    @id @default(autoincrement())
-  name                 String                 @db.VarChar(255)
-  url                  String                 @db.VarChar(32)
-  activo               Boolean
-  ProveedoresServicios ProveedoresServicios[]
-  Validaciones         Validaciones[]
+  microservicio_id        Int                    @id @default(autoincrement())
+  name                    String                 @db.VarChar(255)
+  url                     String                 @db.VarChar(32)
+  activo                  Boolean
+  ProveedoresServiciosSec ProveedoresServicios[]
+  Validaciones            Validaciones[]
 }
 
 model Permisos {

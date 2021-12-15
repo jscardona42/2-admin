@@ -10,13 +10,16 @@ export class MicroserviciosService {
         private prismaService: PrismaService
     ) { }
 
-    async getMicroservicios(): Promise<Microservicios[]> {
-        return this.prismaService.microservicios.findMany();
+    async getMicroservicios(): Promise<any[]> {
+        return this.prismaService.microservicios.findMany({
+            include: { ProveedoresServiciosSec: true }
+        });
     }
 
-    async getMicroservicioById(microservicio_id: number): Promise<Microservicios> {
+    async getMicroservicioById(microservicio_id: number): Promise<any> {
         var microservicios = await this.prismaService.microservicios.findUnique({
-            where: { microservicio_id: microservicio_id }
+            where: { microservicio_id: microservicio_id },
+            include: { ProveedoresServiciosSec: true }
         });
 
         if (microservicios === null) {
@@ -26,23 +29,25 @@ export class MicroserviciosService {
         return microservicios;
     }
 
-    async getFilterMicroservicios(name: string): Promise<Microservicios[]> {
+    async getFilterMicroservicios(name: string): Promise<any[]> {
         return this.prismaService.microservicios.findMany({
-            where: { OR: [{ name: { contains: name, mode: "insensitive" } }] }
+            where: { OR: [{ name: { contains: name, mode: "insensitive" } }] },
+            include: { ProveedoresServiciosSec: true }
         })
     }
 
-    async createMicroservicio(data: CreateMicroservicioInput): Promise<Microservicios> {
+    async createMicroservicio(data: CreateMicroservicioInput): Promise<any> {
         return this.prismaService.microservicios.create({
             data: {
                 name: data.name,
                 url: data.url,
                 activo: data.activo
-            }
+            },
+            include: { ProveedoresServiciosSec: true }
         });
     }
 
-    async updateMicroservicio(data: UpdateMicroservicioInput): Promise<Microservicios> {
+    async updateMicroservicio(data: UpdateMicroservicioInput): Promise<any> {
 
         await this.getMicroservicioById(data.microservicio_id);
 
@@ -52,16 +57,18 @@ export class MicroserviciosService {
                 name: data.name,
                 url: data.url,
                 activo: data.activo
-            }
+            },
+            include: { ProveedoresServiciosSec: true }
         });
     }
 
-    async deleteMicroservicio(microservicio_id: number): Promise<Microservicios> {
+    async deleteMicroservicio(microservicio_id: number): Promise<any> {
 
         await this.getMicroservicioById(microservicio_id);
 
         return this.prismaService.microservicios.delete({
-            where: { microservicio_id: microservicio_id }
+            where: { microservicio_id: microservicio_id },
+            include: { ProveedoresServiciosSec: true }
         });
     }
 }

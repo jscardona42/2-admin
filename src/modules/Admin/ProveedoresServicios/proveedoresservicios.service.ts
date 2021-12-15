@@ -33,7 +33,7 @@ export class ProveedoresServiciosService {
     })
 
     if (proveedor === null) {
-      return await this.prismaService.proveedoresServicios.create({
+      return this.prismaService.proveedoresServicios.create({
         data: {
           microservicio_id: microservicio_id,
           lista_proveedores: JSON.stringify(myProviders),
@@ -42,7 +42,7 @@ export class ProveedoresServiciosService {
         include: { Microservicios: true }
       })
     } else {
-      return await this.prismaService.proveedoresServicios.update({
+      return this.prismaService.proveedoresServicios.update({
         where: { proveedor_servicio_id: proveedor.proveedor_servicio_id },
         data: { lista_proveedores: JSON.stringify(myProviders), lista_entidades_secundarias: JSON.stringify(entitiesExc) },
         include: { Microservicios: true }

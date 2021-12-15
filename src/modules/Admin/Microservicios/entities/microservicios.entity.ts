@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
+import { ProveedoresServicios } from '../../ProveedoresServicios/entities/proveedoresservicios.entity'
 
 @ObjectType()
 export class Microservicios {
@@ -18,4 +19,7 @@ export class Microservicios {
     @Field((type) => Boolean)
     @IsNotEmpty()
     activo: boolean
+
+    @Field((type) => [ProveedoresServicios], { nullable: true })
+    ProveedoresServiciosSec?: ProveedoresServicios[]
 }
