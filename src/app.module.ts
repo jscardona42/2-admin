@@ -16,16 +16,12 @@ import { PermisosService } from './modules/Admin/Permisos/permisos.service';
 import { PermisosResolver } from './modules/Admin/Permisos/permisos.resolver';
 import { EntidadesService } from './modules/Admin/Entidades/entidades.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MenusService } from './modules/Menus/menus.service';
-import { MenusResolver } from './modules/Menus/menus.resolver';
+import { MenusService } from './modules/GestionMenus/Menus/menus.service';
+import { MenusResolver } from './modules/GestionMenus/Menus/menus.resolver';
 import { UsuariosService } from './modules/Usuarios/usuarios.service';
 import { UsuariosResolver } from './modules/Usuarios/usuarios.resolver';
-import { MenusPalabrasService } from './modules/MenusPalabras/menuspalabras.service';
-import { MenusPalabrasResolver } from './modules/MenusPalabras/menuspalabras.resolver';
 import { TraduccionesService } from './modules/Traducciones/traducciones.service';
 import { TraduccionesResolver } from './modules/Traducciones/traducciones.resolver';
-import { MenusTraduccionesService } from './modules/MenusTraducciones/menustraducciones.service';
-import { MenusTraduccionesResolver } from './modules/MenusTraducciones/menustraducciones.resolver';
 import { ValidacionesService } from './modules/Admin/Validaciones/validaciones.service';
 import { IconosService } from './modules/Admin/Iconos/iconos.service';
 import { IconosResolver } from './modules/Admin/Iconos/iconos.resolver';
@@ -36,7 +32,7 @@ import { MicroserviciosService } from './modules/Admin/Microservicios/microservi
 import { MicroserviciosResolver } from './modules/Admin/Microservicios/microservicios.resolver';
 import { Prisma } from '@prisma/client';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver]
+const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver]
 
 @Module({
   imports: [

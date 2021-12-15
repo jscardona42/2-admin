@@ -34,19 +34,6 @@ describe('Menu Resolver', () => {
     });
   });
 
-  describe('Mutation createFolder()', () => {
-    it('should invoke menuService.createFolder with arguments', async () => {
-      const testParams = {
-        data: {
-          parentId: 5,
-          name: 'Shipping',
-        }
-      };
-      await menuResolver.createFolder(testParams.data);
-      expect(menuService.createFolder).toHaveBeenCalledWith(testParams.data);
-    });
-  });
-
   describe('Mutation insertEntityToFolder()', () => {
     it('should invoke menuService.insertEntityToFolder with arguments', async () => {
       const testParams = {
@@ -55,9 +42,9 @@ describe('Menu Resolver', () => {
           name: 'Shipping',
         }
       };
-      await menuResolver.insertEntityToFolder(testParams.data)
-      expect(menuService.insertEntityToFolder).toHaveBeenCalledWith(testParams.data)
+      await menuResolver.createMenu(testParams.data)
+      expect(menuService.createMenu).toHaveBeenCalledWith(testParams.data)
     })
   })
-  
+
 });

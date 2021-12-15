@@ -114,17 +114,17 @@ type Roles {
   RolesPermisosSec: [RolesPermisos!]!
 }
 
-type MenusPalabras {
-  menu_palabra_id: ID!
-  menu_id: Float!
-  palabra: String!
-}
-
 type MenusTraducciones {
   menu_traduccion_id: ID!
   traduccion: String!
   menu_id: Float!
   traduccion_id: Float!
+}
+
+type MenusPalabras {
+  menu_palabra_id: ID!
+  menu_id: Float!
+  palabra: String!
 }
 
 type Menus {
@@ -136,8 +136,8 @@ type Menus {
   other_Menus: JSON!
   order: Float
   activo: Float
-  MenusPalabras: [MenusPalabras!]
-  MenusTraducciones: [MenusTraducciones!]
+  MenusPalabrasSec: [MenusPalabras!]
+  MenusTraduccionesSec: [MenusTraducciones!]
 }
 
 """
@@ -185,12 +185,8 @@ type Query {
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
-  getMenusPalabras: [MenusPalabras!]!
-  getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
-  getMenusTraducciones: [MenusTraducciones!]!
-  getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
   getIconos: [Iconos!]!
   getIconoById(icono_id: Float!): Iconos!
   getFilterIconos(unicode: String, nombre: String): [Iconos!]!
@@ -224,8 +220,7 @@ type Mutation {
   logOutLogin(login_id: Float!): Login!
   exChangePasswordLogin(data: ChangePasswordInput!): Login!
   createRootMenu: Menus!
-  createFolder(data: CreateMenuInput!): Menus!
-  insertEntityToFolder(data: CreateMenuInput!): Menus!
+  createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
   modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
@@ -243,15 +238,9 @@ type Mutation {
   createUsuario(data: CreateUsuarioInput!): Usuarios!
   updateUsuario(data: UpdateUsuarioInput!): Usuarios!
   deleteUsuario(usuario_id: Float!): Usuarios!
-  createMenuPalabra(data: CreateMenuPalabrasInput!): MenusPalabras!
-  updateMenuPalabra(data: UpdateMenuPalabrasInput!): MenusPalabras!
-  deleteMenuPalabra(menu_palabra_id: Float!): MenusPalabras!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
-  createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
-  updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
-  deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
   createIcono(data: CreateIconoInput!): Iconos!
   updateIcono(data: UpdateIconoInput!): Iconos!
   deleteIcono(icono_id: Float!): Iconos!
@@ -279,6 +268,17 @@ input CreateMenuInput {
   order: Float
   icon: String
   base: Boolean
+  MenusPalabras: [CreateMenuPalabrasInput!]
+  MenusTraducciones: [CreateMenuTraduccionInput!]
+}
+
+input CreateMenuPalabrasInput {
+  palabra: String!
+}
+
+input CreateMenuTraduccionInput {
+  traduccion: String!
+  traduccion_id: Float!
 }
 
 input configDoblesFactoresInput {
@@ -335,17 +335,6 @@ input UpdateUsuarioInput {
   usuario_id: Float!
 }
 
-input CreateMenuPalabrasInput {
-  menu_id: Float!
-  palabra: String!
-}
-
-input UpdateMenuPalabrasInput {
-  menu_id: Float
-  palabra: String
-  menu_palabra_id: Float!
-}
-
 input CreateTraduccionesInput {
   idioma: String!
   sigla: String!
@@ -355,19 +344,6 @@ input UpdateTraduccionesInput {
   idioma: String
   sigla: String
   traduccion_id: Float!
-}
-
-input CreateMenuTraduccionInput {
-  traduccion: String!
-  menu_id: Float!
-  traduccion_id: Float!
-}
-
-input UpdateMenuTraduccionInput {
-  traduccion: String
-  menu_id: Float
-  traduccion_id: Float
-  menu_traduccion_id: Float!
 }
 
 input CreateIconoInput {

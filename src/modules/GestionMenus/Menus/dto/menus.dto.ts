@@ -1,6 +1,8 @@
 import 'reflect-metadata'
 import { Field, InputType, PartialType, } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
+import { CreateMenuPalabrasInput } from '../../MenusPalabras/dto/menuspalabras.dto'
+import { CreateMenuTraduccionInput } from '../../MenusTraducciones/dto/menustraducciones.dto'
 
 
 @InputType()
@@ -25,6 +27,11 @@ export class CreateMenuInput {
     @Field((type) => Boolean, { nullable: true })
     base?: boolean
 
+    @Field((type) => [CreateMenuPalabrasInput], { nullable: true })
+    MenusPalabras?: CreateMenuPalabrasInput[]
+
+    @Field((type) => [CreateMenuTraduccionInput], { nullable: true })
+    MenusTraducciones?: CreateMenuTraduccionInput[]
 }
 
 @InputType()

@@ -5,10 +5,7 @@ import { IsNotEmpty } from 'class-validator'
 
 @InputType()
 export class CreateMenuPalabrasInput {
-    @Field()
-    @IsNotEmpty()
-    menu_id: number
-
+    
     @Field()
     @IsNotEmpty()
     palabra: string

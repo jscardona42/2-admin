@@ -33,14 +33,9 @@ export class MenusResolver {
   }
 
   @Mutation(returns => Menus)
-  async createFolder(@Args('data') data: CreateMenuInput): Promise<Object> {
-    return this.menuService.createFolder(data)
-  }
-
-  @Mutation(returns => Menus)
-  async insertEntityToFolder(
+  async createMenu(
     @Args('data') data: CreateMenuInput): Promise<Object> {
-    return this.menuService.insertEntityToFolder(data)
+    return this.menuService.createMenu(data)
   }
 
   @Mutation(returns => [Menus])

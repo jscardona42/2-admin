@@ -1,10 +1,10 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { LoginService } from '../Login/login.service';
-import { UsuariosService } from '../Usuarios/usuarios.service';
-import { PrismaService } from '../../prisma.service';
+import { EntidadesService } from '../../../modules/Admin/Entidades/entidades.service';
+import { RolesService } from '../../../modules/Admin/Roles/roles.service';
+import { UsuariosService } from '../../../modules/Usuarios/usuarios.service';
+import { LoginService } from '../../../modules/Login/login.service';
+import { PrismaService } from '../../../prisma.service';
 import { CreateMenuInput } from './dto/menus.dto';
-import { EntidadesService } from '../Admin/Entidades/entidades.service';
-import { RolesService } from '../Admin/Roles/roles.service';
 
 
 @Injectable()
@@ -24,19 +24,19 @@ export class MenusService {
         menu_id: 1,
       },
       include: {
-        MenusTraducciones: true, MenusPalabras: true,
+        MenusTraduccionesSec: true, MenusPalabrasSec: true,
         other_Menus: {
           where: { activo: true },
           include: {
-            MenusTraducciones: true, MenusPalabras: true,
+            MenusTraduccionesSec: true, MenusPalabrasSec: true,
             other_Menus: {
               where: { activo: true },
               include: {
-                MenusTraducciones: true, MenusPalabras: true,
+                MenusTraduccionesSec: true, MenusPalabrasSec: true,
                 other_Menus: {
                   where: { activo: true },
                   include: {
-                    MenusTraducciones: true, MenusPalabras: true,
+                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
                     other_Menus: true
                   }
                 }
@@ -49,15 +49,37 @@ export class MenusService {
   }
 
   async getMenuById(menu_id: number): Promise<any> {
-    return await this.prismaService.menus.findUnique({
+    return this.prismaService.menus.findUnique({
       where: { menu_id: menu_id }
     });
   }
 
   // Obtener todos los menús
   async getMenusInactivos(): Promise<any> {
-    return await this.prismaService.menus.findMany({
-      where: { activo: false }
+    return this.prismaService.menus.findMany({
+      where: { activo: false },
+      include: {
+        MenusTraduccionesSec: true, MenusPalabrasSec: true,
+        other_Menus: {
+          where: { activo: true },
+          include: {
+            MenusTraduccionesSec: true, MenusPalabrasSec: true,
+            other_Menus: {
+              where: { activo: true },
+              include: {
+                MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                other_Menus: {
+                  where: { activo: true },
+                  include: {
+                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                    other_Menus: true
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
     });
   }
 
@@ -89,24 +111,24 @@ export class MenusService {
 
     const OR = [{ entidad_id: { in: arrayEntidadIds }, }, { isEntity: false }, { activo: true }];
 
-    return await this.prismaService.menus.findMany({
+    return this.prismaService.menus.findMany({
       where: {
         menu_id: 1,
       },
       include: {
-        MenusTraducciones: true, MenusPalabras: true,
+        MenusTraduccionesSec: true, MenusPalabrasSec: true,
         other_Menus: {
           where: { OR: OR },
           include: {
-            MenusTraducciones: true, MenusPalabras: true,
+            MenusTraduccionesSec: true, MenusPalabrasSec: true,
             other_Menus: {
               where: { OR: OR },
               include: {
-                MenusTraducciones: true, MenusPalabras: true,
+                MenusTraduccionesSec: true, MenusPalabrasSec: true,
                 other_Menus: {
                   where: { OR: OR },
                   include: {
-                    MenusTraducciones: true, MenusPalabras: true,
+                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
                     other_Menus: true
                   }
                 }
@@ -121,14 +143,14 @@ export class MenusService {
   // Filtrar menú por palabra
   async getFilterMenuPalabra(palabra: string): Promise<Object[]> {
     return this.prismaService.menus.findMany({
-      where: { MenusPalabras: { some: { palabra: { contains: palabra, mode: "insensitive" } } }, activo: true }
+      where: { MenusPalabrasSec: { some: { palabra: { contains: palabra, mode: "insensitive" } } }, activo: true },
     })
   }
 
 
   // Crear root menú
   async createRootMenu(): Promise<Object> {
-    return await this.prismaService.menus.create({
+    return this.prismaService.menus.create({
       data: {
         title: 'menu',
         path: '/',
@@ -138,43 +160,36 @@ export class MenusService {
     });
   }
 
-  // Crear una carpeta
-  async createFolder(data: CreateMenuInput): Promise<Object> {
-    await this.doesParentFolderExist(data.parentId);
-    const createdFolder = await this.prismaService.menus.create({
-      data: {
-        title: data.name,
-        isEntity: false,
-        order: data.order,
-        icon: data.icon,
-        path: '',
-        Menus: {
-          connect: {
-            menu_id: data.parentId,
-          },
-        },
-      },
-    });
-    return await this.updateFolderPath(createdFolder.menu_id, data.name);
-  }
-
   // Crear entidad
-  async insertEntityToFolder(data: CreateMenuInput): Promise<Object> {
+  async createMenu(data: CreateMenuInput): Promise<Object> {
 
-    await this.entidadesService.getEntidadeById(data.entidad_id);
+    let isEntity = false;
+
+    await this.doesParentFolderExist(data.parentId);
+    if (data.entidad_id !== undefined) {
+      isEntity = true;
+      await this.entidadesService.getEntidadeById(data.entidad_id);
+    }
 
     const createdEntity = await this.prismaService.menus.create({
       data: {
         title: data.name,
-        isEntity: true,
+        isEntity: isEntity,
         path: '',
         order: data.order,
         icon: data.icon,
         Menus: { connect: { menu_id: data.parentId, }, },
-        entidad_id: data.entidad_id
+        entidad_id: data.entidad_id,
+        MenusPalabrasSec: {
+          create: data.MenusPalabras
+        },
+        MenusTraduccionesSec: {
+          create: data.MenusTraducciones
+        }
       },
     });
-    return await this.updateFolderPath(createdEntity.menu_id, data.name);
+
+    return this.updateFolderPath(createdEntity.menu_id, data.name);
   }
 
   // Validar si existe el parentId
@@ -184,7 +199,7 @@ export class MenusService {
         menu_id: parentId,
       },
       rejectOnNotFound: () =>
-        new NotFoundException(`Folder with id: ${parentId} does not exist`),
+        new NotFoundException(`El menú con id ${parentId} no existe`),
     });
   }
 
@@ -210,7 +225,7 @@ export class MenusService {
 
     var level = path.split("/").length - 1;
 
-    return await this.prismaService.menus.update({
+    return this.prismaService.menus.update({
       where: {
         menu_id: folderId,
       },
@@ -255,7 +270,6 @@ export class MenusService {
           }
         })
       }
-
 
       nivel1.other_Menus.forEach(async nivel2 => {
         await this.entidadesService.getEntidadeById(nivel2.entidad_id);
@@ -321,19 +335,17 @@ export class MenusService {
         });
       });
     });
-    return await this.prismaService.menus.findMany({
+    return this.prismaService.menus.findMany({
       include: { other_Menus: { include: { other_Menus: { include: { other_Menus: true } } } } }
     })
 
   }
 
   async modifyMenuEstado(menu_id: number, activo: boolean): Promise<Object> {
-    return await this.prismaService.menus.update({
+    return this.prismaService.menus.update({
       where: { menu_id: menu_id },
       data: { activo: activo }
     })
   }
-
-
 
 }

@@ -1,15 +1,14 @@
 import { Test } from '@nestjs/testing';
-import { RolesPermisosService } from '../Admin/RolesPermisos/rolespermisos.service';
-import { LoginService } from '../Login/login.service';
-import { UsuariosService } from '../Usuarios/usuarios.service';
-import { PrismaService } from '../../prisma.service';
+import { LoginService } from '../../Login/login.service';
+import { UsuariosService } from '../../Usuarios/usuarios.service';
+import { PrismaService } from '../../../prisma.service';
 import { MenusService } from './menus.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuditoriasService } from '../Auditorias/auditorias.service';
-import { EntidadesService } from '../Admin/Entidades/entidades.service';
-import { RolesService } from '../Admin/Roles/roles.service';
-import { PermisosService } from '../Admin/Permisos/permisos.service';
-import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
+import { AuditoriasService } from '../../Auditorias/auditorias.service';
+import { EntidadesService } from '../../Admin/Entidades/entidades.service';
+import { RolesService } from '../../Admin/Roles/roles.service';
+import { PermisosService } from '../../Admin/Permisos/permisos.service';
+import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 
 describe('Menu Service', () => {
   let menuService: MenusService;
@@ -26,7 +25,7 @@ describe('Menu Service', () => {
         }),
       ],
       providers: [
-        MenusService, RolesPermisosService, LoginService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
+        MenusService, LoginService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
         {
           provide: PrismaService,
           useFactory: () => ({
@@ -74,21 +73,7 @@ describe('Menu Service', () => {
           entidad_id: 1
         }
       };
-      await menuService.createFolder(testParams.data);
-      expect(prismaService.menus.create).toHaveBeenCalled();
-    });
-  });
-
-  describe('insertEntityToFolder method', () => {
-    it('should invoke prismaService.menus.create', async () => {
-      const testParams = {
-        data: {
-          parentId: 2,
-          name: "Nombre",
-          entidad_id: 1
-        }
-      };
-      await menuService.insertEntityToFolder(testParams.data);
+      await menuService.createMenu(testParams.data);
       expect(prismaService.menus.create).toHaveBeenCalled();
     });
   });

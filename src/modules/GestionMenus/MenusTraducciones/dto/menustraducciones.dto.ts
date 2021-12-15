@@ -10,9 +10,6 @@ export class CreateMenuTraduccionInput {
     @IsNotEmpty()
     traduccion: string
 
-    @Field(type => Number)
-    menu_id: number
-
     @Field()
     @IsNotEmpty()
     traduccion_id: number

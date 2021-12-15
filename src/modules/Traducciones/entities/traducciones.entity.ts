@@ -1,7 +1,5 @@
 import 'reflect-metadata';
 import { ObjectType, Field, ID } from '@nestjs/graphql';
-import JSON from 'graphql-type-json';
-import { MenusPalabras } from 'src/modules/MenusPalabras/entities/menuspalabras.entity';
 import { IsNotEmpty } from 'class-validator';
 
 @ObjectType()
