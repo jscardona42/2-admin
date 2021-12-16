@@ -98,10 +98,10 @@ export class AppModule {
       }
     }
 
-    var microservicio_id = 1;
+    var microservicio = "admin";
     var secondaryEntities = getSecondaryEntities();
     // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
-    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio_id, secondaryEntities);
+    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, secondaryEntities);
   }
 }
 

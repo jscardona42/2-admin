@@ -26,16 +26,24 @@ export class ProveedoresServiciosService {
   }
 
   // Esta función almacena un listado de Resolver y sus métodos por cada microservicio
-  async saveProveedoresServicios(myProviders: any[], microservicio_id: number, entitiesExc: any[] | null): Promise<ProveedoresServicios> {
+  async saveProveedoresServicios(myProviders: any[], microservicio_name: string, entitiesExc: any[] | null): Promise<ProveedoresServicios> {
+
+    let microservicio = await this.prismaService.microservicios.findFirst({
+      where: { name: microservicio_name }
+    });
+
+    if (microservicio === null) {
+      throw new UnauthorizedException("El nombre del microservicio no es correcto");
+    }
 
     var proveedor = await this.prismaService.proveedoresServicios.findFirst({
-      where: { microservicio_id: microservicio_id }
+      where: { microservicio_id: microservicio.microservicio_id }
     })
 
     if (proveedor === null) {
       return this.prismaService.proveedoresServicios.create({
         data: {
-          microservicio_id: microservicio_id,
+          microservicio_id: microservicio.microservicio_id,
           lista_proveedores: JSON.stringify(myProviders),
           lista_entidades_secundarias: JSON.stringify(entitiesExc)
         },
