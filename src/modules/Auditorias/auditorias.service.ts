@@ -8,7 +8,7 @@ export class AuditoriasService {
   constructor(private prismaService: PrismaService) { }
 
   async getAuditorias(): Promise<Auditorias[]> {
-    return await this.prismaService.auditorias.findMany({
+    return this.prismaService.auditorias.findMany({
     })
   }
 
@@ -29,7 +29,7 @@ export class AuditoriasService {
       status = "unauthorized";
     }
     await this.prismaService.auditorias.create({
-      data: { login_id: data.id, status: status, tipo: "signin", username: data.username, rol: profile, tiene_doble_factor: has_Twofactor }
+      data: { usuario_id: data.id, status: status, tipo: "signin", username: data.username, rol: profile, tiene_doble_factor: has_Twofactor }
     })
   }
 }

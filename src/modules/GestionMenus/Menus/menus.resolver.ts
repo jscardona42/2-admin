@@ -18,8 +18,8 @@ export class MenusResolver {
   }
 
   @Query(() => [Menus])
-  async getMenuByRoleId(@Args('login_id') login_id: number): Promise<Object[]> {
-    return this.menuService.getMenuByRoleId(login_id);
+  async getMenuByRoleId(@Args('usuario_id') usuario_id: number): Promise<Object[]> {
+    return this.menuService.getMenuByRoleId(usuario_id);
   }
 
   @Query(() => [Menus])

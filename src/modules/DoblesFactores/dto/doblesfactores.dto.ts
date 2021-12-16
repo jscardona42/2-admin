@@ -1,14 +1,19 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID, InputType } from '@nestjs/graphql'
+import { Field, InputType, registerEnumType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
 import { MetodosValidacion } from '@prisma/client'
+
+
+registerEnumType(MetodosValidacion, {
+  name: 'MetodosValidacion'
+})
 
 @InputType()
 //TwoFactorAuthenticateInput
 export class DoblesFactoresValidarInput {
   @Field()
   @IsNotEmpty()
-  login_id: number
+  usuario_id: number
 
   @Field()
   @IsNotEmpty()
@@ -20,7 +25,7 @@ export class DoblesFactoresValidarInput {
 export class CodigoRecuperacionInput {
   @Field()
   @IsNotEmpty()
-  login_id: number
+  usuario_id: number
 
   @Field()
   @IsNotEmpty()
@@ -32,9 +37,10 @@ export class CodigoRecuperacionInput {
 export class configDoblesFactoresInput {
   @Field()
   @IsNotEmpty()
-  login_id: number
+  usuario_id: number
 
-  @Field()
+  @Field((type) => MetodosValidacion)
+  @IsNotEmpty()
   metodo_validacion: MetodosValidacion
 }
 
@@ -42,7 +48,7 @@ export class configDoblesFactoresInput {
 export class ValidarCodigoInput {
   @Field()
   @IsNotEmpty()
-  login_id: number
+  usuario_id: number
 
   @Field()
   @IsNotEmpty()

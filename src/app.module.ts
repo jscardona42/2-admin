@@ -6,8 +6,6 @@ import { join } from 'path';
 import { PrismaService } from './prisma.service';
 import { AuditoriasService } from './modules/Auditorias/auditorias.service';
 import { AuditoriasResolver } from './modules/Auditorias/auditorias.resolver';
-import { LoginService } from './modules/Login/login.service';
-import { LoginResolver } from './modules/Login/login.resolver';
 import { RolesResolver } from './modules/Admin/Roles/roles.resolver';
 import { RolesService } from './modules/Admin/Roles/roles.service';
 import { DoblesFactoresService } from './modules/DoblesFactores/doblesfactores.service';
@@ -32,7 +30,7 @@ import { MicroserviciosService } from './modules/Admin/Microservicios/microservi
 import { MicroserviciosResolver } from './modules/Admin/Microservicios/microservicios.resolver';
 import { Prisma } from '@prisma/client';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver]
+const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver]
 
 @Module({
   imports: [

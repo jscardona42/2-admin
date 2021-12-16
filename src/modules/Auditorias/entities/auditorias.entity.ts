@@ -7,7 +7,7 @@ export class Auditorias {
     auditoria_id: number
 
     @Field(type => String, {nullable: true})
-    login_id?: number
+    usuario_id?: number
 
     @Field(type => String, {nullable: true})
     status?: string 

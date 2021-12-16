@@ -14,7 +14,7 @@ directive @provides(fields: String!) on FIELD_DEFINITION
 
 type Auditorias {
   auditoria_id: ID!
-  login_id: String
+  usuario_id: String
   status: String
   fecha_creacion: DateTime
   tipo: String
@@ -27,37 +27,6 @@ type Auditorias {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type DoblesFactores {
-  doble_factor_id: ID!
-  otplib_secreta: String
-  esta_configurado: Boolean
-  qr_code: String
-  login_id: Float!
-  codigo_recuperacion: String
-  metodo_validacion: String!
-  fecha_creacion_codigo: String
-}
-
-type Usuarios {
-  usuario_id: ID!
-  nombre: String!
-  email: String!
-  activo: Boolean
-}
-
-type Login {
-  login_id: ID!
-  username: String!
-  password: String!
-  token: String
-  salt: String
-  rol_id: Float!
-  tiene_doble_factor: Float
-  usuario_id: Float
-  Usuarios: Usuarios
-  DoblesFactores: [DoblesFactores!]
-}
 
 type Entidades {
   entidad_id: ID!
@@ -114,6 +83,31 @@ type Roles {
   RolesPermisosSec: [RolesPermisos!]!
 }
 
+type DoblesFactores {
+  doble_factor_id: ID!
+  otplib_secreta: String
+  esta_configurado: Boolean
+  qr_code: String
+  usuario_id: Float!
+  codigo_recuperacion: String
+  metodo_validacion: String!
+  fecha_creacion_codigo: String
+}
+
+type Usuarios {
+  usuario_id: ID!
+  nombre: String!
+  email: String!
+  activo: Boolean
+  username: String!
+  password: String!
+  token: String
+  salt: String
+  rol_id: Float!
+  tiene_doble_factor: Boolean
+  DoblesFactores: [DoblesFactores!]
+}
+
 type MenusTraducciones {
   menu_traduccion_id: ID!
   traduccion: String!
@@ -159,17 +153,13 @@ type Iconos {
 }
 
 type Query {
-  getLogin: [Login!]!
-  getLoginById(id: Float!): Login!
-  signInLogin(data: SignInUserInput!): Login!
   getMenus: [Menus!]!
   getMenusInactivos: [Menus!]!
-  getMenuByRoleId(login_id: Float!): [Menus!]!
+  getMenuByRoleId(usuario_id: Float!): [Menus!]!
   getFilterMenuPalabra(palabra: String!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
-  getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
-  configDobleFactor(login_id: Float!): DoblesFactores!
-  exValidateDobleFactorCode(data: DoblesFactoresValidarInput!): Login!
+  getDobleFactorByLoginId(usuario_id: Float!): DoblesFactores!
+  exValidateDobleFactorCode(data: DoblesFactoresValidarInput!): Usuarios!
   exValidateRecoveryCode(data: CodigoRecuperacionInput!): DoblesFactores!
   exValidationCodeMail(data: ValidarCodigoInput!): DoblesFactores!
   getAuditorias: [Auditorias!]!
@@ -185,6 +175,7 @@ type Query {
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
+  signInLogin(data: SignInUserInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -195,37 +186,35 @@ type Query {
   getFilterMicroservicios(nombre: String): [Microservicios!]!
 }
 
+input DoblesFactoresValidarInput {
+  usuario_id: Float!
+  codigo: String!
+}
+
+input CodigoRecuperacionInput {
+  usuario_id: Float!
+  codigo_recuperacion: String!
+}
+
+input ValidarCodigoInput {
+  usuario_id: Float!
+  codigo_validacion: String!
+}
+
 input SignInUserInput {
   username: String!
   password: String!
 }
 
-input DoblesFactoresValidarInput {
-  login_id: Float!
-  codigo: String!
-}
-
-input CodigoRecuperacionInput {
-  login_id: Float!
-  codigo_recuperacion: String!
-}
-
-input ValidarCodigoInput {
-  login_id: Float!
-  codigo_validacion: String!
-}
-
 type Mutation {
-  signUpLogin(data: SignUpUserInput!): Login!
-  logOutLogin(login_id: Float!): Login!
-  exChangePasswordLogin(data: ChangePasswordInput!): Login!
   createRootMenu: Menus!
   createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
   modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
-  exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
-  exSendMail(login_id: Float!): DoblesFactores!
+  configDobleFactor(usuario_id: Float!): DoblesFactores!
+  exSetActivateConfigDobleFactorTOTP(usuario_id: Float!): DoblesFactores!
+  exSendMail(usuario_id: Float!): DoblesFactores!
   createRol(data: CreateRolInput!): Roles!
   updateRol(data: UpdateRolInput!): Roles!
   deleteRol(rol_id: Float!): Roles!
@@ -235,9 +224,9 @@ type Mutation {
   updatePermiso(data: UpdatePermisoInput!): Permisos!
   deletePermiso(permiso_id: Float!): Permisos!
   saveEntidadesPermisosValidaciones: [Permisos!]!
-  createUsuario(data: CreateUsuarioInput!): Usuarios!
-  updateUsuario(data: UpdateUsuarioInput!): Usuarios!
-  deleteUsuario(usuario_id: Float!): Usuarios!
+  signUpLogin(data: SignUpUserInput!): Usuarios!
+  logOutLogin(usuario_id: Float!): Usuarios!
+  exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
@@ -247,18 +236,6 @@ type Mutation {
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
-}
-
-input SignUpUserInput {
-  username: String!
-  password: String!
-  rol_id: Float!
-}
-
-input ChangePasswordInput {
-  login_id: Float!
-  password: String!
-  new_password: String!
 }
 
 input CreateMenuInput {
@@ -282,8 +259,13 @@ input CreateMenuTraduccionInput {
 }
 
 input configDoblesFactoresInput {
-  login_id: Float!
-  metodo_validacion: String!
+  usuario_id: Float!
+  metodo_validacion: MetodosValidacion!
+}
+
+enum MetodosValidacion {
+  EMAIL
+  TOTP
 }
 
 input CreateRolInput {
@@ -324,15 +306,18 @@ input UpdatePermisoInput {
   permiso_id: Float!
 }
 
-input CreateUsuarioInput {
+input SignUpUserInput {
   nombre: String!
   email: String!
+  username: String!
+  password: String!
+  rol_id: Float!
 }
 
-input UpdateUsuarioInput {
-  nombre: String
-  email: String
+input ChangePasswordInput {
   usuario_id: Float!
+  password: String!
+  new_password: String!
 }
 
 input CreateTraduccionesInput {

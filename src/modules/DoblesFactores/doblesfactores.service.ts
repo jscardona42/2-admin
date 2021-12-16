@@ -6,7 +6,7 @@ import { MailerService } from '@nestjs-modules/mailer';
 import * as bcrypt from "bcryptjs";
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { CodigoRecuperacionInput, configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
-import { LoginService } from '../Login/login.service';
+import { UsuariosService } from '../Usuarios/usuarios.service';
 var QRCode = require('qrcode')
 
 
@@ -15,7 +15,7 @@ export class DoblesFactoresService {
     constructor(
         private prismaService: PrismaService,
         private readonly mailerService: MailerService,
-        private readonly loginService: LoginService,
+        private readonly usuariosService: UsuariosService,
     ) { }
 
     public async generateDobleFactorAuthenticationSecret(user) {
@@ -34,10 +34,10 @@ export class DoblesFactoresService {
 
     async createDobleFactor(data: configDoblesFactoresInput): Promise<DoblesFactores> {
 
-        await this.loginService.getLoginById(data.login_id);
+        await this.usuariosService.getUsuarioById(data.usuario_id);
 
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
-            where: { login_id: data.login_id }
+            where: { usuario_id: data.usuario_id }
         })
 
         if (doblefactor) {
@@ -47,13 +47,13 @@ export class DoblesFactoresService {
             })
         }
         return this.prismaService.doblesFactores.create({
-            data: { login_id: data.login_id, metodo_validacion: data.metodo_validacion },
+            data: { usuario_id: data.usuario_id, metodo_validacion: data.metodo_validacion },
         })
     }
 
-    async configDobleFactor(secret: string, login_id: number): Promise<DoblesFactores> {
+    async configDobleFactor(secret: string, usuario_id: number): Promise<DoblesFactores> {
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
-            where: { login_id: login_id },
+            where: { usuario_id: usuario_id },
             select: { doble_factor_id: true }
         })
 
@@ -80,9 +80,9 @@ export class DoblesFactoresService {
         }
     }
 
-    async getDobleFactorByLoginId(login_id: number): Promise<DoblesFactores> {
+    async getDobleFactorByLoginId(usuario_id: number): Promise<DoblesFactores> {
         return this.prismaService.doblesFactores.findFirst({
-            where: { login_id: login_id }
+            where: { usuario_id: usuario_id }
         })
     }
 
@@ -100,7 +100,7 @@ export class DoblesFactoresService {
 
     async exValidateRecoveryCode(data: CodigoRecuperacionInput): Promise<DoblesFactores> {
         var doblefactor = await this.prismaService.doblesFactores.findFirst({
-            where: { login_id: data.login_id, codigo_recuperacion: data.codigo_recuperacion }
+            where: { usuario_id: data.usuario_id, codigo_recuperacion: data.codigo_recuperacion }
         })
 
         if (doblefactor) {
@@ -117,12 +117,12 @@ export class DoblesFactoresService {
         }
     }
 
-    public async sendCodeMail(usuario, doblefactor: DoblesFactores, login: any) {
+    public async sendCodeMail(user, doblefactor: DoblesFactores) {
         if (doblefactor.metodo_validacion !== "EMAIL") {
-            throw new UnauthorizedException("User does not have the dual factor function enabled.");
+            throw new UnauthorizedException("The user does not have the two-factor function activated with EMAIL.");
         }
         var recoveryCode = this.generateCodeAuthentication().padStart(8, "0");
-        var hashRecoveryCode = bcrypt.hash(recoveryCode, login.salt);
+        var hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
 
         var data = await this.prismaService.doblesFactores.update({
             where: { doble_factor_id: doblefactor.doble_factor_id },
@@ -131,7 +131,7 @@ export class DoblesFactoresService {
 
         try {
             await this.mailerService.sendMail({
-                to: usuario.email,
+                to: user.email,
                 from: "tiresiatest@gmail.com",
                 subject: 'Código de verificación',
                 text: 'Código de verificación',
@@ -143,7 +143,7 @@ export class DoblesFactoresService {
         return data;
     }
 
-    public async validationCodeMail(data, login, doblefactor): Promise<DoblesFactores> {
+    public async validationCodeMail(data, user, doblefactor): Promise<DoblesFactores> {
 
         let date1 = new Date(doblefactor.fecha_creacion_codigo);
         let date2 = new Date();
@@ -157,8 +157,8 @@ export class DoblesFactoresService {
 
         var twofactorRtn = await this.prismaService.doblesFactores.findFirst({
             where: {
-                login_id: data.login_id,
-                codigo_recuperacion: await bcrypt.hash(data.codigo_validacion, login.salt)
+                usuario_id: data.usuario_id,
+                codigo_recuperacion: await bcrypt.hash(data.codigo_validacion, user.salt)
             },
         })
         if (twofactorRtn === null) {

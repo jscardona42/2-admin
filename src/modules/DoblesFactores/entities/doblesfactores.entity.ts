@@ -16,7 +16,7 @@ export class DoblesFactores {
   qr_code?: string | null
 
   @Field((type) => Number)
-  login_id: number | null
+  usuario_id: number | null
 
   @Field((type) => String, { nullable: true })
   codigo_recuperacion?: string | null
