@@ -9,7 +9,7 @@ datasource db {
 
 model Auditorias {
   auditoria_id       Int       @id @default(autoincrement())
-  login_id           Int?
+  usuario_id         Int?
   status             String?   @db.VarChar(50)
   fecha_creacion     DateTime? @default(now()) @db.Timestamp(6)
   tipo               String?   @db.VarChar(50)
@@ -22,11 +22,11 @@ model DoblesFactores {
   doble_factor_id       Int                @id @default(autoincrement())
   otplib_secreta        String?            @db.VarChar(255)
   esta_configurado      Boolean            @default(false)
-  login_id              Int
+  usuario_id            Int?
   codigo_recuperacion   String?            @db.VarChar(255)
   metodo_validacion     MetodosValidacion?
   fecha_creacion_codigo DateTime?          @db.Timestamp(6)
-  Login                 Login              @relation(fields: [login_id], references: [login_id], map: "fk_dob_fac_login_id")
+  Usuarios              Usuarios?          @relation(fields: [usuario_id], references: [usuario_id], map: "fk_dob_fac_usuario_id")
 }
 
 model Entidades {
@@ -35,20 +35,6 @@ model Entidades {
   resolver   String?    @db.VarChar(255)
   es_entidad Boolean?   @default(true)
   Permisos   Permisos[]
-}
-
-model Login {
-  login_id           Int              @id @default(autoincrement())
-  username           String
-  password           String?
-  token              String?
-  salt               String?
-  rol_id             Int
-  tiene_doble_factor Int?             @default(0)
-  usuario_id         Int?
-  Roles              Roles            @relation(fields: [rol_id], references: [rol_id], map: "fk_login_rol_id")
-  Usuarios           Usuarios?        @relation(fields: [usuario_id], references: [usuario_id], onDelete: Restrict, map: "fk_login_usuario_id")
-  DoblesFactores     DoblesFactores[]
 }
 
 model Menus {
@@ -90,8 +76,8 @@ model Permisos {
 model Roles {
   rol_id           Int             @id @default(autoincrement())
   rol              String          @db.VarChar(100)
-  Login            Login[]
   RolesPermisosSec RolesPermisos[]
+  Usuarios         Usuarios[]
 }
 
 model RolesPermisos {
@@ -103,12 +89,18 @@ model RolesPermisos {
 }
 
 model Usuarios {
-  usuario_id Int      @id @default(autoincrement())
-  nombre     String   @db.VarChar(100)
-  email      String   @db.VarChar(100)
-  activo     Boolean? @default(true)
-  empresa_id Int?     @db.SmallInt
-  Login      Login[]
+  usuario_id         Int              @id @default(autoincrement())
+  nombre             String           @db.VarChar(100)
+  email              String           @db.VarChar(100)
+  activo             Boolean?         @default(true)
+  username           String?
+  password           String?
+  token              String?
+  salt               String?
+  rol_id             Int?
+  tiene_doble_factor Boolean?         @default(false)
+  Roles              Roles?           @relation(fields: [rol_id], references: [rol_id], map: "fk_usuarios_rol_id")
+  DoblesFactores     DoblesFactores[]
 }
 
 model MenusPalabras {

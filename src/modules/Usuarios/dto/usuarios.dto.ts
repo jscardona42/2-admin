@@ -1,27 +1,51 @@
 import 'reflect-metadata'
-import { Field, InputType, PartialType, } from '@nestjs/graphql'
-import { IsEmail, IsNotEmpty } from 'class-validator'
-
+import { Field, InputType } from '@nestjs/graphql'
+import { IsNotEmpty } from 'class-validator'
 
 @InputType()
-export class CreateUsuarioInput {
-
+export class SignUpUserInput {
     @Field()
     @IsNotEmpty()
     nombre: string
 
     @Field()
     @IsNotEmpty()
-    @IsEmail()
     email: string
+
+    @Field()
+    @IsNotEmpty()
+    username: string
+
+    @Field()
+    @IsNotEmpty()
+    password: string
+
+    @Field()
+    rol_id: number
 }
 
+@InputType()
+export class SignInUserInput {
+    @Field()
+    username: string
+
+    @Field()
+    password: string
+}
 
 @InputType()
-export class UpdateUsuarioInput extends PartialType(CreateUsuarioInput) {
-
-    @Field((type) => Number)
+export class ChangePasswordInput {
+    @Field()
+    @IsNotEmpty()
     usuario_id: number
+
+    @Field()
+    @IsNotEmpty()
+    password: string
+
+    @Field()
+    @IsNotEmpty()
+    new_password: string
 }
 
 

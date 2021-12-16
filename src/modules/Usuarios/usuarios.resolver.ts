@@ -1,6 +1,6 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { CreateUsuarioInput, UpdateUsuarioInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
 
@@ -13,41 +13,48 @@ export class UsuariosResolver {
 
     @Query(() => [Usuarios])
     async getUsuarios(): Promise<Usuarios[]> {
-        return await this.usuariosService.getUsuarios();
+        return this.usuariosService.getUsuarios();
     }
 
     @Query(() => Usuarios)
     async getUsuarioById(
         @Args("usuario_id") usuario_id: number): Promise<Usuarios> {
-        return await this.usuariosService.getUsuarioById(usuario_id);
+        return this.usuariosService.getUsuarioById(usuario_id);
     }
 
     @Query(() => [Usuarios])
     async getFilterUsuarios(
         @Args("nombre", { nullable: true }) nombre: string,
         @Args("email", { nullable: true }) email: string): Promise<Usuarios[]> {
-        return await this.usuariosService.getFilterUsuarios(nombre, email);
+        return this.usuariosService.getFilterUsuarios(nombre, email);
+    }
+
+    @Query(returns => Usuarios)
+    @UsePipes(ValidationPipe)
+    async signInLogin(
+        @Args("data") data: SignInUserInput): Promise<Usuarios> {
+        return this.usuariosService.signInLogin(data);
     }
 
     @Mutation(returns => Usuarios)
     @UsePipes(ValidationPipe)
-    async createUsuario(
-        @Args("data") data: CreateUsuarioInput): Promise<Usuarios> {
-        return this.usuariosService.createUsuario(data);
+    async signUpLogin(
+        @Args("data") data: SignUpUserInput): Promise<Usuarios> {
+        return this.usuariosService.signUpLogin(data);
     }
 
     @Mutation(returns => Usuarios)
     @UsePipes(ValidationPipe)
-    async updateUsuario(
-        @Args("data") data: UpdateUsuarioInput): Promise<Usuarios> {
-        return this.usuariosService.updateUsuario(data);
-    }
-
-    @Mutation(returns => Usuarios)
-    @UsePipes(ValidationPipe)
-    async deleteUsuario(
+    async logOutLogin(
         @Args("usuario_id") usuario_id: number): Promise<Usuarios> {
-        return this.usuariosService.deleteUsuario(usuario_id);
+        return this.usuariosService.logOutLogin(usuario_id);
+    }
+
+    @Mutation(returns => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exChangePasswordLogin(
+        @Args("data") data: ChangePasswordInput): Promise<Usuarios> {
+        return this.usuariosService.exChangePasswordLogin(data);
     }
 
 }
