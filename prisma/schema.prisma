@@ -20,10 +20,10 @@ model Auditorias {
 
 model DoblesFactores {
   doble_factor_id       Int                @id @default(autoincrement())
-  otplib_secreta        String?            @db.VarChar(255)
+  otplib_secreta        String?            
   esta_configurado      Boolean            @default(false)
   usuario_id            Int?
-  codigo_recuperacion   String?            @db.VarChar(255)
+  codigo_recuperacion   String?
   metodo_validacion     MetodosValidacion?
   fecha_creacion_codigo DateTime?          @db.Timestamp(6)
   Usuarios              Usuarios?          @relation(fields: [usuario_id], references: [usuario_id], map: "fk_dob_fac_usuario_id")
@@ -90,8 +90,8 @@ model RolesPermisos {
 
 model Usuarios {
   usuario_id         Int              @id @default(autoincrement())
-  nombre             String           @db.VarChar(100)
-  email              String           @db.VarChar(100)
+  nombre             String           @db.VarChar(255)
+  email              String           @db.VarChar(255)
   activo             Boolean?         @default(true)
   username           String?
   password           String?
@@ -106,7 +106,7 @@ model Usuarios {
 model MenusPalabras {
   menu_palabra_id Int    @id @default(autoincrement())
   menu_id         Int
-  palabra         String @db.VarChar(16)
+  palabra         String @db.VarChar(255)
   Menus           Menus  @relation(fields: [menu_id], references: [menu_id], map: "fk_men_pal_menu_id")
 }
 
