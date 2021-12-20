@@ -1,29 +1,59 @@
 
+import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
+import { EntidadesService } from '../Admin/Entidades/entidades.service';
+import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { RolesService } from '../Admin/Roles/roles.service';
+import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
+import { AuditoriasService } from '../Auditorias/auditorias.service';
+import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
 import { UsuariosService } from './usuarios.service';
 
 
-describe('Iconos Service', () => {
+describe('Usuarios Service', () => {
     let prismaService: PrismaService;
     let usuariosService: UsuariosService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
+            imports: [
+                JwtModule.register({
+                    secret: process.env.JWT_SECRET,
+                    signOptions: {
+                        expiresIn: process.env.JWT_EXPIRESIN
+                    }
+                }),
+            ],
             providers: [
-                UsuariosService,
+                UsuariosService, RolesService, AuditoriasService, PermisosService, EntidadesService, ValidacionesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
                         usuarios: {
+                            findFirst: jest.fn(() => {
+                                return { salt: String }
+                            }),
+                            findUnique:jest.fn(),
+                            usernameExists: jest.fn(() => { return { usernameExists: false } }),
+                            findMany: jest.fn(() => { return { usernameExists: false } }),
+                            create: jest.fn(() => {
+                                return {
+                                    id: Number,
+                                };
+                            }),
+                            update: jest.fn(() => { return { usernameExists: false } }),
+                            delete: jest.fn(() => { return { usernameExists: false } }),
+                        },
+                        auditorias: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
-                            create: jest.fn(),
-                            createMany: jest.fn(),
-                            update: jest.fn(),
-                            delete: jest.fn(),
-                        }
+                            create: jest.fn()
+                        },
+                        roles: {
+                            findUnique: jest.fn(() => { return { rol_id: 1 } })
+                        },
                     }),
                 },
             ],
@@ -65,42 +95,28 @@ describe('Iconos Service', () => {
         });
     });
 
-
-    describe('createUsuario method', () => {
-        it('should invoke prismaService.usuarios.create', async () => {
-            var testParams = {
-                data: {
-                    nombre: "Nombre",
-                    email: "a",
-                }
+    describe('signInUser method', () => {
+        it('should invoke prismaService.usuarios.findFirst', async () => {
+            var testParams: SignInUserInput = {
+                password: "12121",
+                username: "usuario2"
             }
-            await usuariosService.createUsuario(testParams.data);
-            expect(prismaService.usuarios.create).toHaveBeenCalled();
+            await usuariosService.signInLogin(testParams);
+            expect(prismaService.usuarios.findFirst).toHaveBeenCalled();
         });
     });
 
-    describe('updateUsuario method', () => {
-        it('should invoke prismaService.usuarios.update', async () => {
-            var testParams = {
-                data: {
-                    nombre: "Nombre",
-                    email: "a",
-                    usuario_id: 1
-                }
-            }
-            await usuariosService.updateUsuario(testParams.data);
-            expect(prismaService.usuarios.update).toHaveBeenCalled();
-        });
-    });
-
-    describe('deleteUsuario method', () => {
-        it('should invoke prismaService.usuarios.delete', async () => {
-            const testParams = {
-                usuario_id: 1
-            };
-            await usuariosService.deleteUsuario(testParams.usuario_id);
-            expect(prismaService.usuarios.delete).toHaveBeenCalled();
-        });
-    });
-
+    // describe('signUpLogin method', () => {
+    //     it('should invoke prismaService.usuarios.create', async () => {
+    //         var testParams: SignUpUserInput = {
+    //             email: "usuario@gmail.com",
+    //             nombre: "Johan Cardona",
+    //             password: "12121",
+    //             rol_id: 1,
+    //             username: "usuario2"
+    //         }
+    //         await usuariosService.signUpLogin(testParams);
+    //         expect(prismaService.usuarios.create).toHaveBeenCalled();
+    //     });
+    // });
 })

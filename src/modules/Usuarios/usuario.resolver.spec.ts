@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CreateUsuarioInput, UpdateUsuarioInput } from './dto/usuarios.dto';
+import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
 import { UsuariosResolver } from './usuarios.resolver';
 import { UsuariosService } from './usuarios.service';
 
@@ -18,9 +18,8 @@ describe('Iconos Resolver', () => {
                         getUsuarios: jest.fn(),
                         getUsuarioById: jest.fn(),
                         getFilterUsuarios: jest.fn(),
-                        createUsuario: jest.fn(),
-                        updateUsuario: jest.fn(),
-                        deleteUsuario: jest.fn()
+                        signUpLogin: jest.fn(),
+                        signInLogin: jest.fn(),
                     }),
                 },
             ],
@@ -58,29 +57,24 @@ describe('Iconos Resolver', () => {
         });
     });
 
-    describe('Mutation createUsuario()', () => {
-        it('should invoke usuariosService.createUsuario', async () => {
-            var testParams: CreateUsuarioInput;
-            await usuariosResolver.createUsuario(testParams);
-            expect(usuariosService.createUsuario).toHaveBeenCalledWith(testParams);
-        });
-    });
-
-    describe('Mutation updateUsuario()', () => {
-        it('should invoke usuariosService.updateUsuario', async () => {
-            var testParams: UpdateUsuarioInput;
-            await usuariosResolver.updateUsuario(testParams);
-            expect(usuariosService.updateUsuario).toHaveBeenCalledWith(testParams);
-        });
-    });
-
-    describe('Mutation deleteUsuario()', () => {
-        it('should invoke usuariosService.deleteUsuario', async () => {
-            var testParams = {
-                usuario_id: 1
+    describe('Query signInLogin)', () => {
+        it('should invoke usuariosService.signInLogin', async () => {
+            const testParams: SignInUserInput = {
+                username: "usuario1",
+                password: "12345"
             };
-            await usuariosResolver.deleteUsuario(testParams.usuario_id);
-            expect(usuariosService.deleteUsuario).toHaveBeenCalled();
+            await usuariosResolver.signInLogin(testParams);
+            expect(usuariosService.signInLogin).toHaveBeenCalled();
         });
     });
+
+
+    describe('Mutation signUpLogin()', () => {
+        it('should invoke usuariosService.signUpLogin', async () => {
+            var testParams: SignUpUserInput;
+            await usuariosResolver.signUpLogin(testParams);
+            expect(usuariosService.signUpLogin).toHaveBeenCalledWith(testParams);
+        });
+    });
+
 });

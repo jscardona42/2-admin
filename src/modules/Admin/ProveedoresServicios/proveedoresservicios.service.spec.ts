@@ -23,7 +23,10 @@ describe('Proveedores servicios Service', () => {
                             createMany: jest.fn(),
                             update: jest.fn(),
                             delete: jest.fn(),
-                        }
+                        },
+                        microservicios: {
+                            findFirst: jest.fn(() => { return { microservicio_id: 1 } })
+                        },
                     }),
                 },
             ],
@@ -53,11 +56,11 @@ describe('Proveedores servicios Service', () => {
     describe('saveProveedoresServicios method', () => {
         it('should invoke prismaService.proveedoresServicios.update', async () => {
             const testParams = {
-                microservicio_id: 1,
+                microservicio: "admin",
                 myProviders: [],
                 entitiesExc: []
             };
-            await proveedoresServiciosService.saveProveedoresServicios(testParams.myProviders, testParams.microservicio_id, testParams.entitiesExc);
+            await proveedoresServiciosService.saveProveedoresServicios(testParams.myProviders, testParams.microservicio, testParams.entitiesExc);
             expect(prismaService.proveedoresServicios.update).toHaveBeenCalled();
         });
     });

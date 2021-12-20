@@ -149,7 +149,7 @@ export class UsuariosService {
         return user;
     }
 
-    async usernameExists(username): Promise<Boolean> {
+    async usernameExists(username): Promise<boolean> {
         const user = await this.prismaService.usuarios.findFirst({
             where: { username: username },
             select: { username: true }

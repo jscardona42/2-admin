@@ -1,5 +1,4 @@
 import { Test } from '@nestjs/testing';
-import { LoginService } from '../../Login/login.service';
 import { UsuariosService } from '../../Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';
 import { MenusService } from './menus.service';
@@ -9,9 +8,10 @@ import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { RolesService } from '../../Admin/Roles/roles.service';
 import { PermisosService } from '../../Admin/Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
+import { CreateMenuInput } from './dto/menus.dto';
 
 describe('Menu Service', () => {
-  let menuService: MenusService;
+  let menusService: MenusService;
   let prismaService: PrismaService;
 
   beforeEach(async () => {
@@ -25,7 +25,7 @@ describe('Menu Service', () => {
         }),
       ],
       providers: [
-        MenusService, LoginService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
+        MenusService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
         {
           provide: PrismaService,
           useFactory: () => ({
@@ -48,32 +48,91 @@ describe('Menu Service', () => {
             entidades: {
               findUnique: jest.fn(() => { return { entidad_id: 1 } }),
             },
+            usuarios: {
+              findUnique: jest.fn(() => { return { usuario_id: 1 } }),
+            },
+            rolesPermisos: {
+              findMany: jest.fn(() => {
+                return [{
+                  rol_permiso_id: 1,
+                  rol_id: 1,
+                  permiso_id: 235,
+                  Roles: { rol_id: 1, rol: 'Administrator' },
+                  Permisos: {
+                    permiso_id: 235,
+                    entidad_id: 75,
+                    permiso: 'MenusResolver',
+                    es_publico: false,
+                    Entidades: {
+                      entidad_id: 75,
+                      nombre: 'Menus',
+                      resolver: 'MenusResolver',
+                      es_entidad: true
+                    }
+                  }
+                }]
+              }),
+            }
           }),
         },
       ],
     }).compile();
 
-    menuService = module.get<MenusService>(MenusService);
+    menusService = module.get<MenusService>(MenusService);
     prismaService = module.get<PrismaService>(PrismaService);
+  });
+
+  describe('getMenus method', () => {
+    it('should invoke prismaService.menus.findMany', async () => {
+      await menusService.getMenus();
+      expect(prismaService.menus.findMany).toHaveBeenCalled();
+    });
+  });
+
+  describe('getMenuByid method', () => {
+    it('should invoke prismaService.menus.findUnique', async () => {
+      const testParams = {
+        menu_id: 1
+      };
+      await menusService.getMenuById(
+        testParams.menu_id
+      );
+      expect(prismaService.menus.findUnique).toHaveBeenCalled();
+    });
+  });
+
+  describe('getMenusInactivos method', () => {
+    it('should invoke prismaService.menus.findMany', async () => {
+      await menusService.getMenusInactivos();
+      expect(prismaService.menus.findMany).toHaveBeenCalled();
+    });
+  });
+
+  describe('getMenuByRoleId method', () => {
+    it('should invoke prismaService.menus.findMany', async () => {
+      const testParams = {
+        usuario_id: 1
+      };
+      await menusService.getMenuByRoleId(testParams.usuario_id);
+      expect(prismaService.menus.findMany).toHaveBeenCalled();
+    });
   });
 
   describe('createRootMenu method', () => {
     it('should invoke prismaService.menus.create', async () => {
-      await menuService.createRootMenu();
+      await menusService.createRootMenu();
       expect(prismaService.menus.create).toHaveBeenCalled();
     });
   });
 
-  describe('createFolder method', () => {
+  describe('createMenu method', () => {
     it('should invoke prismaService.menus.create', async () => {
-      const testParams = {
-        data: {
-          parentId: 2,
-          name: "Nombre",
-          entidad_id: 1
-        }
+      const testParams: CreateMenuInput = {
+        parentId: 2,
+        name: "Nombre",
+        entidad_id: 1
       };
-      await menuService.createMenu(testParams.data);
+      await menusService.createMenu(testParams);
       expect(prismaService.menus.create).toHaveBeenCalled();
     });
   });

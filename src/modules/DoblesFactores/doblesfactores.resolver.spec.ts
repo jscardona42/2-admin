@@ -2,10 +2,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { RolesService } from '../Admin/Roles/roles.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
-import { LoginService } from '../Login/login.service';
 import { PrismaService } from '../../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';
+import { UsuariosService } from '../Usuarios/usuarios.service';
+import { configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
+import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { EntidadesService } from '../Admin/Entidades/entidades.service';
+import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 
 describe('Dobles factores Resolver', () => {
     let twofactorResolver: DoblesFactoresResolver;
@@ -22,18 +26,18 @@ describe('Dobles factores Resolver', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresResolver, LoginService, AuditoriasService, PrismaService, RolesService,
+                DoblesFactoresResolver, UsuariosService, PrismaService, RolesService, AuditoriasService, PermisosService, EntidadesService, ValidacionesService,
                 {
                     provide: DoblesFactoresService,
                     useFactory: () => ({
                         getDobleFactorById: jest.fn(),
                         createDobleFactor: jest.fn(),
                         configDobleFactor: jest.fn(),
-                        getDobleFactorByLoginId: jest.fn(() => { return { config_twofactor: 1 } }),
+                        getDobleFactorByLoginId: jest.fn(() => { return { config_twofactor: 1, metodo_validacion: "TOTP" } }),
                         exValidateRecoveryCode: jest.fn(() => true),
-                        setActivateConfigDobleFactorTOTP: jest.fn(),
+                        exSetActivateConfigTwofactorTOTP: jest.fn(),
                         exValidateDobleFactorCode: jest.fn(() => { return { isCodeValid: true } }),
-                        validationCodeMail: jest.fn()
+                        exValidationCodeMail: jest.fn()
                     }),
                 },
             ],
@@ -55,30 +59,30 @@ describe('Dobles factores Resolver', () => {
 
     describe('Mutation createTwoFactor()', () => {
         it('should invoke twofactorService.createTwoFactor with arguments', async () => {
-            const testParams = {
-                login_id: 1,
-                metodo_validacion_id: 1
+            const testParams: configDoblesFactoresInput = {
+                usuario_id: 1,
+                metodo_validacion: "EMAIL"
             };
             await twofactorResolver.createDobleFactor(testParams);
             expect(twofactorService.createDobleFactor).toHaveBeenCalledWith(testParams);
         });
     });
 
-    // describe('Query configTwoFactor()', () => {
-    //     it('should invoke twofactorService.configTwoFactor()', async () => {
+    // describe('Query configDobleFactor()', () => {
+    //     it('should invoke twofactorService.configDobleFactor()', async () => {
     //         const testParams = {
-    //             login_id: 1
+    //             usuario_id: 1
     //         };
 
-    //         await twofactorResolver.configTwoFactor(testParams.login_id);
-    //         expect(twofactorService.configTwoFactor).toHaveBeenCalled();
+    //         await twofactorResolver.configDobleFactor(testParams.usuario_id);
+    //         expect(twofactorService.configDobleFactor).toHaveBeenCalled();
     //     });
     // });
 
     describe('Query exValidateDobleFactorCode()', () => {
         it('should invoke twofactorService.exValidateDobleFactorCode()', async () => {
-            const testParams = {
-                login_id: 1,
+            const testParams: DoblesFactoresValidarInput = {
+                usuario_id: 1,
                 codigo: "4457875454"
             };
 
@@ -87,20 +91,20 @@ describe('Dobles factores Resolver', () => {
         });
     });
 
-    // describe('Mutation setActivateConfigTwofactorTOTP()', () => {
-    //     it('should invoke twofactorService.setActivateConfigTwofactorTOTP with arguments', async () => {
-    //         const testParams = {
-    //             login_id: 1,
-    //         };
-    //         await twofactorResolver.setActivateConfigTwofactorTOTP(testParams.login_id);
-    //         expect(twofactorService.setActivateConfigTwofactorTOTP).toHaveBeenCalledWith(testParams.login_id);
-    //     });
-    // });
+    describe('Mutation setActivateConfigTwofactorTOTP()', () => {
+        it('should invoke twofactorService.setActivateConfigTwofactorTOTP with arguments', async () => {
+            const testParams = {
+                usuario_id: 1,
+            };
+            await twofactorResolver.exSetActivateConfigDobleFactorTOTP(testParams.usuario_id);
+            expect(twofactorService.exSetActivateConfigTwofactorTOTP).toHaveBeenCalled();
+        });
+    });
 
     describe('Query validateRecoveryCode()', () => {
         it('should invoke twofactorService.validateRecoveryCode()', async () => {
             const testParams = {
-                login_id: 1,
+                usuario_id: 1,
                 codigo_recuperacion: "4457875454"
             };
 
@@ -109,15 +113,14 @@ describe('Dobles factores Resolver', () => {
         });
     });
 
-    describe('Query validationCodeMail()', () => {
-        it('should invoke twofactorService.validationCodeMail()', async () => {
-            const testParams = {
-                login_id: 1,
-                codigo_validacion: "4457875454"
-            };
-
-            await twofactorResolver.exValidationCodeMail(testParams);
-            expect(twofactorService.validationCodeMail).toHaveBeenCalled();
-        });
-    });
+    // describe('Query exValidationCodeMail()', () => {
+    //     it('should invoke twofactorService.validationCodeMail()', async () => {
+    //         const testParams = {
+    //             usuario_id: 1,
+    //             codigo_validacion: "4457875454"
+    //         };
+    //         await twofactorResolver.exValidationCodeMail(testParams);
+    //         expect(twofactorService.validationCodeMail).toHaveBeenCalled();
+    //     });
+    // });
 });
