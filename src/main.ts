@@ -1,6 +1,6 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-import { GqlAuthGuard } from './Admin/Guard/authguard.guard';
+import { GqlAuthGuard } from './modules/Admin/Guard/authguard.guard';
 import { AppModule } from './app.module';
 var cookieParser = require('cookie-parser');
 

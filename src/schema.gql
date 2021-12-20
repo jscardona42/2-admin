@@ -14,7 +14,7 @@ directive @provides(fields: String!) on FIELD_DEFINITION
 
 type Auditorias {
   auditoria_id: ID!
-  login_id: String
+  usuario_id: String
   status: String
   fecha_creacion: DateTime
   tipo: String
@@ -28,46 +28,39 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type DoblesFactores {
-  doble_factor_id: ID!
-  otplib_secreta: String
-  esta_configurado: Boolean
-  qr_code: String
-  login_id: Float!
-  codigo_recuperacion: String
-  metodo_validacion_id: Float!
-  fecha_creacion_codigo: String
-}
-
-type Usuarios {
-  usuario_id: ID!
-  nombre: String!
-  email: String!
-  activo: Boolean
-}
-
-type Login {
-  login_id: ID!
-  username: String!
-  password: String!
-  token: String
-  salt: String
-  rol_id: Float!
-  tiene_doble_factor: Float
-  usuario_id: Float
-  Usuarios: Usuarios
-  DoblesFactores: [DoblesFactores!]
-}
-
-type Roles {
-  rol_id: ID!
-  rol: String!
-}
-
 type Entidades {
   entidad_id: ID!
   nombre: String!
   resolver: String
+}
+
+type ProveedoresServicios {
+  proveedor_servicio_id: ID!
+  Microservicios: Microservicios!
+  lista_proveedores: String!
+  lista_entidades_secundarias: String!
+  status: String
+}
+
+type Microservicios {
+  microservicio_id: ID!
+  name: String!
+  url: String!
+  activo: Boolean!
+  ProveedoresServiciosSec: [ProveedoresServicios!]
+}
+
+type Validaciones {
+  validacion_id: ID!
+  Microservicios: Microservicios!
+  id_referenciado: String!
+  PermisosValidaciones: [PermisosValidaciones!]!
+}
+
+type PermisosValidaciones {
+  permiso_validacion_id: ID!
+  Permisos: Permisos!
+  ValidacionesSec: Validaciones!
 }
 
 type Permisos {
@@ -75,6 +68,7 @@ type Permisos {
   Entidades: Entidades!
   permiso: String!
   es_publico: Boolean!
+  PermisosValidacionesSec: [PermisosValidaciones!]
 }
 
 type RolesPermisos {
@@ -83,10 +77,35 @@ type RolesPermisos {
   Permisos: Permisos!
 }
 
-type MenusPalabras {
-  menu_palabra_id: ID!
-  menu_id: Float!
-  palabra: String!
+type Roles {
+  rol_id: ID!
+  rol: String!
+  RolesPermisosSec: [RolesPermisos!]!
+}
+
+type DoblesFactores {
+  doble_factor_id: ID!
+  otplib_secreta: String
+  esta_configurado: Boolean
+  qr_code: String
+  usuario_id: Float!
+  codigo_recuperacion: String
+  metodo_validacion: String!
+  fecha_creacion_codigo: String
+}
+
+type Usuarios {
+  usuario_id: ID!
+  nombre: String!
+  email: String!
+  activo: Boolean
+  username: String!
+  password: String!
+  token: String
+  salt: String
+  rol_id: Float!
+  tiene_doble_factor: Boolean
+  DoblesFactores: [DoblesFactores!]
 }
 
 type MenusTraducciones {
@@ -94,6 +113,12 @@ type MenusTraducciones {
   traduccion: String!
   menu_id: Float!
   traduccion_id: Float!
+}
+
+type MenusPalabras {
+  menu_palabra_id: ID!
+  menu_id: Float!
+  palabra: String!
 }
 
 type Menus {
@@ -105,8 +130,8 @@ type Menus {
   other_Menus: JSON!
   order: Float
   activo: Float
-  MenusPalabras: [MenusPalabras!]
-  MenusTraducciones: [MenusTraducciones!]
+  MenusPalabrasSec: [MenusPalabras!]
+  MenusTraduccionesSec: [MenusTraducciones!]
 }
 
 """
@@ -120,28 +145,6 @@ type Traducciones {
   sigla: String!
 }
 
-type PermisosValidaciones {
-  permiso_validacion_id: ID!
-  Permisos: Permisos!
-  validacion_id: Float!
-}
-
-type Microservicios {
-  microservicio_id: ID!
-  name: String!
-  hostname: String!
-  puerto: Float!
-  url: String!
-  activo: Boolean!
-}
-
-type Validaciones {
-  validacion_id: ID!
-  Microservicios: Microservicios!
-  id_referenciado: String!
-  PermisosValidaciones: [PermisosValidaciones!]!
-}
-
 type Iconos {
   icono_id: ID!
   nombre: String!
@@ -149,40 +152,20 @@ type Iconos {
   unicode: String!
 }
 
-type ProveedoresServicios {
-  proveedor_servicio_id: ID!
-  Microservicios: Microservicios!
-  lista_proveedores: String!
-  lista_entidades_secundarias: String!
-  status: String
-}
-
-type MetodosValidacion {
-  metodo_validacion_id: ID!
-  metodo: String!
-  activo: Boolean!
-}
-
 type Query {
-  getLogin: [Login!]!
-  getLoginById(id: Float!): Login!
-  signInLogin(data: SignInUserInput!): Login!
   getMenus: [Menus!]!
   getMenusInactivos: [Menus!]!
-  getMenuByRoleId(login_id: Float!): [Menus!]!
+  getMenuByRoleId(usuario_id: Float!): [Menus!]!
   getFilterMenuPalabra(palabra: String!): [Menus!]!
   getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
-  getDobleFactorByLoginId(login_id: Float!): DoblesFactores!
-  configDobleFactor(login_id: Float!): DoblesFactores!
-  exValidateDobleFactorCode(data: DoblesFactoresValidarInput!): Login!
+  getDobleFactorByLoginId(usuario_id: Float!): DoblesFactores!
+  exValidateDobleFactorCode(data: DoblesFactoresValidarInput!): Usuarios!
   exValidateRecoveryCode(data: CodigoRecuperacionInput!): DoblesFactores!
   exValidationCodeMail(data: ValidarCodigoInput!): DoblesFactores!
   getAuditorias: [Auditorias!]!
   getRoles: [Roles!]!
   getRolById(rol_id: Float!): Roles!
   getFilterRoles(rol: String): [Roles!]!
-  getRolesPermisos: [RolesPermisos!]!
-  getRolPermisoById(icono_id: Float!): RolesPermisos!
   getEntidades: [Entidades!]!
   getEntidadeById(entidad_id: Float!): Entidades!
   getFilterEntidades(nombre: String): [Entidades!]!
@@ -192,27 +175,30 @@ type Query {
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
-  getMenusPalabras: [MenusPalabras!]!
-  getMenuPalabraById(menu_palabra_id: Float!): MenusPalabras!
+  signInLogin(data: SignInUserInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
-  getMenusTraducciones: [MenusTraducciones!]!
-  getMenuTraduccionById(menu_traduccion_id: Float!): MenusTraducciones!
-  getValidaciones: [Validaciones!]!
-  getPermisosValidaciones: [PermisosValidaciones!]!
-  getValidacionById(validacion_id: Float!): Validaciones!
-  getPermisoValidacionById(permiso_validacion_id: Float!): PermisosValidaciones!
   getIconos: [Iconos!]!
   getIconoById(icono_id: Float!): Iconos!
   getFilterIconos(unicode: String, nombre: String): [Iconos!]!
-  getProveedoresServicios: [ProveedoresServicios!]!
-  getProveedorServicioById(proveedor_servicio_id: Float!): ProveedoresServicios!
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
-  getMetodosValidacion: [MetodosValidacion!]!
-  getMetodoValidacionById(metodo_validacion_id: Float!): MetodosValidacion!
-  getFilterMetodosValidacion(metodo: String): [MetodosValidacion!]!
+}
+
+input DoblesFactoresValidarInput {
+  usuario_id: Float!
+  codigo: String!
+}
+
+input CodigoRecuperacionInput {
+  usuario_id: Float!
+  codigo_recuperacion: String!
+}
+
+input ValidarCodigoInput {
+  usuario_id: Float!
+  codigo_validacion: String!
 }
 
 input SignInUserInput {
@@ -220,80 +206,36 @@ input SignInUserInput {
   password: String!
 }
 
-input DoblesFactoresValidarInput {
-  login_id: Float!
-  codigo: String!
-}
-
-input CodigoRecuperacionInput {
-  login_id: Float!
-  codigo_recuperacion: String!
-}
-
-input ValidarCodigoInput {
-  login_id: Float!
-  codigo_validacion: String!
-}
-
 type Mutation {
-  signUpLogin(data: SignUpUserInput!): Login!
-  logOutLogin(login_id: Float!): Login!
-  exChangePasswordLogin(data: ChangePasswordInput!): Login!
   createRootMenu: Menus!
-  createFolder(data: CreateMenuInput!): Menus!
-  insertEntityToFolder(data: CreateMenuInput!): Menus!
+  createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
   modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
-  exSetActivateConfigDobleFactorTOTP(login_id: Float!): DoblesFactores!
-  exSendMail(login_id: Float!): DoblesFactores!
+  configDobleFactor(usuario_id: Float!): DoblesFactores!
+  exSetActivateConfigDobleFactorTOTP(usuario_id: Float!): DoblesFactores!
+  exSendMail(usuario_id: Float!): DoblesFactores!
   createRol(data: CreateRolInput!): Roles!
   updateRol(data: UpdateRolInput!): Roles!
   deleteRol(rol_id: Float!): Roles!
-  createRolPermiso(data: CreateRolPermisoMany!): [RolesPermisos!]!
-  updateRolPermiso(data: UpdateRolPermisoInput!): RolesPermisos!
-  deleteRolPermiso(icono_id: Float!): RolesPermisos!
+  addPermisosToRol(data: AddPermisosToRolInput!): Roles!
   updateEntidad(data: UpdateEntidadInput!): Entidades!
   deleteEntidad(entidad_id: Float!): Entidades!
   updatePermiso(data: UpdatePermisoInput!): Permisos!
   deletePermiso(permiso_id: Float!): Permisos!
   saveEntidadesPermisosValidaciones: [Permisos!]!
-  createUsuario(data: CreateUsuarioInput!): Usuarios!
-  updateUsuario(data: UpdateUsuarioInput!): Usuarios!
-  deleteUsuario(usuario_id: Float!): Usuarios!
-  createMenuPalabra(data: CreateMenuPalabrasInput!): MenusPalabras!
-  updateMenuPalabra(data: UpdateMenuPalabrasInput!): MenusPalabras!
-  deleteMenuPalabra(menu_palabra_id: Float!): MenusPalabras!
+  signUpLogin(data: SignUpUserInput!): Usuarios!
+  logOutLogin(usuario_id: Float!): Usuarios!
+  exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
-  createMenuTraduccion(data: CreateMenuTraduccionInput!): MenusTraducciones!
-  updateMenuTraduccion(data: UpdateMenuTraduccionInput!): MenusTraducciones!
-  deleteMenuTraduccion(menu_traduccion_id: Float!): MenusTraducciones!
-  updateValidacion(data: UpdateValidacionInput!): Validaciones!
-  deleteValidacion(validacion_id: Float!): Validaciones!
   createIcono(data: CreateIconoInput!): Iconos!
   updateIcono(data: UpdateIconoInput!): Iconos!
   deleteIcono(icono_id: Float!): Iconos!
-  deleteProveedorServicio(proveedor_servicio_id: Float!): ProveedoresServicios!
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
-  createMetodoValidacion(data: CreateMetodoValidacionInput!): MetodosValidacion!
-  updateMetodoValidacion(data: UpdateMetodoValidacionInput!): MetodosValidacion!
-  deleteMetodoValidacion(metodo_validacion_id: Float!): MetodosValidacion!
-}
-
-input SignUpUserInput {
-  username: String!
-  password: String!
-  rol_id: Float!
-}
-
-input ChangePasswordInput {
-  login_id: Float!
-  password: String!
-  new_password: String!
 }
 
 input CreateMenuInput {
@@ -303,35 +245,52 @@ input CreateMenuInput {
   order: Float
   icon: String
   base: Boolean
+  MenusPalabras: [CreateMenuPalabrasInput!]
+  MenusTraducciones: [CreateMenuTraduccionInput!]
+}
+
+input CreateMenuPalabrasInput {
+  palabra: String!
+}
+
+input CreateMenuTraduccionInput {
+  traduccion: String!
+  traduccion_id: Float!
 }
 
 input configDoblesFactoresInput {
-  login_id: Float!
-  metodo_validacion_id: Float!
+  usuario_id: Float!
+  metodo_validacion: MetodosValidacion!
+}
+
+enum MetodosValidacion {
+  EMAIL
+  TOTP
 }
 
 input CreateRolInput {
   rol: String!
-}
-
-input UpdateRolInput {
-  rol: String
-  rol_id: Float!
-}
-
-input CreateRolPermisoMany {
-  data: [CreateRolPermisoInput!]!
+  RolesPermisos: [CreateRolPermisoInput!]
 }
 
 input CreateRolPermisoInput {
-  rol_id: Float!
   permiso_id: Float!
 }
 
+input UpdateRolInput {
+  rol_id: Float!
+  rol: String
+  RolesPermisos: UpdateRolPermisoInput
+}
+
 input UpdateRolPermisoInput {
-  rol_id: Float
   permiso_id: Float
   rol_permiso_id: Float!
+}
+
+input AddPermisosToRolInput {
+  rol_id: Float!
+  RolesPermisos: [CreateRolPermisoInput!]
 }
 
 input UpdateEntidadInput {
@@ -347,26 +306,18 @@ input UpdatePermisoInput {
   permiso_id: Float!
 }
 
-input CreateUsuarioInput {
+input SignUpUserInput {
   nombre: String!
   email: String!
+  username: String!
+  password: String!
+  rol_id: Float!
 }
 
-input UpdateUsuarioInput {
-  nombre: String
-  email: String
+input ChangePasswordInput {
   usuario_id: Float!
-}
-
-input CreateMenuPalabrasInput {
-  menu_id: Float!
-  palabra: String!
-}
-
-input UpdateMenuPalabrasInput {
-  menu_id: Float
-  palabra: String
-  menu_palabra_id: Float!
+  password: String!
+  new_password: String!
 }
 
 input CreateTraduccionesInput {
@@ -378,25 +329,6 @@ input UpdateTraduccionesInput {
   idioma: String
   sigla: String
   traduccion_id: Float!
-}
-
-input CreateMenuTraduccionInput {
-  traduccion: String!
-  menu_id: Float!
-  traduccion_id: Float!
-}
-
-input UpdateMenuTraduccionInput {
-  traduccion: String
-  menu_id: Float
-  traduccion_id: Float
-  menu_traduccion_id: Float!
-}
-
-input UpdateValidacionInput {
-  microservicio_id: Float
-  id_referenciado: String
-  validacion_id: Float!
 }
 
 input CreateIconoInput {
@@ -414,28 +346,13 @@ input UpdateIconoInput {
 
 input CreateMicroservicioInput {
   name: String!
-  hostname: String!
-  puerto: Float!
   url: String!
   activo: Boolean
 }
 
 input UpdateMicroservicioInput {
   name: String
-  hostname: String
-  puerto: Float
   url: String
   activo: Boolean
   microservicio_id: Float!
-}
-
-input CreateMetodoValidacionInput {
-  metodo: String!
-  activo: Boolean
-}
-
-input UpdateMetodoValidacionInput {
-  metodo: String
-  activo: Boolean
-  metodo_validacion_id: Float!
 }

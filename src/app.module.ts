@@ -1,49 +1,36 @@
 import { Module } from '@nestjs/common';
-import { GraphQLFederationModule, GraphQLModule } from '@nestjs/graphql';
+import { GraphQLFederationModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
 import { PrismaService } from './prisma.service';
-
-import { AuditoriasService } from './Auditorias/auditorias.service';
-import { AuditoriasResolver } from './Auditorias/auditorias.resolver';
-import { LoginService } from './Login/login.service';
-import { LoginResolver } from './Login/login.resolver';
-import { RolesPermisosService } from './Admin/RolesPermisos/rolespermisos.service';
-import { RolesResolver } from './Admin/Roles/roles.resolver';
-import { RolesService } from './Admin/Roles/roles.service';
-import { DoblesFactoresService } from './DoblesFactores/doblesfactores.service';
-import { DoblesFactoresResolver } from './DoblesFactores/doblesfactores.resolver';
-import { RolesPermisosResolver } from './Admin/RolesPermisos/rolespermisos.resolver';
-import { PermisosService } from './Admin/Permisos/permisos.service';
-import { PermisosResolver } from './Admin/Permisos/permisos.resolver';
-import { EntidadesService } from './Admin/Entidades/entidades.service';
+import { AuditoriasService } from './modules/Auditorias/auditorias.service';
+import { AuditoriasResolver } from './modules/Auditorias/auditorias.resolver';
+import { RolesResolver } from './modules/Admin/Roles/roles.resolver';
+import { RolesService } from './modules/Admin/Roles/roles.service';
+import { DoblesFactoresService } from './modules/DoblesFactores/doblesfactores.service';
+import { DoblesFactoresResolver } from './modules/DoblesFactores/doblesfactores.resolver';
+import { PermisosService } from './modules/Admin/Permisos/permisos.service';
+import { PermisosResolver } from './modules/Admin/Permisos/permisos.resolver';
+import { EntidadesService } from './modules/Admin/Entidades/entidades.service';
 import { MailerModule } from '@nestjs-modules/mailer';
-import { MenusService } from './Menus/menus.service';
-import { MenusResolver } from './Menus/menus.resolver';
-import { UsuariosService } from './Usuarios/usuarios.service';
-import { UsuariosResolver } from './Usuarios/usuarios.resolver';
-import { MenusPalabrasService } from './MenusPalabras/menuspalabras.service';
-import { MenusPalabrasResolver } from './MenusPalabras/menuspalabras.resolver';
-import { TraduccionesService } from './Traducciones/traducciones.service';
-import { TraduccionesResolver } from './Traducciones/traducciones.resolver';
-import { MenusTraduccionesService } from './MenusTraducciones/menustraducciones.service';
-import { MenusTraduccionesResolver } from './MenusTraducciones/menustraducciones.resolver';
-import { ValidacionesService } from './Admin/Validaciones/validaciones.service';
-import { ValidacionesResolver } from './Admin/Validaciones/validaciones.resolver';
-import { IconosService } from './Admin/Iconos/iconos.service';
-import { IconosResolver } from './Admin/Iconos/iconos.resolver';
-import { ProveedoresServiciosService } from './Admin/ProveedoresServicios/proveedoresservicios.service';
-import { ProveedoresServiciosController } from './Admin/ProveedoresServicios/proveedoresservicios.controller';
-import { EntidadesResolver } from './Admin/Entidades/entidades.resolver';
-import { MicroserviciosService } from './Admin/Microservicios/microservicios.service';
-import { MicroserviciosResolver } from './Admin/Microservicios/microservicios.resolver';
-import { ProveedoresServiciosResolver } from './Admin/ProveedoresServicios/proveedoresservicios.resolver';
-import { MetodosValidacionService } from './Admin/MetodosValidacion/metodosvalidacion.service';
-import { MetodosValidacionResolver } from './Admin/MetodosValidacion/metodosvalidacion.resolver';
+import { MenusService } from './modules/GestionMenus/Menus/menus.service';
+import { MenusResolver } from './modules/GestionMenus/Menus/menus.resolver';
+import { UsuariosService } from './modules/Usuarios/usuarios.service';
+import { UsuariosResolver } from './modules/Usuarios/usuarios.resolver';
+import { TraduccionesService } from './modules/Traducciones/traducciones.service';
+import { TraduccionesResolver } from './modules/Traducciones/traducciones.resolver';
+import { ValidacionesService } from './modules/Admin/Validaciones/validaciones.service';
+import { IconosService } from './modules/Admin/Iconos/iconos.service';
+import { IconosResolver } from './modules/Admin/Iconos/iconos.resolver';
+import { ProveedoresServiciosService } from './modules/Admin/ProveedoresServicios/proveedoresservicios.service';
+import { ProveedoresServiciosController } from './modules/Admin/ProveedoresServicios/proveedoresservicios.controller';
+import { EntidadesResolver } from './modules/Admin/Entidades/entidades.resolver';
+import { MicroserviciosService } from './modules/Admin/Microservicios/microservicios.service';
+import { MicroserviciosResolver } from './modules/Admin/Microservicios/microservicios.resolver';
 import { Prisma } from '@prisma/client';
 
-const MyProviders = [PrismaService, LoginService, LoginResolver, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, RolesPermisosService, RolesPermisosResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, MenusPalabrasService, MenusPalabrasResolver, TraduccionesService, TraduccionesResolver, MenusTraduccionesService, MenusTraduccionesResolver, ValidacionesService, ValidacionesResolver, IconosService, IconosResolver, ProveedoresServiciosService, ProveedoresServiciosResolver, MicroserviciosService, MicroserviciosResolver, MetodosValidacionService, MetodosValidacionResolver]
+const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver]
 
 @Module({
   imports: [
@@ -111,10 +98,10 @@ export class AppModule {
       }
     }
 
-    var microservicio_id = 1;
+    var microservicio = "admin";
     var secondaryEntities = getSecondaryEntities();
     // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
-    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio_id, secondaryEntities);
+    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, secondaryEntities);
   }
 }
 
