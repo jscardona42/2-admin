@@ -128,11 +128,9 @@ export class RolesService {
   }
 
   async getRolesPermisosById(rol_permiso_id) {
-    let rolesPermisos = await this.prismaService.rolesPermisos.findUnique({
+    return this.prismaService.rolesPermisos.findUnique({
       where: { rol_permiso_id: rol_permiso_id },
     });
-
-    return rolesPermisos;
   }
 
 

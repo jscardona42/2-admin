@@ -174,7 +174,7 @@ describe('Doble factor Service', () => {
     // describe('sendCodeMail', () => {
     //     it('should sendCodeMail', async () => {
     //         const testParams = {
-    //             user: { email: "usuario1@gmail.com" },
+    //             user: { email: "jscardona42@gmail.com" },
     //             twofactor: {
     //                 usuario_id: 1,
     //                 doble_factor_id: 1,

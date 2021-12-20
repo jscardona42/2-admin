@@ -27,11 +27,12 @@ describe('Roles Service', () => {
                             delete: jest.fn(),
                         },
                         rolesPermisos: {
-                            findUnique: jest.fn(() => { return { rol_permiso_id: 12 } }),
+                            findUnique: jest.fn(() => { return { rol_permiso_id: 12, rol_id: 4 } }),
+                            findFirst: jest.fn(() => { return null }),
                         },
                         permisos: {
-                            findFirst: jest.fn(() => { return { permiso: { permiso_id: 1 } } }),
-                            findUnique: jest.fn(() => { return { permiso: { permiso_id: 1 } } }),
+                            findFirst: jest.fn(() => { return { permiso: { permiso_id: 155 } } }),
+                            findUnique: jest.fn(() => { return { permiso: { permiso_id: 150 } } }),
                         },
                     }),
                 },
@@ -83,19 +84,19 @@ describe('Roles Service', () => {
         });
     });
 
-    // describe('updateRol method', () => {
-    //     it('should invoke prismaService.roles.update', async () => {
-    //         var testParams: UpdateRolInput = {
-    //             rol: "Nombre",
-    //             rol_id: 4,
-    //             RolesPermisos: {
-    //                 rol_permiso_id: 12, permiso_id: 1
-    //             }
-    //         }
-    //         await roleService.updateRol(testParams);
-    //         expect(prismaService.roles.update).toHaveBeenCalled();
-    //     });
-    // });
+    describe('updateRol method', () => {
+        it('should invoke prismaService.roles.update', async () => {
+            var testParams: UpdateRolInput = {
+                rol: "Nombre",
+                rol_id: 4,
+                RolesPermisos: {
+                    rol_permiso_id: 12, permiso_id: 150
+                }
+            }
+            await roleService.updateRol(testParams);
+            expect(prismaService.roles.update).toHaveBeenCalled();
+        });
+    });
 
     describe('deleteRol method', () => {
         it('should invoke prismaService.roles.delete', async () => {
