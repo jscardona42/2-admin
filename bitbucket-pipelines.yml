@@ -1,0 +1,24 @@
+pipelines:
+  default:
+    - step:
+        image: node:14-alpine
+        script:
+          - export NODE_OPTIONS=--max_old_space_size=1024
+          - npm install --quiet                    
+          - npx prisma db push --accept-data-loss
+          - npm run-script build
+          - npm run test:force 
+        services:
+          - postgres
+          - docker
+definitions:
+  services:
+    docker:
+      memory: 2048  #increasing docker service memory
+    postgres:
+      image: postgres:14-alpine
+      memory: 1024
+      environment:
+        POSTGRES_DB: "admin"
+        POSTGRES_USER: "postgres"
+        POSTGRES_PASSWORD: "1234"
