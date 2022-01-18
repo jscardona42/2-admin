@@ -32,3 +32,5 @@ definitions:
         POSTGRES_DB: "admin"
         POSTGRES_USER: "postgres"
         POSTGRES_PASSWORD: "1234"
+  caches:
+    sonar: ~/.sonar
