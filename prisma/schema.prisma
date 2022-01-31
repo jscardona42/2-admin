@@ -20,7 +20,7 @@ model Auditorias {
 
 model DoblesFactores {
   doble_factor_id       Int                @id @default(autoincrement())
-  otplib_secreta        String?            
+  otplib_secreta        String?
   esta_configurado      Boolean            @default(false)
   usuario_id            Int?
   codigo_recuperacion   String?
@@ -30,11 +30,12 @@ model DoblesFactores {
 }
 
 model Entidades {
-  entidad_id Int        @id @default(autoincrement())
-  nombre     String     @db.VarChar(255)
-  resolver   String?    @db.VarChar(255)
-  es_entidad Boolean?   @default(true)
-  Permisos   Permisos[]
+  entidad_id      Int               @id @default(autoincrement())
+  nombre          String            @db.VarChar(255)
+  resolver        String?           @db.VarChar(255)
+  es_entidad      Boolean?          @default(true)
+  Permisos        Permisos[]
+  Funcionalidades Funcionalidades[]
 }
 
 model Menus {
@@ -74,10 +75,11 @@ model Permisos {
 }
 
 model Roles {
-  rol_id           Int             @id @default(autoincrement())
-  rol              String          @db.VarChar(100)
-  RolesPermisosSec RolesPermisos[]
-  Usuarios         Usuarios[]
+  rol_id                  Int                    @id @default(autoincrement())
+  rol                     String                 @db.VarChar(100)
+  RolesPermisosSec        RolesPermisos[]
+  Usuarios                Usuarios[]
+  RolesFuncionalidadesSec RolesFuncionalidades[]
 }
 
 model RolesPermisos {
@@ -155,6 +157,29 @@ model ProveedoresServicios {
   lista_proveedores           String
   lista_entidades_secundarias String?
   Microservicios              Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], map: "fk_pro_ser_microservicio_id")
+}
+
+model Funcionalidades {
+  funcionalidad_id           Int                       @id @default(autoincrement())
+  nombre                     String
+  entidad_id                 Int
+  Entidades                  Entidades                 @relation(fields: [entidad_id], references: [entidad_id], map: "fk_funcionalidades_entidad_id")
+  FuncionalidadesPermisosSec FuncionalidadesPermisos[]
+  RolesFuncionalidades       RolesFuncionalidades[]
+}
+
+model FuncionalidadesPermisos {
+  funcionalidad_permiso_id Int             @id @default(autoincrement())
+  funcionalidad_id         Int
+  Funcionalidades          Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_fun_per_funcionalidad_id")
+}
+
+model RolesFuncionalidades {
+  rol_funcionalidad_id Int             @id @default(autoincrement())
+  funcionalidad_id     Int
+  rol_id               Int
+  Funcionalidades      Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_rol_fun_funcionalidad_id")
+  Roles                Roles           @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
 }
 
 enum MetodosValidacion {
