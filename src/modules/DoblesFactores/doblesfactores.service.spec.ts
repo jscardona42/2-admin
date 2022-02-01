@@ -5,10 +5,10 @@ import { JwtModule } from '@nestjs/jwt';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { DoblesFactoresService } from './doblesfactores.service';
-import { RolesService } from '../GestiónFuncionalidades/Roles/roles.service';
+import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { UsuariosService } from '../Usuarios/usuarios.service';
 import { configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
-import { PermisosService } from '../GestiónFuncionalidades/Permisos/permisos.service';
+import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
 import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 

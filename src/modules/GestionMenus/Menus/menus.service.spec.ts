@@ -5,8 +5,8 @@ import { MenusService } from './menus.service';
 import { JwtModule } from '@nestjs/jwt';
 import { AuditoriasService } from '../../Auditorias/auditorias.service';
 import { EntidadesService } from '../../Admin/Entidades/entidades.service';
-import { RolesService } from '../../GestiónFuncionalidades/Roles/roles.service';
-import { PermisosService } from '../../GestiónFuncionalidades/Permisos/permisos.service';
+import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
+import { PermisosService } from '../../GestionFuncionalidades/Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { CreateMenuInput } from './dto/menus.dto';
 

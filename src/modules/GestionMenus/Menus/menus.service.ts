@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { EntidadesService } from '../../../modules/Admin/Entidades/entidades.service';
-import { RolesService } from '../../GestiónFuncionalidades/Roles/roles.service';
+import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
 import { UsuariosService } from '../../../modules/Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';
 import { CreateMenuInput } from './dto/menus.dto';
