@@ -1,13 +1,13 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { RolesService } from '../Admin/Roles/roles.service';
+import { RolesService } from '../GestiónFuncionalidades/Roles/roles.service';
 import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { PrismaService } from '../../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';
 import { UsuariosService } from '../Usuarios/usuarios.service';
 import { configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
-import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { PermisosService } from '../GestiónFuncionalidades/Permisos/permisos.service';
 import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 

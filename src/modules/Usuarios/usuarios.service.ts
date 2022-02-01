@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { RolesService } from '../Admin/Roles/roles.service';
+import { RolesService } from '../GestiónFuncionalidades/Roles/roles.service';
 import { Usuarios } from './entities/usuarios.entity';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';

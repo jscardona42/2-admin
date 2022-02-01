@@ -1,5 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UpdateIconoInput } from '../Iconos/dto/iconos.dto';
+import { UpdateIconoInput } from '../../Admin/Iconos/dto/iconos.dto';
 import { AddPermisosToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { Roles } from './entities/roles.entity';
 import { RolesService } from './roles.service';

@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../../prisma.service';
-import { EntidadesService } from '../Entidades/entidades.service';
+import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { PermisosService } from '../Permisos/permisos.service';
-import { ValidacionesService } from '../Validaciones/validaciones.service';
+import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { RolesService } from './roles.service';
 

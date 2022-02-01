@@ -1,7 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../../prisma.service';
-import { EntidadesService } from '../Entidades/entidades.service';
-import { ValidacionesService } from '../Validaciones/validaciones.service';
+import { EntidadesService } from '../../Admin/Entidades/entidades.service';
+import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { PermisosService } from './permisos.service';
 
 
