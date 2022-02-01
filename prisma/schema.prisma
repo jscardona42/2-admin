@@ -65,13 +65,14 @@ model Microservicios {
 }
 
 model Permisos {
-  permiso_id              Int                    @id @default(autoincrement())
+  permiso_id              Int                       @id @default(autoincrement())
   entidad_id              Int?
   permiso                 String?
   es_publico              Boolean?
-  Entidades               Entidades?             @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
+  Entidades               Entidades?                @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
   PermisosValidacionesSec PermisosValidaciones[]
   RolesPermisos           RolesPermisos[]
+  FuncionalidadesPermisos FuncionalidadesPermisos[]
 }
 
 model Roles {
@@ -171,7 +172,9 @@ model Funcionalidades {
 model FuncionalidadesPermisos {
   funcionalidad_permiso_id Int             @id @default(autoincrement())
   funcionalidad_id         Int
+  permiso_id               Int
   Funcionalidades          Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_fun_per_funcionalidad_id")
+  Permisos                 Permisos        @relation(fields: [permiso_id], references: [permiso_id], map: "fk_fun_per_permiso_id")
 }
 
 model RolesFuncionalidades {
