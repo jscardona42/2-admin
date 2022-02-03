@@ -71,16 +71,29 @@ type Permisos {
   PermisosValidacionesSec: [PermisosValidaciones!]
 }
 
-type RolesPermisos {
-  rol_permiso_id: ID!
-  Roles: Roles!
+type FuncionalidadesPermisos {
+  funcionalidad_permiso_id: ID!
+  Funcionalidades: Funcionalidades!
   Permisos: Permisos!
+}
+
+type Funcionalidades {
+  funcionalidad_id: ID!
+  nombre: String!
+  Entidades: Entidades
+  FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
+}
+
+type RolesFuncionalidades {
+  rol_funcionalidad_id: ID!
+  Roles: Roles!
+  Funcionalidades: Funcionalidades!
 }
 
 type Roles {
   rol_id: ID!
   rol: String!
-  RolesPermisosSec: [RolesPermisos!]!
+  RolesFuncionalidadesSec: [RolesFuncionalidades!]
 }
 
 type DoblesFactores {
@@ -152,19 +165,6 @@ type Iconos {
   unicode: String!
 }
 
-type FuncionalidadesPermisos {
-  funcionalidad_permiso_id: ID!
-  Funcionalidades: Funcionalidades!
-  Permisos: Permisos!
-}
-
-type Funcionalidades {
-  funcionalidad_id: ID!
-  nombre: String!
-  Entidades: Entidades!
-  FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
-}
-
 type Query {
   getMenus: [Menus!]!
   getMenusInactivos: [Menus!]!
@@ -179,6 +179,7 @@ type Query {
   getRoles: [Roles!]!
   getRolById(rol_id: Float!): Roles!
   getFilterRoles(rol: String): [Roles!]!
+  getEntidadesIdsByRolId: [Roles!]!
   getEntidades: [Entidades!]!
   getEntidadeById(entidad_id: Float!): Entidades!
   getFilterEntidades(nombre: String): [Entidades!]!
@@ -239,7 +240,7 @@ type Mutation {
   createRol(data: CreateRolInput!): Roles!
   updateRol(data: UpdateRolInput!): Roles!
   deleteRol(rol_id: Float!): Roles!
-  addPermisosToRol(data: AddPermisosToRolInput!): Roles!
+  addFuncionalidadesToRol(data: AddFuncionalidadesToRolInput!): Roles!
   updateEntidad(data: UpdateEntidadInput!): Entidades!
   deleteEntidad(entidad_id: Float!): Entidades!
   updatePermiso(data: UpdatePermisoInput!): Permisos!
@@ -295,27 +296,27 @@ enum MetodosValidacion {
 
 input CreateRolInput {
   rol: String!
-  RolesPermisos: [CreateRolPermisoInput!]
+  RolesFuncionalidades: [CreateRolFuncionalidadInput!]
 }
 
-input CreateRolPermisoInput {
-  permiso_id: Float!
+input CreateRolFuncionalidadInput {
+  funcionalidad_id: Float!
 }
 
 input UpdateRolInput {
   rol_id: Float!
   rol: String
-  RolesPermisos: UpdateRolPermisoInput
+  RolesFuncionalidades: [UpdateRolFuncionalidadInput!]
 }
 
-input UpdateRolPermisoInput {
-  permiso_id: Float
-  rol_permiso_id: Float!
+input UpdateRolFuncionalidadInput {
+  funcionalidad_id: Float
+  rol_funcionalidad_id: Float!
 }
 
-input AddPermisosToRolInput {
+input AddFuncionalidadesToRolInput {
   rol_id: Float!
-  RolesPermisos: [CreateRolPermisoInput!]
+  RolesFuncionalidades: [CreateRolFuncionalidadInput!]
 }
 
 input UpdateEntidadInput {

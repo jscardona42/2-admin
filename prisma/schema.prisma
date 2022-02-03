@@ -71,24 +71,14 @@ model Permisos {
   es_publico              Boolean?
   Entidades               Entidades?                @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
   PermisosValidacionesSec PermisosValidaciones[]
-  RolesPermisos           RolesPermisos[]
   FuncionalidadesPermisos FuncionalidadesPermisos[]
 }
 
 model Roles {
   rol_id                  Int                    @id @default(autoincrement())
   rol                     String                 @db.VarChar(100)
-  RolesPermisosSec        RolesPermisos[]
   Usuarios                Usuarios[]
   RolesFuncionalidadesSec RolesFuncionalidades[]
-}
-
-model RolesPermisos {
-  rol_permiso_id Int       @id @default(autoincrement())
-  rol_id         Int
-  permiso_id     Int?
-  Permisos       Permisos? @relation(fields: [permiso_id], references: [permiso_id], onDelete: Restrict, map: "fk_rol_per_permiso_id")
-  Roles          Roles     @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_per_rol_id")
 }
 
 model Usuarios {
