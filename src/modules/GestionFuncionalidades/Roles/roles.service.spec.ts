@@ -5,6 +5,7 @@ import { PermisosService } from '../Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { RolesService } from './roles.service';
+import { FuncionalidadesService } from '../Funcionalidades/funcionalidades.service';
 
 
 describe('Roles Service', () => {
@@ -14,7 +15,7 @@ describe('Roles Service', () => {
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             providers: [
-                RolesService, PermisosService, EntidadesService, ValidacionesService,
+                RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -26,8 +27,12 @@ describe('Roles Service', () => {
                             create: jest.fn(),
                             delete: jest.fn(),
                         },
-                        rolesPermisos: {
-                            findUnique: jest.fn(() => { return { rol_permiso_id: 12, rol_id: 4 } }),
+                        rolesFuncionalidades: {
+                            findUnique: jest.fn(() => { return { rol_funcionalidad_id: 6, rol_id: 1 } }),
+                            findFirst: jest.fn(() => { return null }),
+                        },
+                        funcionalidades: {
+                            findUnique: jest.fn(() => { return { funcionalidad_id: 2 } }),
                             findFirst: jest.fn(() => { return null }),
                         },
                         permisos: {
@@ -75,8 +80,8 @@ describe('Roles Service', () => {
         it('should invoke prismaService.roles.create', async () => {
             var testParams: CreateRolInput = {
                 rol: "",
-                RolesPermisos: [
-                    { permiso_id: 1 }
+                RolesFuncionalidades: [
+                    { funcionalidad_id: 1 }
                 ]
             }
             await roleService.createRol(testParams);
@@ -88,10 +93,10 @@ describe('Roles Service', () => {
         it('should invoke prismaService.roles.update', async () => {
             var testParams: UpdateRolInput = {
                 rol: "Nombre",
-                rol_id: 4,
-                RolesPermisos: {
-                    rol_permiso_id: 12, permiso_id: 150
-                }
+                rol_id: 1,
+                RolesFuncionalidades: [
+                    { rol_funcionalidad_id: 6 }
+                ]
             }
             await roleService.updateRol(testParams);
             expect(prismaService.roles.update).toHaveBeenCalled();

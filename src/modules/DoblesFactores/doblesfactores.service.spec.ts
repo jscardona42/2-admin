@@ -2,7 +2,6 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { DoblesFactores } from './entities/doblesfactores.entity';
 import { DoblesFactoresService } from './doblesfactores.service';
 import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
@@ -11,6 +10,7 @@ import { configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/dob
 import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
 import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
+import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 
 
 describe('Doble factor Service', () => {
@@ -38,7 +38,7 @@ describe('Doble factor Service', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresService, MailerModule, AuditoriasService, RolesService, PermisosService, EntidadesService, ValidacionesService, UsuariosService,
+                DoblesFactoresService, MailerModule, RolesService, PermisosService, EntidadesService, ValidacionesService, UsuariosService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -56,6 +56,12 @@ describe('Doble factor Service', () => {
                         },
                         usuarios: {
                             findUnique: jest.fn(() => { return { usuario_id: 1 } }),
+                        },
+                        permisos: {
+                            findFirst: jest.fn(() => { return { permiso: { permiso_id: 1 } } }),
+                        },
+                        entidades: {
+                            findFirst: jest.fn(() => { return { entidad: { entidad_id: 1 } } }),
                         }
                     }),
                 },

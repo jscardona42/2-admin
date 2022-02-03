@@ -6,9 +6,9 @@ import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
 import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
-import { AuditoriasService } from '../Auditorias/auditorias.service';
-import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
+import { SignInUserInput } from './dto/usuarios.dto';
 import { UsuariosService } from './usuarios.service';
+import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 
 
 describe('Usuarios Service', () => {
@@ -26,7 +26,7 @@ describe('Usuarios Service', () => {
                 }),
             ],
             providers: [
-                UsuariosService, RolesService, AuditoriasService, PermisosService, EntidadesService, ValidacionesService,
+                UsuariosService, RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -34,7 +34,7 @@ describe('Usuarios Service', () => {
                             findFirst: jest.fn(() => {
                                 return { salt: String }
                             }),
-                            findUnique:jest.fn(),
+                            findUnique: jest.fn(),
                             usernameExists: jest.fn(() => { return { usernameExists: false } }),
                             findMany: jest.fn(() => { return { usernameExists: false } }),
                             create: jest.fn(() => {

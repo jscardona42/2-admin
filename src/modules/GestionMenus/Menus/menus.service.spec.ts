@@ -3,12 +3,12 @@ import { UsuariosService } from '../../Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';
 import { MenusService } from './menus.service';
 import { JwtModule } from '@nestjs/jwt';
-import { AuditoriasService } from '../../Auditorias/auditorias.service';
 import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
 import { PermisosService } from '../../GestionFuncionalidades/Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { CreateMenuInput } from './dto/menus.dto';
+import { FuncionalidadesService } from '../../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 
 describe('Menu Service', () => {
   let menusService: MenusService;
@@ -25,7 +25,7 @@ describe('Menu Service', () => {
         }),
       ],
       providers: [
-        MenusService, UsuariosService, AuditoriasService, EntidadesService, RolesService, PermisosService, ValidacionesService,
+        MenusService, UsuariosService, EntidadesService, RolesService, PermisosService, ValidacionesService, FuncionalidadesService,
         {
           provide: PrismaService,
           useFactory: () => ({
@@ -51,26 +51,27 @@ describe('Menu Service', () => {
             usuarios: {
               findUnique: jest.fn(() => { return { usuario_id: 1 } }),
             },
-            rolesPermisos: {
+            rolesFuncionalidades: {
               findMany: jest.fn(() => {
-                return [{
-                  rol_permiso_id: 1,
-                  rol_id: 1,
-                  permiso_id: 235,
-                  Roles: { rol_id: 1, rol: 'Administrator' },
-                  Permisos: {
-                    permiso_id: 235,
-                    entidad_id: 75,
-                    permiso: 'MenusResolver',
-                    es_publico: false,
-                    Entidades: {
-                      entidad_id: 75,
-                      nombre: 'Menus',
-                      resolver: 'MenusResolver',
-                      es_entidad: true
+                return [
+                  {
+                    rol_funcionalidad_id: 1,
+                    funcionalidad_id: 1,
+                    rol_id: 1,
+                    Funcionalidades: {
+                      funcionalidad_id: 1,
+                      nombre: 'Funcionalidad 1',
+                      entidad_id: 1,
+                      Entidades: {
+                        entidad_id: 1,
+                        nombre: 'CategoriasPrecios',
+                        resolver: 'CategoriasPreciosResolver',
+                        es_entidad: true
+                      }
                     }
-                  }
-                }]
+                  },
+
+                ]
               }),
             }
           }),

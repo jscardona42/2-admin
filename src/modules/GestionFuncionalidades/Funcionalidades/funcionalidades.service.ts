@@ -1,5 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
-import { EntidadesService } from 'src/modules/Admin/Entidades/entidades.service';
+import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { PrismaService } from '../../../prisma.service';
 import { PermisosService } from '../Permisos/permisos.service';
 import { AddPermisosToFuncionalidadInput, CreateFuncionalidadInput, FilterFuncionalidadesInput, UpdateFuncionalidadInput } from './dto/funcionalidades.dto';
