@@ -1,5 +1,5 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
-import { RolesPermisos } from "./rolespermisos.entity"
+import { RolesFuncionalidades } from "./rolesfuncionalidades.entity"
 
 @ObjectType()
 export class Roles {
@@ -9,6 +9,6 @@ export class Roles {
     @Field((type) => String)
     rol: string
 
-    @Field((type) => [RolesPermisos])
-    RolesPermisosSec: RolesPermisos[]
+    @Field((type) => [RolesFuncionalidades], { nullable: true })
+    RolesFuncionalidadesSec?: RolesFuncionalidades[]
 }

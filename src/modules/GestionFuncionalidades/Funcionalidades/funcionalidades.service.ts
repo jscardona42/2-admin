@@ -57,7 +57,7 @@ export class FuncionalidadesService {
             await this.permisosService.getPermisoById(element.permiso_id);
             let funcionalidad = await this.getFuncionalidadById(data.funcionalidad_id);
             await this.validatePermisosByEntidadIdAndPermisoId(element, funcionalidad.entidad_id);
-            await this.validateFuncionalidadPermiso(element, data);
+            await this.validateFuncionalidadPermiso(element, data.funcionalidad_id);
         }));
 
         data.FuncionalidadesPermisos.forEach(element => {
@@ -118,17 +118,15 @@ export class FuncionalidadesService {
         }
     }
 
-    async validateFuncionalidadPermiso(element: any, data: any) {
+    async validateFuncionalidadPermiso(element: any, funcionalidad_id: any) {
         let funcionalidadPermiso = await this.prismaService.funcionalidadesPermisos.findUnique({
             where: { funcionalidad_permiso_id: element.funcionalidad_permiso_id },
             include: { Funcionalidades: true },
             rejectOnNotFound: () => new UnauthorizedException(`La funcionalidad permiso con id ${element.funcionalidad_permiso_id} no existe`)
         });
 
-        if (funcionalidadPermiso.funcionalidad_id !== null) {
-            if (funcionalidadPermiso.funcionalidad_id !== data.funcionalidad_id) {
-                throw new UnauthorizedException(`La funcionalidad permiso con id ${element.funcionalidad_permiso_id} no pertenece a la funcionalidad con id ${data.funcionalidad_id}`)
-            }
+        if (funcionalidadPermiso.funcionalidad_id !== funcionalidad_id) {
+            throw new UnauthorizedException(`La funcionalidad permiso con id ${element.funcionalidad_permiso_id} no pertenece a la funcionalidad con id ${funcionalidad_id}`)
         }
     }
 

@@ -1,6 +1,5 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
-import { UpdateIconoInput } from '../../Admin/Iconos/dto/iconos.dto';
-import { AddPermisosToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
+import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { Roles } from './entities/roles.entity';
 import { RolesService } from './roles.service';
 
@@ -42,7 +41,12 @@ export class RolesResolver {
   }
 
   @Mutation((returns) => Roles)
-  async addPermisosToRol(@Args("data") data: AddPermisosToRolInput): Promise<Roles> {
-    return this.rolesService.addPermisosToRol(data);
+  async addFuncionalidadesToRol(@Args("data") data: AddFuncionalidadesToRolInput): Promise<Roles> {
+    return this.rolesService.addFuncionalidadesToRol(data);
+  }
+
+  @Query((returns) => [Roles])
+  async getEntidadesIdsByRolId(): Promise<any> {
+    return this.rolesService.getEntidadesIdsByRolId(1);
   }
 }

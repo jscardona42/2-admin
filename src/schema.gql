@@ -80,7 +80,7 @@ type FuncionalidadesPermisos {
 type Funcionalidades {
   funcionalidad_id: ID!
   nombre: String!
-  Entidades: Entidades
+  Entidades: Entidades!
   FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
 }
 

@@ -1,18 +1,17 @@
 import 'reflect-metadata'
-import { Field, InputType, PartialType, } from '@nestjs/graphql'
+import { Field, InputType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
-import { CreateRolPermisoInput, UpdateRolPermisoInput } from './rolespermisos.dto'
+import { CreateRolFuncionalidadInput, UpdateRolFuncionalidadInput } from './rolesfuncionalidades.dto'
 
 
 @InputType()
 export class CreateRolInput {
-
     @Field()
     @IsNotEmpty()
     rol: string
 
-    @Field(() => [CreateRolPermisoInput], { nullable: true })
-    RolesPermisos?: CreateRolPermisoInput[]
+    @Field(() => [CreateRolFuncionalidadInput], { nullable: true })
+    RolesFuncionalidades?: CreateRolFuncionalidadInput[]
 }
 
 @InputType()
@@ -24,17 +23,16 @@ export class UpdateRolInput {
     @Field({ nullable: true })
     rol?: string
 
-    @Field(() => UpdateRolPermisoInput, { nullable: true })
-    RolesPermisos?: UpdateRolPermisoInput
-
+    @Field(() => [UpdateRolFuncionalidadInput], { nullable: true })
+    RolesFuncionalidades?: UpdateRolFuncionalidadInput[]
 }
 
 @InputType()
-export class AddPermisosToRolInput {
+export class AddFuncionalidadesToRolInput {
     @Field()
     @IsNotEmpty()
     rol_id: number
 
-    @Field(() => [CreateRolPermisoInput], { nullable: true })
-    RolesPermisos?: CreateRolPermisoInput[]
+    @Field(() => [CreateRolFuncionalidadInput], { nullable: true })
+    RolesFuncionalidades?: CreateRolFuncionalidadInput[]
 }
