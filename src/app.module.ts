@@ -4,8 +4,6 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
 import { PrismaService } from './prisma.service';
-import { AuditoriasService } from './modules/Auditorias/auditorias.service';
-import { AuditoriasResolver } from './modules/Auditorias/auditorias.resolver';
 import { RolesResolver } from './modules/GestionFuncionalidades/Roles/roles.resolver';
 import { RolesService } from './modules/GestionFuncionalidades/Roles/roles.service';
 import { DoblesFactoresService } from './modules/DoblesFactores/doblesfactores.service';
@@ -32,7 +30,7 @@ import { Prisma } from '@prisma/client';
 import { FuncionalidadesService } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 import { FuncionalidadesResolver } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.resolver';
 
-const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, AuditoriasService, AuditoriasResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
+const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
 
 @Module({
   imports: [
