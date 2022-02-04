@@ -1,15 +1,15 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { RolesService } from '../Admin/Roles/roles.service';
-import { AuditoriasService } from '../Auditorias/auditorias.service';
+import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { PrismaService } from '../../prisma.service';
 import { DoblesFactoresResolver } from './doblesfactores.resolver';
 import { DoblesFactoresService } from './doblesfactores.service';
 import { UsuariosService } from '../Usuarios/usuarios.service';
 import { configDoblesFactoresInput, DoblesFactoresValidarInput } from './dto/doblesfactores.dto';
-import { PermisosService } from '../Admin/Permisos/permisos.service';
+import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
 import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
+import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 
 describe('Dobles factores Resolver', () => {
     let twofactorResolver: DoblesFactoresResolver;
@@ -26,7 +26,7 @@ describe('Dobles factores Resolver', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresResolver, UsuariosService, PrismaService, RolesService, AuditoriasService, PermisosService, EntidadesService, ValidacionesService,
+                DoblesFactoresResolver, UsuariosService, PrismaService, RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: DoblesFactoresService,
                     useFactory: () => ({

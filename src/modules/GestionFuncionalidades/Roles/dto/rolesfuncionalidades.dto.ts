@@ -4,16 +4,15 @@ import { IsNotEmpty } from 'class-validator'
 
 
 @InputType()
-export class CreateRolPermisoInput {
+export class CreateRolFuncionalidadInput {
     @Field()
     @IsNotEmpty()
-    permiso_id: number
+    funcionalidad_id: number
 }
 
 @InputType()
-export class UpdateRolPermisoInput extends PartialType(CreateRolPermisoInput) {
+export class UpdateRolFuncionalidadInput extends PartialType(CreateRolFuncionalidadInput) {
     @Field()
     @IsNotEmpty()
-    rol_permiso_id: number
-
+    rol_funcionalidad_id: number
 }

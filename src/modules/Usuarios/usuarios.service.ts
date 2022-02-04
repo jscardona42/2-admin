@@ -1,10 +1,9 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { RolesService } from '../Admin/Roles/roles.service';
+import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { Usuarios } from './entities/usuarios.entity';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { AuditoriasService } from '../Auditorias/auditorias.service';
 import { AuthenticationError } from 'apollo-server-express';
 import { ChangePasswordInput, SignUpUserInput } from './dto/usuarios.dto';
 
@@ -15,7 +14,6 @@ export class UsuariosService {
         private prismaService: PrismaService,
         private rolesService: RolesService,
         private jwtService: JwtService,
-        private auditService: AuditoriasService,
     ) { }
 
     async getUsuarios(): Promise<Usuarios[]> {
@@ -78,7 +76,6 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            this.auditService.registerAuditoria(data);
             throw new UnauthorizedException('Credenciales inválidas');
         }
 
@@ -91,11 +88,8 @@ export class UsuariosService {
         })
 
         if (!user) {
-            this.auditService.registerAuditoria(data);
             throw new UnauthorizedException('Credenciales inválidas');
         }
-
-        this.auditService.registerAuditoria(user);
 
         const token = this.jwtService.sign({ userId: user.usuario_id });
         return this.createToken(token, user);

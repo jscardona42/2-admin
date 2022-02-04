@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
 import { EntidadesService } from '../../../modules/Admin/Entidades/entidades.service';
-import { RolesService } from '../../../modules/Admin/Roles/roles.service';
+import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
 import { UsuariosService } from '../../../modules/Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';
 import { CreateMenuInput } from './dto/menus.dto';
@@ -85,21 +85,16 @@ export class MenusService {
   async getMenuByRoleId(usuario_id: number): Promise<Object[]> {
 
     var arrayEntidadIds = [];
-    var arrayPermisosIds = [];
 
     var usuario = await this.usuariosService.getUsuarioById(usuario_id);
 
     if (usuario === null) {
       throw new UnauthorizedException("The user does not have a menu configured");
     }
-    var entidadIds = await this.rolesService.getEntidadesIdsByRolId(usuario.rol_id);
+    var rolesFuncionalidades = await this.rolesService.getEntidadesIdsByRolId(usuario.rol_id);
 
-    entidadIds.forEach(function (permiso, index) {
-      arrayPermisosIds[index] = permiso.Permisos;
-    });
-
-    arrayPermisosIds.forEach(function (entidad, index) {
-      arrayEntidadIds[index] = entidad.entidad_id;
+    rolesFuncionalidades.forEach(function (element, index) {
+      arrayEntidadIds[index] = element.Funcionalidades.Entidades.entidad_id;
     });
 
     const OR = [{ entidad_id: { in: arrayEntidadIds }, }, { isEntity: false }, { activo: true }];

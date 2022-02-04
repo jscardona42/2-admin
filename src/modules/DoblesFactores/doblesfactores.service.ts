@@ -172,8 +172,6 @@ export class DoblesFactoresService {
             QRCode.toDataURL(str, function (err, url) {
                 if (err) {
                     throw new AuthenticationError("Could not build the qr");
-                    reject(err);
-                    return;
                 }
                 resolve(url);
             });

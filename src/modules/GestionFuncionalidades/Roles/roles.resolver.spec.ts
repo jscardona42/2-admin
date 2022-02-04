@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { CreateRolInput, UpdateRolInput } from './dto/roles.dto';
+import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { RolesResolver } from './roles.resolver';
 import { RolesService } from './roles.service';
 
@@ -19,6 +19,7 @@ describe('Roles Resolver', () => {
             getFilterRoles: jest.fn(),
             createRol: jest.fn(),
             updateRol: jest.fn(),
+            addFuncionalidadesToRol: jest.fn(),
             deleteRol: jest.fn(),
           }),
         },
@@ -70,6 +71,14 @@ describe('Roles Resolver', () => {
       var testParams: UpdateRolInput;
       await roleResolver.updateRol(testParams);
       expect(roleService.updateRol).toHaveBeenCalledWith(testParams);
+    });
+  });
+
+  describe('Mutation addFuncionalidadesToRol()', () => {
+    it('should invoke rolesService.addFuncionalidadesToRol', async () => {
+      var testParams: AddFuncionalidadesToRolInput;
+      await roleResolver.addFuncionalidadesToRol(testParams);
+      expect(roleService.addFuncionalidadesToRol).toHaveBeenCalledWith(testParams);
     });
   });
 
