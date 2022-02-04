@@ -3,7 +3,7 @@ import { PrismaService } from '../../../prisma.service';
 import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { PermisosService } from '../Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
-import { CreateRolInput, UpdateRolInput } from './dto/roles.dto';
+import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 import { RolesService } from './roles.service';
 import { FuncionalidadesService } from '../Funcionalidades/funcionalidades.service';
 
@@ -99,6 +99,20 @@ describe('Roles Service', () => {
                 ]
             }
             await roleService.updateRol(testParams);
+            expect(prismaService.roles.update).toHaveBeenCalled();
+        });
+    });
+
+
+    describe('addFuncionalidadesToRol method', () => {
+        it('should invoke prismaService.roles.update', async () => {
+            var testParams: AddFuncionalidadesToRolInput = {
+                rol_id: 1,
+                RolesFuncionalidades: [
+                    { funcionalidad_id: 1 }
+                ]
+            }
+            await roleService.addFuncionalidadesToRol(testParams);
             expect(prismaService.roles.update).toHaveBeenCalled();
         });
     });
