@@ -31,11 +31,15 @@ export class UpdateFuncionalidadInput {
 
 @InputType()
 export class FilterFuncionalidadesInput {
+
     @Field({ nullable: true })
     nombre?: string
 
     @Field({ nullable: true })
     entidad_nombre?: string
+
+    @Field({ nullable: true })
+    entidad_id?: number
 }
 
 @InputType()
