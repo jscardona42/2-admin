@@ -18,6 +18,12 @@ export class FuncionalidadesService {
         });
     }
 
+    async getFuncionalidadesByentidad(input: FilterFuncionalidadesInput): Promise<any[]> {
+        return this.prismaService.funcionalidades.findMany({
+            where: { entidad_id: input.entidad_id }
+        });
+    }
+
     async getFuncionalidadById(funcionalidad_id: number): Promise<any> {
         return this.prismaService.funcionalidades.findUnique({
             where: { funcionalidad_id: funcionalidad_id },

@@ -14,6 +14,11 @@ export class FuncionalidadesResolver {
         return this.funcionalidadesService.getFuncionalidades();
     }
 
+    @Query((returns) => [Funcionalidades])
+    async getFuncionalidadesByentidad(@Args("input") input:FilterFuncionalidadesInput): Promise<Funcionalidades[]> {
+        return this.funcionalidadesService.getFuncionalidadesByentidad(input);
+    }
+
     @Query((returns) => Funcionalidades)
     async getFuncionalidadById(@Args("funcionalidad_id") funcionalidad_id: number): Promise<Funcionalidades> {
         return this.funcionalidadesService.getFuncionalidadById(funcionalidad_id);
