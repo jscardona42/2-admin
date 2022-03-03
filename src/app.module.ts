@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { GraphQLFederationModule } from '@nestjs/graphql';
+import { GraphQLModule } from '@nestjs/graphql';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
@@ -29,6 +29,8 @@ import { MicroserviciosResolver } from './modules/Admin/Microservicios/microserv
 import { Prisma } from '@prisma/client';
 import { FuncionalidadesService } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 import { FuncionalidadesResolver } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.resolver';
+import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
+
 
 const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
 
@@ -53,7 +55,8 @@ const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresS
     PassportModule.register({
       defaultStrategy: 'jwt'
     }),
-    GraphQLFederationModule.forRoot({
+    GraphQLModule.forRoot<ApolloFederationDriverConfig>({
+      driver: ApolloFederationDriver,
       cors: {
         origin: '*',
         credentials: true,
