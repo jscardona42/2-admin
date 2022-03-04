@@ -178,33 +178,6 @@ export class DoblesFactoresService {
         });
     }
 
-    async sendQrCodeTOTP(doblefactor, login, usuario, recoveryCodes) {
-        try {
-            var codes = JSON.stringify(recoveryCodes);
-            codes = codes.split('"').join('');
-            codes = codes.split('[').join('');
-            codes = codes.split(']').join('');
-
-            return await this.mailerService.sendMail({
-                to: usuario.email,
-                from: "tiresiatest@gmail.com",
-                subject: 'Verification code',
-                text: 'welcome',
-                html: `<h2>Escanee el código QR con una aplicación de autenticación de dos factores</h2>
-                        <div><img ..="cid:code_qr"/></div>
-                        <h2>Códigos de recuperación: <br></h2>
-                        <h3>${codes.split(',').join('<br>')}</h3>`,
-                attachments: [{
-                    filename: 'qrcode.png',
-                    path: `${JSON.parse(doblefactor.qr_code)}`,
-                    cid: 'code_qr' // should be as unique as possible
-                }]
-            })
-        } catch (error) {
-            throw new UnauthorizedException("Unable to send verification code " + error);
-        }
-    }
-
     generateCodeAuthentication(): string {
         var min = 0;
         var max = 9999999999;

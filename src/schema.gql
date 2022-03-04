@@ -171,17 +171,18 @@ type Query {
   getFilterPermisos(permiso: String!): [Permisos!]!
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
-  getFilterUsuarios(email: String, nombre: String): [Usuarios!]!
+  getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
   signInLogin(data: SignInUserInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
   getIconoById(icono_id: Float!): Iconos!
-  getFilterIconos(unicode: String, nombre: String): [Iconos!]!
+  getFilterIconos(nombre: String, unicode: String): [Iconos!]!
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
   getFuncionalidades: [Funcionalidades!]!
+  getFuncionalidadesByentidad(input: FilterFuncionalidadesInput!): [Funcionalidades!]!
   getFuncionalidadById(funcionalidad_id: Float!): Funcionalidades!
   getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
 }
@@ -209,13 +210,14 @@ input SignInUserInput {
 input FilterFuncionalidadesInput {
   nombre: String
   entidad_nombre: String
+  entidad_id: Float
 }
 
 type Mutation {
   createRootMenu: Menus!
   createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
-  modifyMenuEstado(activo: Boolean!, menu_id: Float!): Menus!
+  modifyMenuEstado(menu_id: Float!, activo: Boolean!): Menus!
   createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
   configDobleFactor(usuario_id: Float!): DoblesFactores!
   exSetActivateConfigDobleFactorTOTP(usuario_id: Float!): DoblesFactores!
