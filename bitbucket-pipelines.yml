@@ -1,26 +1,49 @@
 pipelines:
   default:
-    - parallel:
-      - step:
-          image: node:14-alpine
-          name: Build and Test
-          script:
-            - export NODE_OPTIONS=--max_old_space_size=1024
-            - npm install --quiet                    
-            - npx prisma db push --accept-data-loss
-            - npm run-script build
-            - npm run test:force 
-          services:
-            - postgres
-            - docker
-      - step: 
-          image: maven:3.3.9
-          name: SonarQube analysis
-          script:
-            - pipe: sonarsource/sonarqube-scan:1.0.0
-              variables:
-                SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
-                SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+    - step:
+        image: node:14-alpine
+        name: "install build"
+        clone:
+          depth: full
+        caches:
+          - node
+        script:
+          - export NODE_OPTIONS=--max_old_space_size=1024
+          - npm install --quiet                    
+          - npx prisma db push --accept-data-loss --preview-feature
+          - npm run-script build
+        services:
+          - postgres
+          - docker
+    - step:
+        image: node:14-alpine
+        name: "test"
+        caches:
+          - node
+        script:
+          - npm run test:cov
+        artifacts: # defining the artifacts to be passed to each future step.
+          - test-report.xml
+          - coverage/lcov.info
+    # - step:
+    #     image: node:14-alpine
+    #     name: "lint"
+    #     caches:
+    #       - node
+    #     script:
+    #       - npx eslint "{src,apps,libs,test}/**/*.ts" --format=json  -o=report.json
+    #     artifacts: # defining the artifacts to be passed to each future step.
+    #       - report.json
+    - step: 
+        image: maven:3.3.9-alpine
+        name: SonarQube analysis
+        script:
+          - pipe: sonarsource/sonarqube-scan:1.1.0
+            variables:
+              SONAR_HOST_URL: ${SONAR_HOST_URL} # Get the value from the repository/workspace variable.
+              SONAR_TOKEN: ${SONAR_TOKEN} # Get the value from the repository/workspace variable. You shouldn't set secret in clear text here.
+              SONAR_SCANNER_OPTS: -Xmx512m
+              # EXTRA_ARGS: -Dsonar.eslint.reportPaths=\"report.json\"
 definitions:
   services:
     docker:
@@ -34,3 +57,4 @@ definitions:
         POSTGRES_PASSWORD: "1234"
   caches:
     sonar: ~/.sonar
+    bundler: vendor/bundle
