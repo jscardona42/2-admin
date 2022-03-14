@@ -7,6 +7,7 @@ pipelines:
           depth: full
         caches:
           - node
+          - postgres
         script:
           - export NODE_OPTIONS=--max_old_space_size=1024
           - npm install --quiet                    
@@ -20,11 +21,15 @@ pipelines:
         name: "test"
         caches:
           - node
+          - postgres
         script:
           - npm run test:cov
         artifacts: # defining the artifacts to be passed to each future step.
           - test-report.xml
           - coverage/lcov.info
+        services:
+          - postgres
+          - docker
     # - step:
     #     image: node:14-alpine
     #     name: "lint"
