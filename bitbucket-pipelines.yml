@@ -12,7 +12,6 @@ pipelines:
           - npm install --quiet # install dependencies
           - npm run-script build
         services:
-          - postgres
           - docker
     - step:
         image: node:14-alpine
@@ -20,13 +19,11 @@ pipelines:
         caches:
           - node
         script:
-          - npx prisma db push --accept-data-loss --preview-feature
           - npm run test:cov
         artifacts: # defining the artifacts to be passed to each future step.
           - test-report.xml
           - coverage/lcov.info
         services:
-          - postgres
           - docker
     # - step:
     #     image: node:14-alpine
