@@ -16,6 +16,7 @@ pipelines:
     - step:
         image: node:14-alpine
         name: "test"
+        size: 2x
         caches:
           - node
         script:
