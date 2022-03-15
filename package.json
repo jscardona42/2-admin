@@ -105,14 +105,20 @@
     },
     "collectCoverageFrom": [
       "**/*.(t|j)s",
-      "!usuario.resolver.spec.ts"
+      "!usuario.resolver.spec.ts",
+      "!menus.resolver.spec.ts",
+      "!roles.service.spec.ts",
+      "!microservicios.resolver.spec.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testResultsProcessor": "jest-sonar-reporter",
     "collectCoverage": true,
     "testPathIgnorePatterns" : [
-      "usuario.resolver.spec.ts"
+      "usuario.resolver.spec.ts",
+      "menus.resolver.spec.ts",
+      "roles.service.spec.ts",
+      "microservicios.resolver.spec.ts"
     ]
   }
 }
