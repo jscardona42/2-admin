@@ -80,6 +80,7 @@
     "@typescript-eslint/parser": "^5.14.0",
     "eslint": "^8.10.0",
     "eslint-config-prettier": "8.4.0",
+    "eslint-plugin-jest-formatting": "^3.1.0",
     "eslint-plugin-prettier": "^4.0.0",
     "jest": "^27.5.1",
     "jest-sonar-reporter": "^2.0.0",
@@ -103,11 +104,15 @@
       "^.+\\.(t|j)s$": "ts-jest"
     },
     "collectCoverageFrom": [
-      "**/*.(t|j)s"
+      "**/*.(t|j)s",
+      "!usuario.resolver.spec.ts"
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testResultsProcessor": "jest-sonar-reporter",
-    "collectCoverage": true
+    "collectCoverage": true,
+    "testPathIgnorePatterns" : [
+      "usuario.resolver.spec.ts"
+    ]
   }
 }
