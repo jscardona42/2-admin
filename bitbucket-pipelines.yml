@@ -3,8 +3,6 @@ pipelines:
     - step:
         image: node:14-alpine
         name: "install build"
-        clone:
-          depth: full
         caches:
           - node
         script:
@@ -39,6 +37,8 @@ pipelines:
     - step: 
         image: maven:3.3.9-alpine
         name: SonarQube analysis
+        clone:
+          depth: full
         script:
           - pipe: sonarsource/sonarqube-scan:1.1.0
             variables:
