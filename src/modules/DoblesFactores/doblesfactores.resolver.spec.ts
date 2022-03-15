@@ -26,18 +26,27 @@ describe('Dobles factores Resolver', () => {
                 }),
             ],
             providers: [
-                DoblesFactoresResolver, UsuariosService, PrismaService, RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
+                DoblesFactoresResolver, PrismaService, RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: DoblesFactoresService,
                     useFactory: () => ({
                         getDobleFactorById: jest.fn(),
                         createDobleFactor: jest.fn(),
-                        configDobleFactor: jest.fn(),
-                        getDobleFactorByLoginId: jest.fn(() => { return { config_twofactor: 1, metodo_validacion: "TOTP" } }),
+                        configDobleFactor: jest.fn((secret, usuario_id) => ({ secret:"secreto", usuario_id: 1 })),
+                        getDobleFactorByLoginId: jest.fn(() => { return { config_twofactor: 1, metodo_validacion: "TOTP" , esta_configurado:false } }),
                         exValidateRecoveryCode: jest.fn(() => true),
                         exSetActivateConfigTwofactorTOTP: jest.fn(),
                         exValidateDobleFactorCode: jest.fn(() => { return { isCodeValid: true } }),
-                        exValidationCodeMail: jest.fn()
+                        exValidationCodeMail: jest.fn(),
+                        generateDobleFactorAuthenticationSecret: jest.fn(() => { return [ "secret", "otpauthUrl" ] }),
+                        buildQrCodeUrl: jest.fn(() => { return "qrCodeUrl" }),
+                    }),
+                    
+                },
+                {
+                    provide: UsuariosService,
+                    useFactory: () => ({
+                        getUsuarioById: jest.fn (() => { return { usuario_id: 1, nombre: "test", tiene_doble_factor:true } }),
                     }),
                 },
             ],
@@ -45,6 +54,7 @@ describe('Dobles factores Resolver', () => {
 
         twofactorResolver = module.get<DoblesFactoresResolver>(DoblesFactoresResolver);
         twofactorService = module.get<DoblesFactoresService>(DoblesFactoresService);
+
     });
 
     describe('Query getTwoFactorById()', () => {
@@ -68,16 +78,16 @@ describe('Dobles factores Resolver', () => {
         });
     });
 
-    // describe('Query configDobleFactor()', () => {
-    //     it('should invoke twofactorService.configDobleFactor()', async () => {
-    //         const testParams = {
-    //             usuario_id: 1
-    //         };
+    describe('Query configDobleFactor()', () => {
+        it('should invoke twofactorService.configDobleFactor()', async () => {
+            const testParams = {
+                usuario_id: 1
+            };
 
-    //         await twofactorResolver.configDobleFactor(testParams.usuario_id);
-    //         expect(twofactorService.configDobleFactor).toHaveBeenCalled();
-    //     });
-    // });
+            await twofactorResolver.configDobleFactor(testParams.usuario_id);
+            expect(twofactorService.configDobleFactor).toHaveBeenCalled();
+        });
+    });
 
     describe('Query exValidateDobleFactorCode()', () => {
         it('should invoke twofactorService.exValidateDobleFactorCode()', async () => {
