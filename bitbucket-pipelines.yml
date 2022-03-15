@@ -19,6 +19,7 @@ pipelines:
         caches:
           - node
         script:
+          - export NODE_OPTIONS=--max_old_space_size=1024
           - npm run test:cov
         artifacts: # defining the artifacts to be passed to each future step.
           - test-report.xml
