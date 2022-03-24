@@ -101,7 +101,7 @@ export class MenusService {
 
     return this.prismaService.menus.findMany({
       where: {
-        menu_id: 1,
+        level: 1,
       },
       include: {
         MenusTraduccionesSec: true, MenusPalabrasSec: true,
