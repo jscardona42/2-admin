@@ -13,6 +13,12 @@ export class Validaciones {
     @Field((type) => String)
     id_referenciado: string
 
+    @Field((type) => String)
+    id_query: string
+
+    @Field((type) => String)
+    name_query: string
+
     @Field((type) => [PermisosValidaciones])
     PermisosValidaciones: PermisosValidaciones[]
 }
