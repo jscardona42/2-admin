@@ -104,6 +104,8 @@ model Validaciones {
   validacion_id        Int                    @id @default(autoincrement())
   microservicio_id     Int?
   id_referenciado      String?                @db.VarChar(255)
+  id_query             String?                @db.VarChar(255)
+  name_query           String?                @db.VarChar(255)
   Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, map: "fk_validaciones_microservicio_id")
   PermisosValidaciones PermisosValidaciones[]
 }

@@ -14,7 +14,13 @@ export class ValidacionesService {
         )
 
         // Obtenemos el id_referenciado del nombre del método que contiene el @ResolverField()
-        var id_referenciado = referencia.id_referenciado.split("Referencia")[0];
+        var ids = referencia.id_referenciado.split("Referencia")[0];
+        var id_referenciado = ids.split("And")[0];
+        var id_query = ids.split("And")[1];
+        if (id_query === undefined) {
+            id_query = id_referenciado;
+        }
+
         var servicio = referencia.id_referenciado.split("Referencia")[1].replace("Referencia", "");
 
         // Obtenemos el id del servicio
@@ -47,6 +53,7 @@ export class ValidacionesService {
                 microservicio_id: servicio_id.microservicio_id
             },
             create: {
+                id_query: id_query,
                 id_referenciado: id_referenciado,
                 microservicio_id: servicio_id.microservicio_id
             }

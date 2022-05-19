@@ -38,6 +38,8 @@ type Validaciones {
   validacion_id: ID!
   Microservicios: Microservicios!
   id_referenciado: String!
+  id_query: String!
+  name_query: String!
   PermisosValidaciones: [PermisosValidaciones!]!
 }
 
