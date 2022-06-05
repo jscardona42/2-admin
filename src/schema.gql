@@ -12,17 +12,11 @@ directive @requires(fields: String!) on FIELD_DEFINITION
 
 directive @provides(fields: String!) on FIELD_DEFINITION
 
-type Entidades {
-  entidad_id: ID!
-  nombre: String!
-  resolver: String
-}
-
 type ProveedoresServicios {
   proveedor_servicio_id: ID!
   Microservicios: Microservicios!
   lista_proveedores: String!
-  lista_entidades_secundarias: String!
+  model_data: String!
   status: String
 }
 
@@ -55,6 +49,33 @@ type Permisos {
   permiso: String!
   es_publico: Boolean!
   PermisosValidacionesSec: [PermisosValidaciones!]
+}
+
+type EntidadesCampos {
+  entidad_campo_id: Int!
+  nombre: String!
+  tipo: String!
+}
+
+type EntidadesSecundariasCampos {
+  entidad_secundaria_campo_id: Int!
+  nombre: String!
+  tipo: String!
+}
+
+type EntidadesSecundarias {
+  entidad_secundaria_id: Int!
+  nombre: String!
+  EntidadesSecundariasCamposSec: [EntidadesSecundariasCampos!]!
+}
+
+type Entidades {
+  entidad_id: Int!
+  nombre: String!
+  resolver: String
+  EntidadesSecundariasSec: [EntidadesSecundarias!]!
+  EntidadesCamposSec: [EntidadesCampos!]!
+  Permisos: [Permisos!]!
 }
 
 type FuncionalidadesPermisos {
@@ -166,6 +187,8 @@ type Query {
   getFilterRoles(rol: String): [Roles!]!
   getEntidadesIdsByRolId: [Roles!]!
   getEntidades: [Entidades!]!
+  getEntidadesForFormularios: [Entidades!]!
+  getEntidadForFormularios(entidad_id: Float!): Entidades!
   getEntidadeById(entidad_id: Float!): Entidades!
   getFilterEntidades(nombre: String): [Entidades!]!
   getPermisos: [Permisos!]!
@@ -230,6 +253,7 @@ type Mutation {
   addFuncionalidadesToRol(data: AddFuncionalidadesToRolInput!): Roles!
   updateEntidad(data: UpdateEntidadInput!): Entidades!
   deleteEntidad(entidad_id: Float!): Entidades!
+  saveSecondaryEntities: [Entidades!]!
   updatePermiso(data: UpdatePermisoInput!): Permisos!
   deletePermiso(permiso_id: Float!): Permisos!
   saveEntidadesPermisosValidaciones: [Permisos!]!

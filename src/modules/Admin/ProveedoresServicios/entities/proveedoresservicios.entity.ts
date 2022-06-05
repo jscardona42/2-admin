@@ -13,7 +13,7 @@ export class ProveedoresServicios {
     lista_proveedores: string
 
     @Field((type) => String)
-    lista_entidades_secundarias: string
+    model_data: string
 
     @Field((type) => String, { nullable: true })
     status?: string
