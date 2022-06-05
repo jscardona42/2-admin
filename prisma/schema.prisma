@@ -19,12 +19,37 @@ model DoblesFactores {
 }
 
 model Entidades {
-  entidad_id      Int               @id @default(autoincrement())
-  nombre          String            @db.VarChar(255)
-  resolver        String?           @db.VarChar(255)
-  es_entidad      Boolean?          @default(true)
-  Permisos        Permisos[]
-  Funcionalidades Funcionalidades[]
+  entidad_id              Int                    @id @default(autoincrement())
+  nombre                  String                 @db.VarChar(255)
+  resolver                String?                @db.VarChar(255)
+  Permisos                Permisos[]
+  Funcionalidades         Funcionalidades[]
+  EntidadesSecundariasSec EntidadesSecundarias[]
+  EntidadesCamposSec      EntidadesCampos[]
+}
+
+model EntidadesSecundarias {
+  entidad_secundaria_id         Int                          @id @default(autoincrement())
+  nombre                        String                       @db.VarChar(255)
+  entidad_id                    Int
+  Entidades                     Entidades?                   @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_sec_entidad_id")
+  EntidadesSecundariasCamposSec EntidadesSecundariasCampos[]
+}
+
+model EntidadesCampos {
+  entidad_campo_id Int        @id @default(autoincrement())
+  nombre           String     @db.VarChar(255)
+  tipo             String     @db.VarChar(100)
+  entidad_id       Int
+  Entidades        Entidades? @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_cam_entidad_id")
+}
+
+model EntidadesSecundariasCampos {
+  entidad_secundaria_campo_id Int                   @id @default(autoincrement())
+  nombre                      String                @db.VarChar(255)
+  tipo                        String                @db.VarChar(100)
+  entidad_secundaria_id       Int
+  EntidadesSecundarias        EntidadesSecundarias? @relation(fields: [entidad_secundaria_id], references: [entidad_secundaria_id], map: "fk_ent_sec_cam_entidad_secundaria_id")
 }
 
 model Menus {
@@ -134,11 +159,11 @@ model Iconos {
 }
 
 model ProveedoresServicios {
-  proveedor_servicio_id       Int            @id @default(autoincrement())
-  microservicio_id            Int
-  lista_proveedores           String
-  lista_entidades_secundarias String?
-  Microservicios              Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], map: "fk_pro_ser_microservicio_id")
+  proveedor_servicio_id Int            @id @default(autoincrement())
+  microservicio_id      Int            @unique
+  lista_proveedores     String
+  model_data            String?
+  Microservicios        Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], map: "fk_pro_ser_microservicio_id")
 }
 
 model Funcionalidades {
