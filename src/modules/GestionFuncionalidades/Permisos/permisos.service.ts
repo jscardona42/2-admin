@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { prisma } from '@prisma/client';
 import { PrismaService } from '../../../prisma.service';
 import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
@@ -45,12 +46,8 @@ export class PermisosService {
       JSON.parse(provider.lista_proveedores).forEach(lista => {
         return this.saveEntidadesPermisosValidaciones(lista);
       });
-      JSON.parse(provider.lista_entidades_secundarias).forEach(lista => {
-        return this.entidadesService.createEntidadExcluida(lista);
-      });
     });
   }
-
   // Esta función se encarga de almacenar Entidades y Permisos
   saveEntidadesPermisosValidaciones(nameMethods): string | void {
     var dataPermisos: any = [];

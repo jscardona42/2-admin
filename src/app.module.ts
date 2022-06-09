@@ -93,7 +93,9 @@ export class AppModule {
       var providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
 
       // Eliminamos Servicios y mantenemos Resolver
-      var myProvidersTmp = providersTmp.filter((method) => !method.nameClass.includes('Service'));
+      var myProvidersTmp = providersTmp.filter(
+        (method) => !method.nameClass.includes('Service') && !method.nameClass.includes('Controller') && !method.nameClass.includes('Extend'),
+      );
       // Eliminamos arreglos vacíos
       if (myProvidersTmp.length > 0) {
         myProviders[cont] = myProvidersTmp;
@@ -102,23 +104,98 @@ export class AppModule {
     }
 
     var microservicio = "admin";
-    var secondaryEntities = getSecondaryEntities();
+    var modelData = ModelData();
     // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
-    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, secondaryEntities);
+    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, modelData);
   }
 }
 
-export function getSecondaryEntities() {
-  var data = [];
-  var cont = 0;
 
-  Prisma.dmmf.datamodel.models.forEach((model) => {
+
+export function ModelData() {
+  let entidades = [];
+  let fields = [];
+  let modelData = [];
+  let entidadesSec = [];
+  let cont = 0;
+  let EntidadesSecundariasCamposSec = [];
+  let prismaModels = Prisma.dmmf.datamodel.models;
+
+  //Recorremos las entidades
+  prismaModels.forEach((model, i) => {
+    cont = cont + 1;
+    entidades.push(model.name);
+    let field_name = "";
+    let field_type = "";
+    //Recorremos los campos
     model.fields.forEach(field => {
-      if (field.name.endsWith('Sec')) {
-        data[cont] = field.name;
-        cont++;
+      if ((field.kind !== "object" && field.name !== "fecha_creacion" && field.name !== "fecha_actualizacion") || field.name.endsWith("Sec")) {
+        if (field.name.includes("Secundaria")) {
+          field_name = field.type;
+          if (field.name.endsWith("Sec")) {
+            field_type = "Grid"
+          } else {
+            field_type = field.type
+          }
+        } else {
+          if (field.name.endsWith("Sec")) {
+            field_type = "Grid"
+          } else {
+            field_type = field.type
+          }
+          field_name = field.name.replace("Sec", "")
+        }
+        fields.push({
+          nombre: field_name,
+          tipo: field_type
+        });
+      }
+
+      if (field.name.endsWith("Sec")) {
+        let mdfield_type = "";
+        prismaModels.forEach((md) => {
+          if (md.name === field.type) {
+            md.fields.forEach(mdfield => {
+              if (mdfield.kind !== "object" && mdfield.name !== "fecha_creacion" && mdfield.name !== "fecha_actualizacion" || mdfield.name.endsWith("Sec")) {
+                if (mdfield.name.endsWith("Sec")) {
+                  mdfield_type = "Grid"
+                } else {
+                  mdfield_type = mdfield.type
+                }
+                EntidadesSecundariasCamposSec.push({
+                  nombre: mdfield.name,
+                  tipo: mdfield_type,
+                });
+              }
+            });
+          }
+        })
+        if (field.name.includes("Secundaria")) {
+          field_name = field.type;
+        } else {
+          field_name = field.name.replace("Sec", "")
+        }
+        entidadesSec.push({
+          nombre: field_name,
+          EntidadesSecundariasCamposSec: {
+            create: EntidadesSecundariasCamposSec
+          }
+        });
+      }
+      EntidadesSecundariasCamposSec = []
+    });
+    modelData.push({
+      name: entidades[cont - 1],
+      fields: {
+        create: fields
+      },
+      entidadesSec: {
+        create: entidadesSec
       }
     });
+    fields = [];
+    entidadesSec = [];
   });
-  return data;
+
+  return modelData;
 }

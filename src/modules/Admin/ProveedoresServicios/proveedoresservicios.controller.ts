@@ -8,8 +8,8 @@ export class ProveedoresServiciosController {
     ) { }
 
     @Post()
-    async saveProviders(@Body('myProviders') myProviders: any, @Body('microservicio') microservicio: string, @Body('secondaryEntities') secondaryEntities: any) {
-        return this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, secondaryEntities);
+    async saveProviders(@Body('myProviders') myProviders: any, @Body('microservicio') microservicio: string, @Body('modelData') modelData: any) {
+        return this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, modelData);
     }
 
 }

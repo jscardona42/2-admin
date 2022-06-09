@@ -26,7 +26,7 @@ export class ProveedoresServiciosService {
   }
 
   // Esta función almacena un listado de Resolver y sus métodos por cada microservicio
-  async saveProveedoresServicios(myProviders: any[], microservicio_name: string, entitiesExc: any[] | null): Promise<ProveedoresServicios> {
+  async saveProveedoresServicios(myProviders: any[], microservicio_name: string, modelData: any[] | null): Promise<ProveedoresServicios> {
 
     let microservicio = await this.prismaService.microservicios.findFirst({
       where: { name: microservicio_name }
@@ -40,22 +40,29 @@ export class ProveedoresServiciosService {
       where: { microservicio_id: microservicio.microservicio_id }
     })
 
-    if (proveedor === null) {
-      return this.prismaService.proveedoresServicios.create({
-        data: {
-          microservicio_id: microservicio.microservicio_id,
-          lista_proveedores: JSON.stringify(myProviders),
-          lista_entidades_secundarias: JSON.stringify(entitiesExc)
-        },
-        include: { Microservicios: true }
-      })
-    } else {
-      return this.prismaService.proveedoresServicios.update({
-        where: { proveedor_servicio_id: proveedor.proveedor_servicio_id },
-        data: { lista_proveedores: JSON.stringify(myProviders), lista_entidades_secundarias: JSON.stringify(entitiesExc) },
-        include: { Microservicios: true }
-      })
+    try {
+      if (proveedor === null) {
+        return await this.prismaService.proveedoresServicios.create({
+          data: {
+            microservicio_id: microservicio.microservicio_id,
+            lista_proveedores: JSON.stringify(myProviders),
+            model_data: JSON.stringify(modelData)
+          },
+          include: { Microservicios: true }
+        })
+      } else {
+        return await this.prismaService.proveedoresServicios.update({
+          where: { proveedor_servicio_id: proveedor.proveedor_servicio_id },
+          data: { lista_proveedores: JSON.stringify(myProviders), model_data: JSON.stringify(modelData) },
+          include: { Microservicios: true }
+        })
+      }
+    } catch (e) {
+      if (e.code === 'P2002') {
+        console.log(`El ${e.meta.target} '${microservicio.microservicio_id}' ya se encuentra registrado`);
+      }
     }
+
   }
 
   async deleteProveedorServicio(proveedor_servicio_id: number) {

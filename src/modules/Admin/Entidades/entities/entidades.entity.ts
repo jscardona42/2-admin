@@ -1,14 +1,25 @@
-import { Field, ID, ObjectType } from "@nestjs/graphql"
+import { Field, Int, ObjectType } from "@nestjs/graphql"
+import { Permisos } from "../../../GestionFuncionalidades/Permisos/entities/permisos.entity"
+import { EntidadesCampos } from "./entidadescampos.entity"
+import { EntidadesSecundarias } from "./entidadessecundarias.entity"
 
 @ObjectType()
 export class Entidades {
-    @Field((type) => ID)
+    @Field(() => Int)
     entidad_id: number
 
-    @Field((type) => String)
+    @Field(() => String)
     nombre: string
 
-    @Field((type) => String, { nullable: true })
+    @Field(() => String, { nullable: true })
     resolver?: string
 
+    @Field(() => [EntidadesSecundarias])
+    EntidadesSecundariasSec: EntidadesSecundarias[]
+
+    @Field(() => [EntidadesCampos])
+    EntidadesCamposSec: EntidadesCampos[]
+
+    @Field(() => [Permisos])
+    Permisos: Permisos[]
 }
