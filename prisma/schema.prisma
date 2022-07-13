@@ -96,18 +96,26 @@ model Roles {
 }
 
 model Usuarios {
-  usuario_id         Int              @id @default(autoincrement())
-  nombre             String           @db.VarChar(255)
-  email              String           @db.VarChar(255)
-  activo             Boolean?         @default(true)
+  usuario_id         Int               @id @default(autoincrement())
+  nombre             String            @db.VarChar(255)
+  email              String            @db.VarChar(255)
+  activo             Boolean?          @default(true)
   username           String?
   password           String?
-  token              String?
   salt               String?
+  conexion_externa   Boolean?          @default(false)
   rol_id             Int?
-  tiene_doble_factor Boolean?         @default(false)
-  Roles              Roles?           @relation(fields: [rol_id], references: [rol_id], map: "fk_usuarios_rol_id")
+  tiene_doble_factor Boolean?          @default(false)
+  Roles              Roles?            @relation(fields: [rol_id], references: [rol_id], map: "fk_usuarios_rol_id")
+  usuario_sesion_id  Int?
+  UsuariosSesiones   UsuariosSesiones? @relation(fields: [usuario_sesion_id], references: [usuario_sesion_id], map: "fk_usuarios_usuario_sesion_id")
   DoblesFactores     DoblesFactores[]
+}
+
+model UsuariosSesiones {
+  usuario_sesion_id Int        @id @default(autoincrement())
+  token             String?
+  Usuarios          Usuarios[]
 }
 
 model MenusPalabras {
@@ -190,6 +198,7 @@ model RolesFuncionalidades {
   Funcionalidades      Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_rol_fun_funcionalidad_id")
   Roles                Roles           @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
 }
+
 
 enum MetodosValidacion {
   EMAIL
