@@ -2,6 +2,7 @@ import 'reflect-metadata'
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { DoblesFactores } from '../../../modules/DoblesFactores/entities/doblesfactores.entity'
+import { UsuariosSesionesSec } from './usuariossesiones.entity'
 
 @ObjectType()
 export class Usuarios {
@@ -20,6 +21,9 @@ export class Usuarios {
     @Field((type) => Boolean, { nullable: true })
     activo?: boolean | null
 
+    @Field((type) => Boolean, { nullable: true })
+    conexion_externa?: boolean | null
+
     @Field()
     @IsNotEmpty()
     username: string
@@ -27,9 +31,6 @@ export class Usuarios {
     @Field()
     @IsNotEmpty()
     password: string
-
-    @Field((type) => String, { nullable: true })
-    token?: string | null
 
     @Field((type) => String, { nullable: true })
     salt?: string | null
@@ -42,4 +43,7 @@ export class Usuarios {
 
     @Field((type) => [DoblesFactores], { nullable: true })
     DoblesFactores?: DoblesFactores[]
+
+    @Field((type) => UsuariosSesionesSec)
+    UsuariosSesionesSec?: UsuariosSesionesSec
 }
