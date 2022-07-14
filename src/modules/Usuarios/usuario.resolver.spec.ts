@@ -71,7 +71,7 @@ describe('Iconos Resolver', () => {
 
     describe('Mutation signUpLogin()', () => {
         it('should invoke usuariosService.signUpLogin', async () => {
-            var testParams: SignUpUserInput;
+            let testParams: SignUpUserInput;
             await usuariosResolver.signUpLogin(testParams);
             expect(usuariosService.signUpLogin).toHaveBeenCalledWith(testParams);
         });

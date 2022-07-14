@@ -23,7 +23,7 @@ export class UsuariosService {
     }
 
     async getUsuarioById(usuario_id: number): Promise<Usuarios> {
-        var usuarios = await this.prismaService.usuarios.findUnique({
+        let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
             include: { DoblesFactores: true }
         })
@@ -46,7 +46,6 @@ export class UsuariosService {
         await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.username);
-
         if (usernameExists) {
             throw new UnauthorizedException('El usuario ya se encuentra registrado');
         }
@@ -56,6 +55,7 @@ export class UsuariosService {
                 nombre: data.nombre,
                 email: data.email,
                 username: data.username,
+                conexion_externa: data.conexion_externa,
                 password: await this.hashPassword(data.password, salt),
                 salt: salt,
                 Roles: { connect: { rol_id: data.rol_id } }
@@ -98,7 +98,11 @@ export class UsuariosService {
     async logOutLogin(usuario_id) {
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
-            data: { token: null }
+            data: { UsuariosSesiones:{
+                update:{
+                    token: null
+                }
+            } }
         })
     }
 
@@ -161,9 +165,19 @@ export class UsuariosService {
     }
 
     async createToken(token: string, user): Promise<Usuarios> {
+        
         return this.prismaService.usuarios.update({
             where: { usuario_id: user.usuario_id, },
-            data: { token: token, },
+            data: { UsuariosSesiones:{
+                upsert:{
+                    create:{
+                        token: token
+                    },
+                    update:{
+                        token: token
+                    }
+                }
+            } },
             include: { DoblesFactores: true }
         })
     }

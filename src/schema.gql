@@ -114,18 +114,23 @@ type DoblesFactores {
   fecha_creacion_codigo: String
 }
 
+type UsuariosSesionesSec {
+  token: String
+}
+
 type Usuarios {
   usuario_id: ID!
   nombre: String!
   email: String!
   activo: Boolean
+  conexion_externa: Boolean
   username: String!
   password: String!
-  token: String
   salt: String
   rol_id: Float!
   tiene_doble_factor: Boolean
   DoblesFactores: [DoblesFactores!]
+  UsuariosSesionesSec: UsuariosSesionesSec!
 }
 
 type MenusTraducciones {
@@ -344,11 +349,12 @@ input UpdatePermisoInput {
 }
 
 input SignUpUserInput {
+  conexion_externa: Boolean!
   nombre: String!
   email: String!
   username: String!
   password: String!
-  rol_id: Float!
+  rol_id: Int!
 }
 
 input ChangePasswordInput {

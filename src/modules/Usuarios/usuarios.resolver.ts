@@ -29,28 +29,28 @@ export class UsuariosResolver {
         return this.usuariosService.getFilterUsuarios(nombre, email);
     }
 
-    @Query(returns => Usuarios)
+    @Query(() => Usuarios)
     @UsePipes(ValidationPipe)
     async signInLogin(
         @Args("data") data: SignInUserInput): Promise<Usuarios> {
         return this.usuariosService.signInLogin(data);
     }
 
-    @Mutation(returns => Usuarios)
+    @Mutation(() => Usuarios)
     @UsePipes(ValidationPipe)
     async signUpLogin(
         @Args("data") data: SignUpUserInput): Promise<Usuarios> {
         return this.usuariosService.signUpLogin(data);
     }
 
-    @Mutation(returns => Usuarios)
+    @Mutation(() => Usuarios)
     @UsePipes(ValidationPipe)
     async logOutLogin(
         @Args("usuario_id") usuario_id: number): Promise<Usuarios> {
         return this.usuariosService.logOutLogin(usuario_id);
     }
 
-    @Mutation(returns => Usuarios)
+    @Mutation(() => Usuarios)
     @UsePipes(ValidationPipe)
     async exChangePasswordLogin(
         @Args("data") data: ChangePasswordInput): Promise<Usuarios> {
