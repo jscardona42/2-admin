@@ -23,7 +23,7 @@ export class UsuariosService {
     }
 
     async getUsuarioById(usuario_id: number): Promise<Usuarios> {
-        var usuarios = await this.prismaService.usuarios.findUnique({
+        let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
             include: { DoblesFactores: true }
         })
@@ -46,7 +46,6 @@ export class UsuariosService {
         await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.username);
-        console.log(usernameExists)
         if (usernameExists) {
             throw new UnauthorizedException('El usuario ya se encuentra registrado');
         }

@@ -6,30 +6,28 @@ import { CreateUserSesion } from './usersesiones.dto'
 @InputType()
 export class SignUpUserInput {
     
-    @Field((type) => Boolean)
+    @Field(() => Boolean)
     conexion_externa?: boolean
 
-    @Field((type) => String)
+    @Field(() => String)
     @IsNotEmpty()
     nombre: string
 
-    @Field((type) => String)
+    @Field(() => String)
     @IsNotEmpty()
     email: string
 
-    @Field((type) => String)
+    @Field(() => String)
     @IsNotEmpty()
     username: string
 
-    @Field((type) => String)
+    @Field(() => String)
     @IsNotEmpty()
     password: string
 
-    @Field((type) => Int)
+    @Field(() => Int)
     rol_id: number
 
-    // @Field((type) => [CreateUserSesion])
-    // CreateUserSesion: CreateUserSesion[]
 }
 
 @InputType()

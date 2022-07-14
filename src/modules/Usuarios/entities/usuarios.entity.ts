@@ -6,7 +6,7 @@ import { UsuariosSesionesSec } from './usuariossesiones.entity'
 
 @ObjectType()
 export class Usuarios {
-    @Field((type) => ID)
+    @Field(() => ID)
     usuario_id: number
 
     @Field()
@@ -18,10 +18,10 @@ export class Usuarios {
     @IsEmail()
     email: string
 
-    @Field((type) => Boolean, { nullable: true })
+    @Field(() => Boolean, { nullable: true })
     activo?: boolean | null
 
-    @Field((type) => Boolean, { nullable: true })
+    @Field(() => Boolean, { nullable: true })
     conexion_externa?: boolean | null
 
     @Field()
@@ -32,18 +32,18 @@ export class Usuarios {
     @IsNotEmpty()
     password: string
 
-    @Field((type) => String, { nullable: true })
+    @Field(() => String, { nullable: true })
     salt?: string | null
 
-    @Field((type) => Number)
+    @Field(() => Number)
     rol_id?: number
 
-    @Field((type) => Boolean, { nullable: true })
+    @Field(() => Boolean, { nullable: true })
     tiene_doble_factor?: boolean | null
 
-    @Field((type) => [DoblesFactores], { nullable: true })
+    @Field(() => [DoblesFactores], { nullable: true })
     DoblesFactores?: DoblesFactores[]
 
-    @Field((type) => UsuariosSesionesSec)
+    @Field(() => UsuariosSesionesSec)
     UsuariosSesionesSec?: UsuariosSesionesSec
 }

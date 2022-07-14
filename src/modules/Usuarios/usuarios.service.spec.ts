@@ -97,7 +97,7 @@ describe('Usuarios Service', () => {
 
     describe('signInUser method', () => {
         it('should invoke prismaService.usuarios.findFirst', async () => {
-            var testParams: SignInUserInput = {
+            let testParams: SignInUserInput = {
                 password: "12121",
                 username: "usuario2"
             }

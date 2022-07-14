@@ -5,7 +5,7 @@ import { IsNotEmpty } from 'class-validator'
 @InputType()
 export class CreateUserSesion {
 
-    @Field((type) => String)
+    @Field(() => String)
     token: string
 
 }
