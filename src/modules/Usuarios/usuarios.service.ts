@@ -3,8 +3,8 @@ import { PrismaService } from '../../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticationError } from 'apollo-server-express';
-import { ChangePasswordInput, SignUpUserInput } from '../ClasesParametros/dto/usuarios.dto';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
+import { ChangePasswordInput, SignUpUserInput } from './dto/usuarios.dto';
 
 
 @Injectable()

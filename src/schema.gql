@@ -206,7 +206,7 @@ type Query {
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
-  signInLogin(data: SignInUserInput!): Usuarios!
+  signInLogin(data: SignUpUserInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -221,9 +221,14 @@ type Query {
   getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
 }
 
-input SignInUserInput {
+input SignUpUserInput {
   nombre_usuario: String!
   contrasena: String!
+  correo: String!
+  rol_id: Int!
+  estado_usuario_id: Float!
+  tipo_usuario_id: Float!
+  metodo_autenticacion_id: Float!
 }
 
 input FilterFuncionalidadesInput {
@@ -321,16 +326,6 @@ input UpdatePermisoInput {
   permiso: String
   es_publico: Boolean
   permiso_id: Float!
-}
-
-input SignUpUserInput {
-  nombre_usuario: String!
-  contrasena: String!
-  correo: String!
-  rol_id: Int!
-  estado_usuario_id: Float!
-  tipo_usuario_id: Float!
-  metodo_autenticacion_id: Float!
 }
 
 input ChangePasswordInput {

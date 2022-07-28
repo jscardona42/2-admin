@@ -1,6 +1,7 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { ChangePasswordInput, SignInUserInput, SignUpUserInput } from '../ClasesParametros/dto/usuarios.dto';
+import { ChangePasswordInput, SignUpUserInput } from './dto/usuarios.dto';
+
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
 
@@ -32,7 +33,7 @@ export class UsuariosResolver {
     @Query(() => Usuarios)
     @UsePipes(ValidationPipe)
     async signInLogin(
-        @Args("data") data: SignInUserInput): Promise<Usuarios> {
+        @Args("data") data: SignUpUserInput): Promise<Usuarios> {
         return this.usuariosService.signInLogin(data);
     }
 
