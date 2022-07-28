@@ -4,10 +4,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
 import { PrismaService } from './prisma.service';
-import { RolesResolver } from './modules/GestionFuncionalidades/Roles/roles.resolver';
-import { RolesService } from './modules/GestionFuncionalidades/Roles/roles.service';
-import { DoblesFactoresService } from './modules/DoblesFactores/doblesfactores.service';
-import { DoblesFactoresResolver } from './modules/DoblesFactores/doblesfactores.resolver';
+import { TbRolesService } from './modules/GestionFuncionalidades/Roles/roles.service';
 import { PermisosService } from './modules/GestionFuncionalidades/Permisos/permisos.service';
 import { PermisosResolver } from './modules/GestionFuncionalidades/Permisos/permisos.resolver';
 import { EntidadesService } from './modules/Admin/Entidades/entidades.service';
@@ -30,9 +27,10 @@ import { Prisma } from '@prisma/client';
 import { FuncionalidadesService } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 import { FuncionalidadesResolver } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.resolver';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
+import { TbRolesResolver } from './modules/GestionFuncionalidades/Roles/roles.resolver';
 
 
-const MyProviders = [PrismaService, MenusService, MenusResolver, DoblesFactoresService, DoblesFactoresResolver, RolesService, RolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
+const MyProviders = [PrismaService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
 
 @Module({
   imports: [
@@ -81,19 +79,19 @@ export class AppModule {
   // Esta función se encarga de crear o actualizar el listado de providers en la BD
   public async refreshProviders() {
     let cont = 0;
-    var myProviders = [];
+    let myProviders = [];
 
     // Recorremos el arreglo de proveedores
     for (const clsname of MyProviders) {
 
       // Eliminamos los métodos constructores
-      var TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(item => item !== 'constructor')
+      let TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(item => item !== 'constructor')
 
       // Damos una estructura de clase y métodos
-      var providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
+      let providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
 
       // Eliminamos Servicios y mantenemos Resolver
-      var myProvidersTmp = providersTmp.filter(
+      let myProvidersTmp = providersTmp.filter(
         (method) => !method.nameClass.includes('Service') && !method.nameClass.includes('Controller') && !method.nameClass.includes('Extend'),
       );
       // Eliminamos arreglos vacíos
@@ -103,8 +101,8 @@ export class AppModule {
       }
     }
 
-    var microservicio = "admin";
-    var modelData = ModelData();
+    let microservicio = "admin";
+    let modelData = ModelData();
     // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
     await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, modelData);
   }

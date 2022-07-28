@@ -12,6 +12,33 @@ directive @requires(fields: String!) on FIELD_DEFINITION
 
 directive @provides(fields: String!) on FIELD_DEFINITION
 
+type EntidadesCampos {
+  entidad_campo_id: Int!
+  nombre: String!
+  tipo: String!
+}
+
+type EntidadesSecundariasCampos {
+  entidad_secundaria_campo_id: Int!
+  nombre: String!
+  tipo: String!
+}
+
+type EntidadesSecundarias {
+  entidad_secundaria_id: Int!
+  nombre: String!
+  EntidadesSecundariasCamposSec: [EntidadesSecundariasCampos!]!
+}
+
+type Entidades {
+  entidad_id: Int!
+  nombre: String!
+  resolver: String
+  EntidadesSecundariasSec: [EntidadesSecundarias!]!
+  EntidadesCamposSec: [EntidadesCampos!]!
+  Permisos: [Permisos!]!
+}
+
 type ProveedoresServicios {
   proveedor_servicio_id: ID!
   Microservicios: Microservicios!
@@ -51,88 +78,6 @@ type Permisos {
   PermisosValidacionesSec: [PermisosValidaciones!]
 }
 
-type EntidadesCampos {
-  entidad_campo_id: Int!
-  nombre: String!
-  tipo: String!
-}
-
-type EntidadesSecundariasCampos {
-  entidad_secundaria_campo_id: Int!
-  nombre: String!
-  tipo: String!
-}
-
-type EntidadesSecundarias {
-  entidad_secundaria_id: Int!
-  nombre: String!
-  EntidadesSecundariasCamposSec: [EntidadesSecundariasCampos!]!
-}
-
-type Entidades {
-  entidad_id: Int!
-  nombre: String!
-  resolver: String
-  EntidadesSecundariasSec: [EntidadesSecundarias!]!
-  EntidadesCamposSec: [EntidadesCampos!]!
-  Permisos: [Permisos!]!
-}
-
-type FuncionalidadesPermisos {
-  funcionalidad_permiso_id: ID!
-  Funcionalidades: Funcionalidades!
-  Permisos: Permisos!
-}
-
-type Funcionalidades {
-  funcionalidad_id: ID!
-  nombre: String!
-  Entidades: Entidades!
-  FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
-}
-
-type RolesFuncionalidades {
-  rol_funcionalidad_id: ID!
-  Roles: Roles!
-  Funcionalidades: Funcionalidades!
-}
-
-type Roles {
-  rol_id: ID!
-  rol: String!
-  RolesFuncionalidadesSec: [RolesFuncionalidades!]
-}
-
-type DoblesFactores {
-  doble_factor_id: ID!
-  otplib_secreta: String
-  esta_configurado: Boolean
-  qr_code: String
-  usuario_id: Float!
-  codigo_recuperacion: String
-  metodo_validacion: String!
-  fecha_creacion_codigo: String
-}
-
-type UsuariosSesionesSec {
-  token: String
-}
-
-type Usuarios {
-  usuario_id: ID!
-  nombre: String!
-  email: String!
-  activo: Boolean
-  conexion_externa: Boolean
-  username: String!
-  password: String!
-  salt: String
-  rol_id: Float!
-  tiene_doble_factor: Boolean
-  DoblesFactores: [DoblesFactores!]
-  UsuariosSesionesSec: UsuariosSesionesSec!
-}
-
 type MenusTraducciones {
   menu_traduccion_id: ID!
   traduccion: String!
@@ -164,6 +109,57 @@ The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://
 """
 scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
 
+type TbEstadosUsuarios {
+  estado_usuario_id: Float!
+  nombre: String!
+}
+
+type TbMetodosAutenticacion {
+  metodo_autenticacion_id: Float!
+  nombre: String!
+}
+
+type TbRoles {
+  rol_id: Float!
+  nombre: String!
+}
+
+type TbTipoUsuarios {
+  tipo_usuario_id: Float!
+  nombre: String!
+  estado: String!
+}
+
+type UsuariosSesiones {
+  usuario_sesion_id: Float!
+  usuario_id: Float!
+  token: String!
+  fecha_ultimo_login: String!
+  Usuarios: Usuarios!
+}
+
+type Usuarios {
+  usuario_id: Float!
+  nombre_usuario: String!
+  contrasena: String!
+  correo: String!
+  salt: String!
+  rol_id: Float!
+  metodo_autenticacion_id: Float!
+  tipo_usuario_id: Float!
+  estado_usuario_id: Float!
+  sol_cambio_contrasena: Boolean!
+  fecha_vigencia_contrasena: String!
+  fecha_creacion: String!
+  fecha_actualizacion: String!
+  cant_intentos: Float!
+  TbEstadosUsuarios: TbEstadosUsuarios!
+  TbMetodosAutenticacion: TbMetodosAutenticacion!
+  TbRoles: TbRoles!
+  TbTipoUsuarios: TbTipoUsuarios!
+  UsuariosSesionesSec: UsuariosSesiones!
+}
+
 type Traducciones {
   traduccion_id: ID!
   idioma: String!
@@ -177,20 +173,28 @@ type Iconos {
   unicode: String!
 }
 
+type FuncionalidadesPermisos {
+  funcionalidad_permiso_id: ID!
+  Funcionalidades: Funcionalidades!
+  Permisos: Permisos!
+}
+
+type Funcionalidades {
+  funcionalidad_id: ID!
+  nombre: String!
+  Entidades: Entidades!
+  FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
+}
+
 type Query {
   getMenus: [Menus!]!
   getMenusInactivos: [Menus!]!
   getMenuByRoleId(usuario_id: Float!): [Menus!]!
   getFilterMenuPalabra(palabra: String!): [Menus!]!
-  getDobleFactorById(doblefactor_id: Float!): DoblesFactores!
-  getDobleFactorByLoginId(usuario_id: Float!): DoblesFactores!
-  exValidateDobleFactorCode(data: DoblesFactoresValidarInput!): Usuarios!
-  exValidateRecoveryCode(data: CodigoRecuperacionInput!): DoblesFactores!
-  exValidationCodeMail(data: ValidarCodigoInput!): DoblesFactores!
-  getRoles: [Roles!]!
-  getRolById(rol_id: Float!): Roles!
-  getFilterRoles(rol: String): [Roles!]!
-  getEntidadesIdsByRolId: [Roles!]!
+  getRoles: [TbRoles!]!
+  getRolById(rol_id: Float!): TbRoles!
+  getFilterRoles(rol: String): [TbRoles!]!
+  getEntidadesIdsByRolId: [TbRoles!]!
   getEntidades: [Entidades!]!
   getEntidadesForFormularios: [Entidades!]!
   getEntidadForFormularios(entidad_id: Float!): Entidades!
@@ -217,24 +221,9 @@ type Query {
   getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
 }
 
-input DoblesFactoresValidarInput {
-  usuario_id: Float!
-  codigo: String!
-}
-
-input CodigoRecuperacionInput {
-  usuario_id: Float!
-  codigo_recuperacion: String!
-}
-
-input ValidarCodigoInput {
-  usuario_id: Float!
-  codigo_validacion: String!
-}
-
 input SignInUserInput {
-  username: String!
-  password: String!
+  nombre_usuario: String!
+  contrasena: String!
 }
 
 input FilterFuncionalidadesInput {
@@ -248,14 +237,10 @@ type Mutation {
   createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
   modifyMenuEstado(menu_id: Float!, activo: Boolean!): Menus!
-  createDobleFactor(data: configDoblesFactoresInput!): DoblesFactores!
-  configDobleFactor(usuario_id: Float!): DoblesFactores!
-  exSetActivateConfigDobleFactorTOTP(usuario_id: Float!): DoblesFactores!
-  exSendMail(usuario_id: Float!): DoblesFactores!
-  createRol(data: CreateRolInput!): Roles!
-  updateRol(data: UpdateRolInput!): Roles!
-  deleteRol(rol_id: Float!): Roles!
-  addFuncionalidadesToRol(data: AddFuncionalidadesToRolInput!): Roles!
+  createRol(data: CreateRolInput!): TbRoles!
+  updateRol(data: UpdateRolInput!): TbRoles!
+  deleteRol(rol_id: Float!): TbRoles!
+  addFuncionalidadesToRol(data: AddFuncionalidadesToRolInput!): TbRoles!
   updateEntidad(data: UpdateEntidadInput!): Entidades!
   deleteEntidad(entidad_id: Float!): Entidades!
   saveSecondaryEntities: [Entidades!]!
@@ -300,16 +285,6 @@ input CreateMenuTraduccionInput {
   traduccion_id: Float!
 }
 
-input configDoblesFactoresInput {
-  usuario_id: Float!
-  metodo_validacion: MetodosValidacion!
-}
-
-enum MetodosValidacion {
-  EMAIL
-  TOTP
-}
-
 input CreateRolInput {
   rol: String!
   RolesFuncionalidades: [CreateRolFuncionalidadInput!]
@@ -349,18 +324,19 @@ input UpdatePermisoInput {
 }
 
 input SignUpUserInput {
-  conexion_externa: Boolean!
-  nombre: String!
-  email: String!
-  username: String!
-  password: String!
+  nombre_usuario: String!
+  contrasena: String!
+  correo: String!
   rol_id: Int!
+  estado_usuario_id: Float!
+  tipo_usuario_id: Float!
+  metodo_autenticacion_id: Float!
 }
 
 input ChangePasswordInput {
   usuario_id: Float!
-  password: String!
-  new_password: String!
+  contrasena: String!
+  nueva_contrasena: String!
 }
 
 input CreateTraduccionesInput {

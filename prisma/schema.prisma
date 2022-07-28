@@ -7,15 +7,129 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model DoblesFactores {
-  doble_factor_id       Int                @id @default(autoincrement())
-  otplib_secreta        String?
-  esta_configurado      Boolean            @default(false)
-  usuario_id            Int?
-  codigo_recuperacion   String?
-  metodo_validacion     MetodosValidacion?
-  fecha_creacion_codigo DateTime?          @db.Timestamp(6)
-  Usuarios              Usuarios?          @relation(fields: [usuario_id], references: [usuario_id], map: "fk_dob_fac_usuario_id")
+model TbClasesParametros {
+  clase_parametro_id Int                  @id(map: "TbClaseParametro_id") @default(autoincrement())
+  nombre             String               @db.VarChar(50)
+  UsuariosParametros UsuariosParametros[]
+
+  @@index([clase_parametro_id], name: "pk_clase_parametro_id")
+}
+
+model TbEstadosUsuarios {
+  estado_usuario_id Int        @id(map: "TbEstadoUsuario_id") @default(autoincrement())
+  nombre            String     @db.VarChar(100)
+  Usuarios          Usuarios[]
+
+  @@index([estado_usuario_id], name: "pk_estado_usuario_id")
+}
+
+model TbMetodosAutenticacion {
+  metodo_autenticacion_id Int                 @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
+  nombre                  String              @db.VarChar(100)
+  Usuarios                Usuarios[]
+  MetodosParametrosSec    MetodosParametros[]
+
+  @@index([metodo_autenticacion_id], name: "pk_metodo_autenticacion_id")
+}
+
+model MetodosParametros {
+  metodo_parametro_id     Int                    @id(map: "TbMetodoParametro_id") @default(autoincrement())
+  metodo_autenticacion_id Int
+  usuario_parametro_id    Int
+  TbMetodosAutenticacion  TbMetodosAutenticacion @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
+  UsuariosParametros      UsuariosParametros     @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbUusarioParametro_fk")
+
+  @@index([metodo_parametro_id], name: "pk_metodo_parametro_id")
+}
+
+model TbRoles {
+  rol_id               Int                    @id(map: "rol_id") @default(autoincrement())
+  nombre               String                 @db.VarChar(100)
+  Usuarios             Usuarios[]
+  RolesFuncionalidades RolesFuncionalidades[]
+
+  @@index([rol_id], name: "pk_rol_id")
+}
+
+model TbTipoUsuarios {
+  tipo_usuario_id Int        @id(map: "TbTipoUsuario_id") @default(autoincrement())
+  nombre          String     @db.VarChar(100)
+  estado          Estado     @default(ACTIVO)
+  Usuarios        Usuarios[]
+
+  @@index([tipo_usuario_id], name: "pk_tipo_usuario_id")
+}
+
+model Usuarios {
+  usuario_id                      Int                            @id(map: "Usuario_id") @default(autoincrement())
+  nombre_usuario                  String                         @db.VarChar(100)
+  contrasena                      String                         @db.VarChar(100)
+  correo                          String                         @db.VarChar(100)
+  salt                            String                         @db.VarChar
+  rol_id                          Int
+  metodo_autenticacion_id         Int
+  tipo_usuario_id                 Int
+  estado_usuario_id               Int
+  sol_cambio_contrasena           Boolean?                       @default(false)
+  fecha_vigencia_contrasena       DateTime?                      @db.Timestamp(6)
+  fecha_creacion                  DateTime?                      @db.Timestamp(6)
+  fecha_actualizacion             DateTime?                      @db.Timestamp(6)
+  cant_intentos                   Int                            @default(0)
+  TbEstadosUsuarios               TbEstadosUsuarios              @relation(fields: [estado_usuario_id], references: [estado_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbEstadoUsuario_fk")
+  TbMetodosAutenticacion          TbMetodosAutenticacion         @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
+  TbRoles                         TbRoles                        @relation(fields: [rol_id], references: [rol_id], onDelete: NoAction, onUpdate: NoAction, map: "TbRol_fk")
+  TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbTipoUsuario_fk")
+  UsuariosHistoricoContrasenasSec UsuariosHistoricoContrasenas[]
+  UsuarioParametroValor           UsuariosParametrosValores[]
+  UsuariosSesionesSec             UsuariosSesiones?
+
+  @@index([usuario_id], name: "pk_usuario_id")
+}
+
+model UsuariosHistoricoContrasenas {
+  usu_historico_contrasena_id Int       @id(map: "UsuarioHistoricoContrasena_id") @default(autoincrement())
+  usuario_id                  Int
+  contrasena                  String?   @db.VarChar(100)
+  fecha_actualizacion         DateTime? @db.Timestamp(6)
+  Usuarios                    Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
+
+  @@index([usu_historico_contrasena_id], name: "usu_historico_contrasena_id")
+}
+
+model UsuariosParametros {
+  usuario_parametro_id         Int                         @id(map: "UsuarioParametro_id") @default(autoincrement())
+  clase_parametro_id           Int
+  nombre                       String                      @db.VarChar(100)
+  alias                        String                      @db.VarChar(100)
+  descripcion                  String                      @db.VarChar(100)
+  valor_defecto                String?                     @db.VarChar(50)
+  requerido                    Boolean?                    @default(false)
+  TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
+  UsuariosParametrosValoresSec UsuariosParametrosValores[]
+  MetodosParametros            MetodosParametros[]
+
+  @@index([usuario_parametro_id], name: "pk_usuario_parametro_id")
+}
+
+model UsuariosParametrosValores {
+  usuario_parametro_valor_id Int                @id(map: "UsuarioParametroValor_id") @default(autoincrement())
+  usuario_id                 Int
+  usuario_parametro_id       Int
+  valor                      String?            @db.VarChar(50)
+  UsuariosParametros         UsuariosParametros @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "UsuarioParametro_fk")
+  Usuarios                   Usuarios           @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
+
+  @@index([usuario_parametro_valor_id], name: "pk_usuario_parametro_valor_id")
+}
+
+model UsuariosSesiones {
+  usuario_sesion_id  Int       @id(map: "UsuarioSesion_id") @default(autoincrement())
+  usuario_id         Int       @unique
+  token              String    @db.VarChar(255)
+  fecha_ultimo_login DateTime? @db.Timestamp(6)
+  Usuarios           Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
+
+  @@index([usuario_sesion_id], name: "pk_usuario_sesion_id")
 }
 
 model Entidades {
@@ -86,36 +200,6 @@ model Permisos {
   Entidades               Entidades?                @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
   PermisosValidacionesSec PermisosValidaciones[]
   FuncionalidadesPermisos FuncionalidadesPermisos[]
-}
-
-model Roles {
-  rol_id                  Int                    @id @default(autoincrement())
-  rol                     String                 @db.VarChar(100)
-  Usuarios                Usuarios[]
-  RolesFuncionalidadesSec RolesFuncionalidades[]
-}
-
-model Usuarios {
-  usuario_id         Int               @id @default(autoincrement())
-  nombre             String            @db.VarChar(255)
-  email              String            @db.VarChar(255)
-  activo             Boolean?          @default(true)
-  username           String?
-  password           String?
-  salt               String?
-  conexion_externa   Boolean?          @default(false)
-  rol_id             Int?
-  tiene_doble_factor Boolean?          @default(false)
-  Roles              Roles?            @relation(fields: [rol_id], references: [rol_id], map: "fk_usuarios_rol_id")
-  usuario_sesion_id  Int?
-  UsuariosSesiones   UsuariosSesiones? @relation(fields: [usuario_sesion_id], references: [usuario_sesion_id], map: "fk_usuarios_usuario_sesion_id")
-  DoblesFactores     DoblesFactores[]
-}
-
-model UsuariosSesiones {
-  usuario_sesion_id Int        @id @default(autoincrement())
-  token             String?
-  Usuarios          Usuarios[]
 }
 
 model MenusPalabras {
@@ -196,11 +280,10 @@ model RolesFuncionalidades {
   funcionalidad_id     Int
   rol_id               Int
   Funcionalidades      Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_rol_fun_funcionalidad_id")
-  Roles                Roles           @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
+  TbRoles              TbRoles         @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
 }
 
-
-enum MetodosValidacion {
-  EMAIL
-  TOTP
+enum Estado {
+  ACTIVO
+  INACTIVO
 }

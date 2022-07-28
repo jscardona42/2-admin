@@ -1,49 +1,73 @@
 import 'reflect-metadata'
 import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
-import { DoblesFactores } from '../../../modules/DoblesFactores/entities/doblesfactores.entity'
-import { UsuariosSesionesSec } from './usuariossesiones.entity'
+import { TbEstadosUsuarios } from '../EstadosUsuarios/entities/tbestadosusuarios.entity'
+import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbmetodosautenticacion.entity'
+import { TbRoles } from 'src/modules/GestionFuncionalidades/Roles/entities/tbroles.entity'
+import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
+import { UsuariosSesiones } from './usuariossesiones.entity'
 
 @ObjectType()
 export class Usuarios {
-    @Field(() => ID)
-    usuario_id: number
-
-    @Field()
-    @IsNotEmpty()
-    nombre: string
-
-    @Field()
-    @IsNotEmpty()
-    @IsEmail()
-    email: string
-
-    @Field(() => Boolean, { nullable: true })
-    activo?: boolean | null
-
-    @Field(() => Boolean, { nullable: true })
-    conexion_externa?: boolean | null
-
-    @Field()
-    @IsNotEmpty()
-    username: string
-
-    @Field()
-    @IsNotEmpty()
-    password: string
-
-    @Field(() => String, { nullable: true })
-    salt?: string | null
 
     @Field(() => Number)
-    rol_id?: number
+    usuario_id: number
 
-    @Field(() => Boolean, { nullable: true })
-    tiene_doble_factor?: boolean | null
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_usuario: string
 
-    @Field(() => [DoblesFactores], { nullable: true })
-    DoblesFactores?: DoblesFactores[]
+    @Field(() => String)
+    @IsNotEmpty()
+    contrasena: string
 
-    @Field(() => UsuariosSesionesSec)
-    UsuariosSesionesSec?: UsuariosSesionesSec
+    @Field(() => String)
+    @IsNotEmpty()
+    @IsEmail()
+    correo: string
+
+    @Field(() => String)
+    salt: string
+
+    @Field(() => Number)
+    rol_id: number
+
+    @Field(() => Number)
+    metodo_autenticacion_id: number
+
+    @Field(() => Number)
+    tipo_usuario_id: number
+
+    @Field(() => Number)
+    estado_usuario_id: number
+
+    @Field(() => Boolean)
+    sol_cambio_contrasena?: boolean 
+
+    @Field(() => String)
+    fecha_vigencia_contrasena?: string 
+
+    @Field(() => String)
+    fecha_creacion?: string
+
+    @Field(() => String)
+    fecha_actualizacion?: string
+
+    @Field(() => Number)
+    cant_intentos: number 
+
+    @Field(() => TbEstadosUsuarios)
+    TbEstadosUsuarios: TbEstadosUsuarios
+
+    @Field(() => TbMetodosAutenticacion)
+    TbMetodosAutenticacion: TbMetodosAutenticacion
+
+    @Field(() => TbRoles)
+    TbRoles: TbRoles
+
+    @Field(() => TbTipoUsuarios)
+    TbTipoUsuarios: TbTipoUsuarios
+
+    @Field(() => UsuariosSesiones)
+    UsuariosSesionesSec: UsuariosSesiones
 }

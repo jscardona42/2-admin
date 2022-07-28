@@ -4,9 +4,9 @@ import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
 import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
-import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
+import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
-import { SignInUserInput } from './dto/usuarios.dto';
+import { SignInUserInput } from '../ClasesParametros/dto/usuarios.dto';
 import { UsuariosService } from './usuarios.service';
 import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 
@@ -26,7 +26,7 @@ describe('Usuarios Service', () => {
                 }),
             ],
             providers: [
-                UsuariosService, RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
+                UsuariosService, TbRolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -98,8 +98,8 @@ describe('Usuarios Service', () => {
     describe('signInUser method', () => {
         it('should invoke prismaService.usuarios.findFirst', async () => {
             let testParams: SignInUserInput = {
-                password: "12121",
-                username: "usuario2"
+                contrasena: "12121",
+                nombre_usuario: "usuario2"
             }
             await usuariosService.signInLogin(testParams);
             expect(prismaService.usuarios.findFirst).toHaveBeenCalled();

@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
+import { SignInUserInput, SignUpUserInput } from '../ClasesParametros/dto/usuarios.dto';
 import { UsuariosResolver } from './usuarios.resolver';
 import { UsuariosService } from './usuarios.service';
 

@@ -1,31 +1,30 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { RolesService } from '../GestionFuncionalidades/Roles/roles.service';
-import { Usuarios } from './entities/usuarios.entity';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { AuthenticationError } from 'apollo-server-express';
-import { ChangePasswordInput, SignUpUserInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SignUpUserInput } from '../ClasesParametros/dto/usuarios.dto';
+import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 
 
 @Injectable()
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private rolesService: RolesService,
+        private Roles: TbRolesService,
         private jwtService: JwtService,
     ) { }
 
-    async getUsuarios(): Promise<Usuarios[]> {
+    async getUsuarios(): Promise<any>{
         return this.prismaService.usuarios.findMany({
-            include: { DoblesFactores: true }
+            include:{ UsuariosSesionesSec: true }
         });
     }
 
-    async getUsuarioById(usuario_id: number): Promise<Usuarios> {
+    async getUsuarioById(usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
-            include: { DoblesFactores: true }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true,  }
         })
 
         if (usuarios === null) {
@@ -35,32 +34,41 @@ export class UsuariosService {
         return usuarios;
     }
 
-    async getFilterUsuarios(nombre: string, email: string): Promise<Usuarios[]> {
+    async getFilterUsuarios(nombre_usuario: string, correo: string): Promise<any> {
         return this.prismaService.usuarios.findMany({
-            where: { OR: [{ nombre: { contains: nombre, mode: "insensitive" } }, { email: { contains: email, mode: "insensitive" } }] }
+            where: { 
+                OR: 
+            [
+                { nombre_usuario: { contains: nombre_usuario, mode: "insensitive" } },
+                { correo: { contains: correo, mode: "insensitive" } }
+            ]}
         })
     }
 
-    async signUpLogin(data: SignUpUserInput): Promise<Usuarios> {
+    async signUpLogin(data: SignUpUserInput): Promise<any> {
 
-        await this.rolesService.getRolById(data.rol_id);
+        await this.Roles.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
-        const usernameExists = await this.usernameExists(data.username);
+        const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (usernameExists) {
             throw new UnauthorizedException('El usuario ya se encuentra registrado');
         }
 
         const user = this.prismaService.usuarios.create({
             data: {
-                nombre: data.nombre,
-                email: data.email,
-                username: data.username,
-                conexion_externa: data.conexion_externa,
-                password: await this.hashPassword(data.password, salt),
+                nombre_usuario: data.nombre_usuario,
+                contrasena: await this.hashPassword(data.contrasena, salt),
+                correo: data.correo,
                 salt: salt,
-                Roles: { connect: { rol_id: data.rol_id } }
+                fecha_vigencia_contrasena: new Date(),
+                fecha_creacion: new Date(),
+                fecha_actualizacion: new Date(),
+                TbRoles: { connect: { rol_id: data.rol_id } },
+                TbEstadosUsuarios: { connect:{ estado_usuario_id: data.estado_usuario_id}},
+                TbMetodosAutenticacion: { connect:{ metodo_autenticacion_id: data.metodo_autenticacion_id}},
+                TbTipoUsuarios: { connect:{ tipo_usuario_id: data.tipo_usuario_id}},
             },
-            include: { DoblesFactores: true }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true,  }
         })
 
         if (user === null) {
@@ -69,9 +77,9 @@ export class UsuariosService {
         return user;
     }
 
-    async signInLogin(data: any): Promise<Usuarios> {
+    async signInLogin(data: any): Promise<any> {
         const salt = await this.prismaService.usuarios.findFirst({
-            where: { username: data.username },
+            where: { nombre_usuario: data.nombre_usuario },
             select: { salt: true },
         })
 
@@ -81,10 +89,10 @@ export class UsuariosService {
 
         const user = await this.prismaService.usuarios.findFirst({
             where: {
-                username: data.username,
-                password: await this.hashPassword(data.password, salt.salt)
+                nombre_usuario: data.nombre_usuario,
+                contrasena: await this.hashPassword(data.contrasena, salt.salt)
             },
-            include: { DoblesFactores: true }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true }
         })
 
         if (!user) {
@@ -98,15 +106,11 @@ export class UsuariosService {
     async logOutLogin(usuario_id) {
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
-            data: { UsuariosSesiones:{
-                update:{
-                    token: null
-                }
-            } }
+            data: {  }
         })
     }
 
-    async exChangePasswordLogin(data: ChangePasswordInput): Promise<Usuarios> {
+    async exChangePasswordLogin(data: ChangePasswordInput): Promise<any> {
 
         await this.getUsuarioById(data.usuario_id);
 
@@ -121,7 +125,7 @@ export class UsuariosService {
 
         const login = await this.prismaService.usuarios.findFirst({
             where: {
-                password: await this.hashPassword(data.password, salt.salt)
+                contrasena: await this.hashPassword(data.contrasena, salt.salt)
             },
         })
 
@@ -134,10 +138,10 @@ export class UsuariosService {
         const user = await this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
-                password: await this.hashPassword(data.new_password, new_salt),
+                contrasena: await this.hashPassword(data.nueva_contrasena, new_salt),
                 salt: new_salt,
             },
-            include: { DoblesFactores: true }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true,  }
         })
 
         if (user === null) {
@@ -147,10 +151,10 @@ export class UsuariosService {
         return user;
     }
 
-    async usernameExists(username): Promise<boolean> {
+    async usernameExists(nombre_usuario): Promise<any> {
         const user = await this.prismaService.usuarios.findFirst({
-            where: { username: username },
-            select: { username: true }
+            where: { nombre_usuario: nombre_usuario },
+            select: { nombre_usuario: true }
         })
 
         if (user === null) {
@@ -160,25 +164,28 @@ export class UsuariosService {
         }
     }
 
-    async hashPassword(password: string, salt: string): Promise<string> {
-        return bcrypt.hash(password, salt);
+    async hashPassword(contrasena: string, salt: string): Promise<any> {
+        return bcrypt.hash(contrasena, salt);
     }
 
-    async createToken(token: string, user): Promise<Usuarios> {
+    async createToken(token: string, user): Promise<any> {
         
         return this.prismaService.usuarios.update({
             where: { usuario_id: user.usuario_id, },
-            data: { UsuariosSesiones:{
+            data: { UsuariosSesionesSec:{
                 upsert:{
                     create:{
-                        token: token
+                        token: token,
+                        fecha_ultimo_login: new Date()
+                        
                     },
                     update:{
-                        token: token
+                        token: token,
+                        fecha_ultimo_login: new Date()
                     }
                 }
             } },
-            include: { DoblesFactores: true }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true,  }
         })
     }
 
