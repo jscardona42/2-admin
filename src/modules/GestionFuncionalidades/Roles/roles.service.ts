@@ -4,32 +4,32 @@ import { FuncionalidadesService } from '../Funcionalidades/funcionalidades.servi
 import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
 
 @Injectable()
-export class RolesService {
+export class TbRolesService {
   constructor(
     private prismaService: PrismaService,
     private funcionalidadesService: FuncionalidadesService,
   ) { }
 
   async getRoles(): Promise<any[]> {
-    return this.prismaService.roles.findMany({
+    return this.prismaService.tbRoles.findMany({
       orderBy: { rol_id: "asc" },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
   async getRolById(rol_id: number): Promise<any> {
-    return this.prismaService.roles.findUnique({
+    return this.prismaService.tbRoles.findUnique({
       where: { rol_id: rol_id },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
       rejectOnNotFound: () => new UnauthorizedException(`El rol con id ${rol_id} no existe`)
     });
   }
 
-  async getFilterRoles(rol: string): Promise<any[]> {
-    return this.prismaService.roles.findMany({
-      where: { OR: [{ rol: { contains: rol, mode: "insensitive" } }] },
+  async getFilterRoles(nombre: string): Promise<any[]> {
+    return this.prismaService.tbRoles.findMany({
+      where: { OR: [{ nombre: { contains: nombre, mode: "insensitive" } }] },
       orderBy: { rol_id: "asc" },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
@@ -38,12 +38,12 @@ export class RolesService {
       await this.funcionalidadesService.getFuncionalidadById(element.funcionalidad_id);
     }));
 
-    return this.prismaService.roles.create({
+    return this.prismaService.tbRoles.create({
       data: {
-        rol: data.rol,
-        RolesFuncionalidadesSec: { create: data.RolesFuncionalidades }
+        nombre: data.rol,
+        RolesFuncionalidades: { create: data.RolesFuncionalidades }
       },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
@@ -62,24 +62,24 @@ export class RolesService {
       });
     }));
 
-    return this.prismaService.roles.update({
+    return this.prismaService.tbRoles.update({
       where: { rol_id: data.rol_id },
       data: {
-        rol: data.rol,
-        RolesFuncionalidadesSec: {
+        nombre: data.rol,
+        RolesFuncionalidades: {
           update: updateRolesFuncionalidades
         }
       },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
   async deleteRol(rol_id: number): Promise<any> {
     await this.getRolById(rol_id);
 
-    return this.prismaService.roles.delete({
+    return this.prismaService.tbRoles.delete({
       where: { rol_id: rol_id },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
@@ -91,25 +91,25 @@ export class RolesService {
       await this.getRolesPermisosByRolIdAndPermisoId(data.rol_id, element.funcionalidad_id);
     }));
 
-    return this.prismaService.roles.update({
+    return this.prismaService.tbRoles.update({
       where: { rol_id: data.rol_id },
       data: {
-        RolesFuncionalidadesSec: {
+        RolesFuncionalidades: {
           create: data.RolesFuncionalidades
         }
       },
-      include: { RolesFuncionalidadesSec: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
+      include: { RolesFuncionalidades: { include: { Funcionalidades: { include: { FuncionalidadesPermisosSec: { include: { Permisos: true } }, Entidades: true } } } } },
     });
   }
 
   async getRolesPermisosByRolIdAndPermisoId(rol_id: number, funcionalidad_id: number) {
     let rolesFuncionalidades = await this.prismaService.rolesFuncionalidades.findFirst({
       where: { rol_id: rol_id, funcionalidad_id: funcionalidad_id },
-      include: { Roles: true }
+      include: { TbRoles: true }
     });
 
     if (rolesFuncionalidades !== null) {
-      throw new UnauthorizedException(`La funcionalidad con id ${rolesFuncionalidades.funcionalidad_id} ya está asociada al rol con id ${rolesFuncionalidades.Roles.rol_id}`);
+      throw new UnauthorizedException(`La funcionalidad con id ${rolesFuncionalidades.funcionalidad_id} ya está asociada al rol con id ${rolesFuncionalidades.TbRoles.rol_id}`);
     }
   }
 

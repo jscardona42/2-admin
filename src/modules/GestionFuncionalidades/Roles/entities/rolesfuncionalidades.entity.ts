@@ -1,15 +1,22 @@
 import { Field, ID, ObjectType } from "@nestjs/graphql"
 import { Funcionalidades } from "../../Funcionalidades/entities/funcionalidades.entity"
-import { Roles } from "./roles.entity"
+import { TbRoles } from "./tbroles.entity"
 
 @ObjectType()
 export class RolesFuncionalidades {
-    @Field((type) => ID)
+
+    @Field(() => Number)
     rol_funcionalidad_id: number
 
-    @Field((type) => Roles)
-    Roles: Roles
+    @Field(() => Number)
+    funcionalidad_id: number
 
-    @Field((type) => Funcionalidades)
+    @Field(() => Number)
+    rol_id: number
+
+    @Field(() => TbRoles)
+    TbRoles: TbRoles
+
+    @Field(() => Funcionalidades)
     Funcionalidades: Funcionalidades
 }

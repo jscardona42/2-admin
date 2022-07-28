@@ -1,51 +1,51 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
-import { Roles } from './entities/roles.entity';
-import { RolesService } from './roles.service';
+import { TbRoles } from './entities/tbroles.entity';
+import { TbRolesService } from './roles.service';
 
-@Resolver((of) => Roles)
-export class RolesResolver {
+@Resolver(() => TbRoles)
+export class TbRolesResolver {
   constructor(
-    private readonly rolesService: RolesService,
+    private readonly rolesService: TbRolesService,
   ) { }
 
-  @Query((returns) => [Roles])
-  async getRoles(): Promise<Roles[]> {
+  @Query(() => [TbRoles])
+  async getRoles(): Promise<TbRoles[]> {
     return this.rolesService.getRoles();
   }
 
-  @Query((returns) => Roles)
-  async getRolById(@Args("rol_id") rol_id: number): Promise<Roles> {
+  @Query(() => TbRoles)
+  async getRolById(@Args("rol_id") rol_id: number): Promise<TbRoles> {
     return this.rolesService.getRolById(rol_id);
   }
 
-  @Query(() => [Roles])
+  @Query(() => [TbRoles])
   async getFilterRoles(
-    @Args("rol", { nullable: true }) rol: string): Promise<Roles[]> {
+    @Args("rol", { nullable: true }) rol: string): Promise<TbRoles[]> {
     return await this.rolesService.getFilterRoles(rol);
   }
 
-  @Mutation((returns) => Roles)
-  async createRol(@Args("data") data: CreateRolInput): Promise<Roles> {
+  @Mutation(() => TbRoles)
+  async createRol(@Args("data") data: CreateRolInput): Promise<TbRoles> {
     return this.rolesService.createRol(data);
   }
 
-  @Mutation((returns) => Roles)
-  async updateRol(@Args("data") data: UpdateRolInput): Promise<Roles> {
+  @Mutation(() => TbRoles)
+  async updateRol(@Args("data") data: UpdateRolInput): Promise<TbRoles> {
     return this.rolesService.updateRol(data);
   }
 
-  @Mutation((returns) => Roles)
-  async deleteRol(@Args("rol_id") rol_id: number): Promise<Roles> {
+  @Mutation(() => TbRoles)
+  async deleteRol(@Args("rol_id") rol_id: number): Promise<TbRoles> {
     return this.rolesService.deleteRol(rol_id);
   }
 
-  @Mutation((returns) => Roles)
-  async addFuncionalidadesToRol(@Args("data") data: AddFuncionalidadesToRolInput): Promise<Roles> {
+  @Mutation(() => TbRoles)
+  async addFuncionalidadesToRol(@Args("data") data: AddFuncionalidadesToRolInput): Promise<TbRoles> {
     return this.rolesService.addFuncionalidadesToRol(data);
   }
 
-  @Query((returns) => [Roles])
+  @Query(() => [TbRoles])
   async getEntidadesIdsByRolId(): Promise<any> {
     return this.rolesService.getEntidadesIdsByRolId(1);
   }
