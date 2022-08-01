@@ -6,9 +6,9 @@ import { EntidadesService } from '../Admin/Entidades/entidades.service';
 import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
-import { SignInUserInput } from '../ClasesParametros/dto/usuarios.dto';
 import { UsuariosService } from './usuarios.service';
 import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
+import { SignInUserInput } from './dto/usuarios.dto';
 
 
 describe('Usuarios Service', () => {

@@ -4,18 +4,19 @@ import { EntidadesService } from '../../Admin/Entidades/entidades.service';
 import { PermisosService } from '../Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
-import { RolesService } from './roles.service';
+
 import { FuncionalidadesService } from '../Funcionalidades/funcionalidades.service';
+import { TbRolesService } from './roles.service';
 
 
 describe('Roles Service', () => {
-    let roleService: RolesService;
+    let roleService: TbRolesService;
     let prismaService: PrismaService;
 
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             providers: [
-                RolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
+                TbRolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -44,40 +45,40 @@ describe('Roles Service', () => {
             ],
         }).compile();
 
-        roleService = module.get<RolesService>(RolesService);
+        roleService = module.get<TbRolesService>(TbRolesService);
         prismaService = module.get<PrismaService>(PrismaService);
     });
 
     describe('getRoles method', () => {
-        it('should invoke prismaService.roles.findMany', async () => {
+        it('should invoke prismaService.tbRoles.findMany', async () => {
             await roleService.getRoles();
-            expect(prismaService.roles.findMany).toHaveBeenCalled();
+            expect(prismaService.tbRoles.findMany).toHaveBeenCalled();
         });
     });
 
     describe('getRolById method', () => {
-        it('should invoke prismaService.roles.findUnique', async () => {
+        it('should invoke prismaService.tbRoles.findUnique', async () => {
             const testParams = {
                 rol_id: 1
             };
             await roleService.getRolById(testParams.rol_id);
-            expect(prismaService.roles.findUnique).toHaveBeenCalled();
+            expect(prismaService.tbRoles.findUnique).toHaveBeenCalled();
         });
     });
 
     describe('getFilterRoles method', () => {
-        it('should invoke prismaService.roles.findMany', async () => {
+        it('should invoke prismaService.tbRoles.findMany', async () => {
             const testParams = {
                 rol: "a"
             };
             await roleService.getFilterRoles(testParams.rol);
-            expect(prismaService.roles.findMany).toHaveBeenCalled();
+            expect(prismaService.tbRoles.findMany).toHaveBeenCalled();
         });
     });
 
 
     describe('createRol method', () => {
-        it('should invoke prismaService.roles.create', async () => {
+        it('should invoke prismaService.tbRoles.create', async () => {
             var testParams: CreateRolInput = {
                 rol: "",
                 RolesFuncionalidades: [
@@ -85,12 +86,12 @@ describe('Roles Service', () => {
                 ]
             }
             await roleService.createRol(testParams);
-            expect(prismaService.roles.create).toHaveBeenCalled();
+            expect(prismaService.tbRoles.create).toHaveBeenCalled();
         });
     });
 
     describe('updateRol method', () => {
-        it('should invoke prismaService.roles.update', async () => {
+        it('should invoke prismaService.tbRoles.update', async () => {
             var testParams: UpdateRolInput = {
                 rol: "Nombre",
                 rol_id: 1,
@@ -99,13 +100,13 @@ describe('Roles Service', () => {
                 ]
             }
             await roleService.updateRol(testParams);
-            expect(prismaService.roles.update).toHaveBeenCalled();
+            expect(prismaService.tbRoles.update).toHaveBeenCalled();
         });
     });
 
 
     describe('addFuncionalidadesToRol method', () => {
-        it('should invoke prismaService.roles.update', async () => {
+        it('should invoke prismaService.tbRoles.update', async () => {
             var testParams: AddFuncionalidadesToRolInput = {
                 rol_id: 1,
                 RolesFuncionalidades: [
@@ -113,17 +114,17 @@ describe('Roles Service', () => {
                 ]
             }
             await roleService.addFuncionalidadesToRol(testParams);
-            expect(prismaService.roles.update).toHaveBeenCalled();
+            expect(prismaService.tbRoles.update).toHaveBeenCalled();
         });
     });
 
     describe('deleteRol method', () => {
-        it('should invoke prismaService.roles.delete', async () => {
+        it('should invoke prismaService.tbRoles.delete', async () => {
             const testParams = {
                 rol_id: 1
             };
             await roleService.deleteRol(testParams.rol_id);
-            expect(prismaService.roles.delete).toHaveBeenCalled();
+            expect(prismaService.tbRoles.delete).toHaveBeenCalled();
         });
     });
 

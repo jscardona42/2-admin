@@ -4,11 +4,11 @@ import { PrismaService } from '../../../prisma.service';
 import { MenusService } from './menus.service';
 import { JwtModule } from '@nestjs/jwt';
 import { EntidadesService } from '../../Admin/Entidades/entidades.service';
-import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
 import { PermisosService } from '../../GestionFuncionalidades/Permisos/permisos.service';
 import { ValidacionesService } from '../../Admin/Validaciones/validaciones.service';
 import { CreateMenuInput } from './dto/menus.dto';
 import { FuncionalidadesService } from '../../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
+import { TbRolesService } from '../../../modules/GestionFuncionalidades/Roles/roles.service';
 
 describe('Menu Service', () => {
   let menusService: MenusService;
@@ -25,7 +25,7 @@ describe('Menu Service', () => {
         }),
       ],
       providers: [
-        MenusService, UsuariosService, EntidadesService, RolesService, PermisosService, ValidacionesService, FuncionalidadesService,
+        MenusService, UsuariosService, EntidadesService, TbRolesService, PermisosService, ValidacionesService, FuncionalidadesService,
         {
           provide: PrismaService,
           useFactory: () => ({
