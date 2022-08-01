@@ -28,9 +28,13 @@ import { FuncionalidadesService } from './modules/GestionFuncionalidades/Funcion
 import { FuncionalidadesResolver } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.resolver';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
 import { TbRolesResolver } from './modules/GestionFuncionalidades/Roles/roles.resolver';
+import { TbTipoUsuariosResolver } from './modules/Usuarios/TipoUsuarios/tipousuarios.resolver';
+import { TbTipoUsuariosService } from './modules/Usuarios/TipoUsuarios/tipousuarios.service';
+import { TbEstadosUsuariosService } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.service';
+import { TbEstadosUsuariosResolver } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.resolver';
 
 
-const MyProviders = [PrismaService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver,TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
 
 @Module({
   imports: [

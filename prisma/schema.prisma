@@ -125,7 +125,7 @@ model UsuariosParametrosValores {
 model UsuariosSesiones {
   usuario_sesion_id  Int       @id(map: "UsuarioSesion_id") @default(autoincrement())
   usuario_id         Int       @unique
-  token              String    @db.VarChar(255)
+  token              String?   @db.VarChar(255)
   fecha_ultimo_login DateTime? @db.Timestamp(6)
   Usuarios           Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 

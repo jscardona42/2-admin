@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
-import { TbRolesService } from 'src/modules/GestionFuncionalidades/Roles/roles.service';
+import { TbRolesService } from '../../../modules/GestionFuncionalidades/Roles/roles.service';
 import { EntidadesService } from '../../../modules/Admin/Entidades/entidades.service';
 import { UsuariosService } from '../../../modules/Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';

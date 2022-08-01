@@ -187,6 +187,12 @@ type Funcionalidades {
 }
 
 type Query {
+  getEstadosUsuarios: [TbEstadosUsuarios!]!
+  getEstadosUsuariosById(estado_usuario_id: Float!): TbEstadosUsuarios!
+  getFilterEstadosUsuarios(data: FilterEstadoUsuariosInput): [TbEstadosUsuarios!]!
+  getTipoUsuarios: [TbTipoUsuarios!]!
+  getTipoUsuarioById(tipo_usuario_id: Float!): TbTipoUsuarios!
+  getFilterTipoUsuarios(data: FilterTipoUsuariosInput): [TbTipoUsuarios!]!
   getMenus: [Menus!]!
   getMenusInactivos: [Menus!]!
   getMenuByRoleId(usuario_id: Float!): [Menus!]!
@@ -221,6 +227,20 @@ type Query {
   getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
 }
 
+input FilterEstadoUsuariosInput {
+  nombre: String
+}
+
+input FilterTipoUsuariosInput {
+  nombre: String
+  estado: Estado
+}
+
+enum Estado {
+  ACTIVO
+  INACTIVO
+}
+
 input SignInUserInput {
   nombre_usuario: String!
   contrasena: String!
@@ -233,6 +253,12 @@ input FilterFuncionalidadesInput {
 }
 
 type Mutation {
+  createEstadosUsuarios(data: CreateEstadosUsuariosInput!): TbEstadosUsuarios!
+  updateEstadosUsuarios(data: UpdateEstadosUsuariosInput!): TbEstadosUsuarios!
+  deleteEstadosUsuarios(estado_usuario_id: Float!): TbEstadosUsuarios!
+  createTipoUsuarios(data: CreateTipoUsuariosInput!): TbTipoUsuarios!
+  updateTipoUsuarios(data: UpdateTipoUsuariosInput!): TbTipoUsuarios!
+  deleteTipoUsuarios(tipo_usuario_id: Float!): TbTipoUsuarios!
   createRootMenu: Menus!
   createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
@@ -263,6 +289,25 @@ type Mutation {
   updateFuncionalidad(data: UpdateFuncionalidadInput!): Funcionalidades!
   addPermisosToFuncionalidad(data: AddPermisosToFuncionalidadInput!): Funcionalidades!
   deleteFuncionalidad(funcionalidad_id: Float!): Funcionalidades!
+}
+
+input CreateEstadosUsuariosInput {
+  nombre: String!
+}
+
+input UpdateEstadosUsuariosInput {
+  estado_usuario_id: Float!
+  nombre: String!
+}
+
+input CreateTipoUsuariosInput {
+  nombre: String!
+}
+
+input UpdateTipoUsuariosInput {
+  tipo_usuario_id: Float!
+  nombre: String
+  estado: Estado
 }
 
 input CreateMenuInput {
