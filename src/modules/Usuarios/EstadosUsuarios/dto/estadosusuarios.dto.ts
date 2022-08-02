@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator'
 
 
 @InputType()
-export class CreateEstadosUsuariosInput {
+export class CreateEstadoUsuarioInput {
 
     @Field(() => String)
     @IsNotEmpty()
@@ -13,7 +13,7 @@ export class CreateEstadosUsuariosInput {
 }
 
 @InputType()
-export class UpdateEstadosUsuariosInput {
+export class UpdateEstadoUsuarioInput {
 
     @Field(() => Number)
     @IsNotEmpty()

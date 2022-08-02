@@ -20,11 +20,11 @@ describe('Iconos Resolver', () => {
                     provide: TbEstadosUsuariosService,
                     useFactory: () => ({
                         getEstadosUsuarios: jest.fn(),
-                        getEstadosUsuariosById: jest.fn(),
+                        getEstadoUsuarioById: jest.fn(),
                         getFilterEstadosUsuarios: jest.fn(),
-                        createEstadosUsuarios: jest.fn(),
-                        updateEstadosUsuarios: jest.fn(),
-                        deleteEstadosUsuarios: jest.fn()
+                        createEstadoUsuario: jest.fn(),
+                        updateEstadoUsuario: jest.fn(),
+                        deleteEstadoUsuario: jest.fn()
                     }),
                 },
             ],
@@ -46,8 +46,8 @@ describe('Iconos Resolver', () => {
             const testParams = {
                 estado_usuario_id: 1
             };
-            await EstadosUsuariosResolver.getEstadosUsuariosById(testParams.estado_usuario_id);
-            expect(EstadosUsuariosService.getEstadosUsuariosById).toHaveBeenCalled();
+            await EstadosUsuariosResolver.getEstadoUsuarioById(testParams.estado_usuario_id);
+            expect(EstadosUsuariosService.getEstadoUsuarioById).toHaveBeenCalled();
         });
     });
 
@@ -61,36 +61,36 @@ describe('Iconos Resolver', () => {
         });
     });
 
-    describe('Mutation createEstadosUsuarios()', () => {
-        it('should invoke EstadosUsuariosService.createEstadosUsuarios', async () => {
+    describe('Mutation createEstadoUsuario()', () => {
+        it('should invoke EstadosUsuariosService.createEstadoUsuario', async () => {
             const testParams = {
                 nombre: "Andres"
             };
 
-            await EstadosUsuariosResolver.createEstadosUsuarios(testParams);
-            expect(EstadosUsuariosService.createEstadosUsuarios).toHaveBeenCalledWith(testParams);
+            await EstadosUsuariosResolver.createEstadoUsuario(testParams);
+            expect(EstadosUsuariosService.createEstadoUsuario).toHaveBeenCalledWith(testParams);
         });
     });
 
-    describe('Mutation updateEstadosUsuarios()', () => {
-        it('should invoke EstadosUsuariosService.updateEstadosUsuarios', async () => {
+    describe('Mutation updateEstadoUsuario()', () => {
+        it('should invoke EstadosUsuariosService.updateEstadoUsuario', async () => {
             const testParams = {
                 estado_usuario_id: 1,
                 nombre: "Andres",
 
             };
-            await EstadosUsuariosResolver.updateEstadosUsuarios(testParams);
-            expect(EstadosUsuariosService.updateEstadosUsuarios).toHaveBeenCalledWith(testParams);
+            await EstadosUsuariosResolver.updateEstadoUsuario(testParams);
+            expect(EstadosUsuariosService.updateEstadoUsuario).toHaveBeenCalledWith(testParams);
         });
     });
 
-    describe('Mutation deleteEstadosUsuarios()', () => {
-        it('should invoke EstadosUsuariosService.deleteEstadosUsuarios', async () => {
+    describe('Mutation deleteEstadoUsuario()', () => {
+        it('should invoke EstadosUsuariosService.deleteEstadoUsuario', async () => {
             const testParams = {
                 estado_usuario_id: 1
             };
-            await EstadosUsuariosResolver.deleteEstadosUsuarios(testParams.estado_usuario_id);
-            expect(EstadosUsuariosService.deleteEstadosUsuarios).toHaveBeenCalled();
+            await EstadosUsuariosResolver.deleteEstadoUsuario(testParams.estado_usuario_id);
+            expect(EstadosUsuariosService.deleteEstadoUsuario).toHaveBeenCalled();
         });
     });
 });

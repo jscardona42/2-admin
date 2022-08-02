@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { CreateEstadosUsuariosInput, FilterEstadoUsuariosInput, UpdateEstadosUsuariosInput } from './dto/estadosusuarios.dto';
+import { CreateEstadoUsuarioInput, FilterEstadoUsuariosInput, UpdateEstadoUsuarioInput } from './dto/estadosusuarios.dto';
 import { TbEstadosUsuarios } from './entities/tbestadosusuarios.entity';
 import { TbEstadosUsuariosService } from './estadosusuarios.service';
 
@@ -16,9 +16,9 @@ export class TbEstadosUsuariosResolver {
     }
 
     @Query(() => TbEstadosUsuarios)
-    async getEstadosUsuariosById(
+    async getEstadoUsuarioById(
         @Args("estado_usuario_id") estado_usuario_id: number): Promise<any> {
-        return this.EstadosUsuariosService.getEstadosUsuariosById(estado_usuario_id);
+        return this.EstadosUsuariosService.getEstadoUsuarioById(estado_usuario_id);
     }
 
     @Query(() => [TbEstadosUsuarios])
@@ -28,18 +28,18 @@ export class TbEstadosUsuariosResolver {
     }
 
     @Mutation(() => TbEstadosUsuarios)
-    async createEstadosUsuarios(@Args("data") data: CreateEstadosUsuariosInput): Promise<any> {
-        return this.EstadosUsuariosService.createEstadosUsuarios(data);
+    async createEstadoUsuario(@Args("data") data: CreateEstadoUsuarioInput): Promise<any> {
+        return this.EstadosUsuariosService.createEstadoUsuario(data);
     }
 
     @Mutation(() => TbEstadosUsuarios)
-    async updateEstadosUsuarios(@Args("data") data: UpdateEstadosUsuariosInput): Promise<any> {
-        return this.EstadosUsuariosService.updateEstadosUsuarios(data);
+    async updateEstadoUsuario(@Args("data") data: UpdateEstadoUsuarioInput): Promise<any> {
+        return this.EstadosUsuariosService.updateEstadoUsuario(data);
     }
 
     @Mutation(() => TbEstadosUsuarios)
-    async deleteEstadosUsuarios(
+    async deleteEstadoUsuario(
         @Args("estado_usuario_id") estado_usuario_id: number): Promise<any> {
-        return this.EstadosUsuariosService.deleteEstadosUsuarios(estado_usuario_id);
+        return this.EstadosUsuariosService.deleteEstadoUsuario(estado_usuario_id);
     }
 }

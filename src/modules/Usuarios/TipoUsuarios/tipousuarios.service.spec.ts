@@ -71,21 +71,21 @@ describe('Usuarios Service', () => {
         });
     });
 
-    describe('createTipoUsuarios method', () => {
+    describe('createTipoUsuario method', () => {
         it('should invoke prismaService.TipoUsuariosService.create', async () => {
             const testParams = {
                 data: {
                     nombre: "Andres"
                 }
             };
-            await TipoUsuariosService.createTipoUsuarios(
+            await TipoUsuariosService.createTipoUsuario(
                 testParams.data,
             );
             expect(prismaService.tbTipoUsuarios.create).toHaveBeenCalled();
         });
     });
 
-    describe('updateTipoUsuarios method', () => {
+    describe('updateTipoUsuario method', () => {
         it('should invoke prismaService.TipoUsuariosService.update', async () => {
             const testParams = {
                 data: {
@@ -94,19 +94,19 @@ describe('Usuarios Service', () => {
                     Estado: "INACTIVO"
                 }
             };
-            await TipoUsuariosService.updateTipoUsuarios(
+            await TipoUsuariosService.updateTipoUsuario(
                 testParams.data
             );
             expect(prismaService.tbTipoUsuarios.update).toHaveBeenCalled();
         });
     });
 
-    describe('deleteTipoUsuarios method', () => {
+    describe('deleteTipoUsuario method', () => {
         it('should invoke prismaService.TipoUsuariosService.delete', async () => {
             const testParams = {
                 tipo_usuario_id: 1
             };
-            await TipoUsuariosService.deleteTipoUsuarios(
+            await TipoUsuariosService.deleteTipoUsuario(
                 testParams.tipo_usuario_id
             );
             expect(prismaService.tbTipoUsuarios.delete).toHaveBeenCalled();

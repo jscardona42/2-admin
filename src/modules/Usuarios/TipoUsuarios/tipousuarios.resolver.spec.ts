@@ -22,9 +22,9 @@ describe('Iconos Resolver', () => {
                         getTipoUsuarios: jest.fn(),
                         getTipoUsuarioById: jest.fn(),
                         getFilterTipoUsuarios: jest.fn(),
-                        createTipoUsuarios: jest.fn(),
-                        updateTipoUsuarios: jest.fn(),
-                        deleteTipoUsuarios: jest.fn()
+                        createTipoUsuario: jest.fn(),
+                        updateTipoUsuario: jest.fn(),
+                        deleteTipoUsuario: jest.fn()
                     }),
                 },
             ],
@@ -61,37 +61,37 @@ describe('Iconos Resolver', () => {
         });
     });
 
-    describe('Mutation createTipoUsuarios()', () => {
-        it('should invoke TipoUsuariosService.createTipoUsuarios', async () => {
+    describe('Mutation createTipoUsuario()', () => {
+        it('should invoke TipoUsuariosService.createTipoUsuario', async () => {
             const testParams = {
                 nombre: "Andres"
             };
 
-            await TipoUsuariosResolver.createTipoUsuarios(testParams);
-            expect(TipoUsuariosService.createTipoUsuarios).toHaveBeenCalledWith(testParams);
+            await TipoUsuariosResolver.createTipoUsuario(testParams);
+            expect(TipoUsuariosService.createTipoUsuario).toHaveBeenCalledWith(testParams);
         });
     });
 
-    describe('Mutation updateTipoUsuarios()', () => {
-        it('should invoke TipoUsuariosService.updateTipoUsuarios', async () => {
+    describe('Mutation updateTipoUsuario()', () => {
+        it('should invoke TipoUsuariosService.updateTipoUsuario', async () => {
             const testParams = {
                 tipo_usuario_id: 1,
                 nombre: "Andres",
                 Estado: "ACTIVO",
 
             };
-            await TipoUsuariosResolver.updateTipoUsuarios(testParams);
-            expect(TipoUsuariosService.updateTipoUsuarios).toHaveBeenCalledWith(testParams);
+            await TipoUsuariosResolver.updateTipoUsuario(testParams);
+            expect(TipoUsuariosService.updateTipoUsuario).toHaveBeenCalledWith(testParams);
         });
     });
 
-    describe('Mutation deleteTipoUsuarios()', () => {
-        it('should invoke TipoUsuariosService.deleteTipoUsuarios', async () => {
+    describe('Mutation deleteTipoUsuario()', () => {
+        it('should invoke TipoUsuariosService.deleteTipoUsuario', async () => {
             const testParams = {
                 tipo_usuario_id: 1
             };
-            await TipoUsuariosResolver.deleteTipoUsuarios(testParams.tipo_usuario_id);
-            expect(TipoUsuariosService.deleteTipoUsuarios).toHaveBeenCalled();
+            await TipoUsuariosResolver.deleteTipoUsuario(testParams.tipo_usuario_id);
+            expect(TipoUsuariosService.deleteTipoUsuario).toHaveBeenCalled();
         });
     });
 });

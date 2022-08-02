@@ -8,7 +8,7 @@ registerEnumType(Estado, {
 })
 
 @InputType()
-export class CreateTipoUsuariosInput {
+export class CreateTipoUsuarioInput {
 
     @Field(() => String)
     @IsNotEmpty()
@@ -17,7 +17,7 @@ export class CreateTipoUsuariosInput {
 }
 
 @InputType()
-export class UpdateTipoUsuariosInput {
+export class UpdateTipoUsuarioInput {
 
     @Field(() => Number)
     @IsNotEmpty()

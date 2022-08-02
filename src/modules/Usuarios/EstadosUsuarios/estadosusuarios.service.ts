@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service'
-import { CreateEstadosUsuariosInput, FilterEstadoUsuariosInput, UpdateEstadosUsuariosInput } from './dto/estadosusuarios.dto';
+import { CreateEstadoUsuarioInput, FilterEstadoUsuariosInput, UpdateEstadoUsuarioInput } from './dto/estadosusuarios.dto';
 
 @Injectable()
 export class TbEstadosUsuariosService {
@@ -14,7 +14,7 @@ export class TbEstadosUsuariosService {
         });
     }
 
-    async getEstadosUsuariosById(estado_usuario_id: number): Promise<any> {
+    async getEstadoUsuarioById(estado_usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.tbEstadosUsuarios.findUnique({
             where: { estado_usuario_id: estado_usuario_id },
             include: { Usuarios: true }
@@ -33,7 +33,7 @@ export class TbEstadosUsuariosService {
         })
     }
 
-    async createEstadosUsuarios(data: CreateEstadosUsuariosInput): Promise<any> {
+    async createEstadoUsuario(data: CreateEstadoUsuarioInput): Promise<any> {
         return this.prismaService.tbEstadosUsuarios.create({
             data: {
                 ...data
@@ -42,9 +42,9 @@ export class TbEstadosUsuariosService {
         });
     }
 
-    async updateEstadosUsuarios(data: UpdateEstadosUsuariosInput): Promise<any> {
+    async updateEstadoUsuario(data: UpdateEstadoUsuarioInput): Promise<any> {
 
-        await this.getEstadosUsuariosById(data.estado_usuario_id);
+        await this.getEstadoUsuarioById(data.estado_usuario_id);
 
         return this.prismaService.tbEstadosUsuarios.update({
             where: { estado_usuario_id: data.estado_usuario_id },
@@ -55,9 +55,9 @@ export class TbEstadosUsuariosService {
         });
     }
 
-    async deleteEstadosUsuarios(estado_usuario_id: number): Promise<any> {
+    async deleteEstadoUsuario(estado_usuario_id: number): Promise<any> {
 
-        await this.getEstadosUsuariosById(estado_usuario_id);
+        await this.getEstadoUsuarioById(estado_usuario_id);
 
         return this.prismaService.tbEstadosUsuarios.delete({
             where: { estado_usuario_id: estado_usuario_id },

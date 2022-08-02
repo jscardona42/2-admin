@@ -1,6 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../../prisma.service'
-import { CreateTipoUsuariosInput, FilterTipoUsuariosInput, UpdateTipoUsuariosInput } from './dto/tipousuarios.dto';
+import { CreateTipoUsuarioInput, FilterTipoUsuariosInput, UpdateTipoUsuarioInput } from './dto/tipousuarios.dto';
 
 @Injectable()
 export class TbTipoUsuariosService {
@@ -33,7 +33,7 @@ export class TbTipoUsuariosService {
             })
     }
 
-    async createTipoUsuarios(data: CreateTipoUsuariosInput): Promise<any> {
+    async createTipoUsuario(data: CreateTipoUsuarioInput): Promise<any> {
         return this.prismaService.tbTipoUsuarios.create({
             data: {
                 ...data
@@ -42,7 +42,7 @@ export class TbTipoUsuariosService {
         });
     }
 
-    async updateTipoUsuarios(data: UpdateTipoUsuariosInput): Promise<any> {
+    async updateTipoUsuario(data: UpdateTipoUsuarioInput): Promise<any> {
 
         await this.getTipoUsuarioById(data.tipo_usuario_id);
 
@@ -55,7 +55,7 @@ export class TbTipoUsuariosService {
         });
     }
 
-    async deleteTipoUsuarios(tipo_usuario_id: number): Promise<any> {
+    async deleteTipoUsuario(tipo_usuario_id: number): Promise<any> {
 
         await this.getTipoUsuarioById(tipo_usuario_id);
 

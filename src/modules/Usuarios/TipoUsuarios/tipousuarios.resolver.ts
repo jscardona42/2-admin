@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { CreateTipoUsuariosInput, FilterTipoUsuariosInput, UpdateTipoUsuariosInput } from './dto/tipousuarios.dto';
+import { CreateTipoUsuarioInput, FilterTipoUsuariosInput, UpdateTipoUsuarioInput } from './dto/tipousuarios.dto';
 import { TbTipoUsuarios } from './entities/tipousuarios.entity';
 import { TbTipoUsuariosService } from './tipousuarios.service';
 
@@ -29,17 +29,17 @@ export class TbTipoUsuariosResolver {
     }
 
     @Mutation(() => TbTipoUsuarios)
-    async createTipoUsuarios(@Args("data") data: CreateTipoUsuariosInput): Promise<any> {
-        return this.TipoUsuariosService.createTipoUsuarios(data);
+    async createTipoUsuario(@Args("data") data: CreateTipoUsuarioInput): Promise<any> {
+        return this.TipoUsuariosService.createTipoUsuario(data);
     }
 
     @Mutation(() => TbTipoUsuarios)
-    async updateTipoUsuarios(@Args("data") data: UpdateTipoUsuariosInput): Promise<any> {
-        return this.TipoUsuariosService.updateTipoUsuarios(data);
+    async updateTipoUsuario(@Args("data") data: UpdateTipoUsuarioInput): Promise<any> {
+        return this.TipoUsuariosService.updateTipoUsuario(data);
     }
 
     @Mutation(() => TbTipoUsuarios)
-    async deleteTipoUsuarios(@Args("tipo_usuario_id") tipo_usuario_id: number): Promise<any> {
-        return this.TipoUsuariosService.deleteTipoUsuarios(tipo_usuario_id);
+    async deleteTipoUsuario(@Args("tipo_usuario_id") tipo_usuario_id: number): Promise<any> {
+        return this.TipoUsuariosService.deleteTipoUsuario(tipo_usuario_id);
     }
 }

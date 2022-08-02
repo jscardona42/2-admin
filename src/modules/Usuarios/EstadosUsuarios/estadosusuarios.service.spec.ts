@@ -46,12 +46,12 @@ describe('Usuarios Service', () => {
         });
     });
 
-    describe('getEstadosUsuariosById method', () => {
+    describe('getEstadoUsuarioById method', () => {
         it('should invoke prismaService.EstadosUsuariosService.findUnique', async () => {
             const testParams = {
                 usuario_id: 1
             };
-            await EstadosUsuariosService.getEstadosUsuariosById(
+            await EstadosUsuariosService.getEstadoUsuarioById(
                 testParams.usuario_id
             );
             expect(prismaService.tbEstadosUsuarios.findUnique).toHaveBeenCalled();
@@ -70,21 +70,21 @@ describe('Usuarios Service', () => {
         });
     });
 
-    describe('createEstadosUsuarios method', () => {
+    describe('createEstadoUsuario method', () => {
         it('should invoke prismaService.EstadosUsuariosService.create', async () => {
             const testParams = {
                 data: {
                     nombre: "Andres"
                 }
             };
-            await EstadosUsuariosService.createEstadosUsuarios(
+            await EstadosUsuariosService.createEstadoUsuario(
                 testParams.data,
             );
             expect(prismaService.tbEstadosUsuarios.create).toHaveBeenCalled();
         });
     });
 
-    describe('updateEstadosUsuarios method', () => {
+    describe('updateEstadoUsuario method', () => {
         it('should invoke prismaService.EstadosUsuariosService.update', async () => {
             const testParams = {
                 data: {
@@ -92,19 +92,19 @@ describe('Usuarios Service', () => {
                     nombre: "Test",
                 }
             };
-            await EstadosUsuariosService.updateEstadosUsuarios(
+            await EstadosUsuariosService.updateEstadoUsuario(
                 testParams.data
             );
             expect(prismaService.tbEstadosUsuarios.update).toHaveBeenCalled();
         });
     });
 
-    describe('deleteEstadosUsuarios method', () => {
+    describe('deleteEstadoUsuario method', () => {
         it('should invoke prismaService.EstadosUsuariosService.delete', async () => {
             const testParams = {
                 estado_usuario_id: 1
             };
-            await EstadosUsuariosService.deleteEstadosUsuarios(
+            await EstadosUsuariosService.deleteEstadoUsuario(
                 testParams.estado_usuario_id
             );
             expect(prismaService.tbEstadosUsuarios.delete).toHaveBeenCalled();

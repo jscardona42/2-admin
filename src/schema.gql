@@ -188,7 +188,7 @@ type Funcionalidades {
 
 type Query {
   getEstadosUsuarios: [TbEstadosUsuarios!]!
-  getEstadosUsuariosById(estado_usuario_id: Float!): TbEstadosUsuarios!
+  getEstadoUsuarioById(estado_usuario_id: Float!): TbEstadosUsuarios!
   getFilterEstadosUsuarios(data: FilterEstadoUsuariosInput): [TbEstadosUsuarios!]!
   getTipoUsuarios: [TbTipoUsuarios!]!
   getTipoUsuarioById(tipo_usuario_id: Float!): TbTipoUsuarios!
@@ -253,12 +253,12 @@ input FilterFuncionalidadesInput {
 }
 
 type Mutation {
-  createEstadosUsuarios(data: CreateEstadosUsuariosInput!): TbEstadosUsuarios!
-  updateEstadosUsuarios(data: UpdateEstadosUsuariosInput!): TbEstadosUsuarios!
-  deleteEstadosUsuarios(estado_usuario_id: Float!): TbEstadosUsuarios!
-  createTipoUsuarios(data: CreateTipoUsuariosInput!): TbTipoUsuarios!
-  updateTipoUsuarios(data: UpdateTipoUsuariosInput!): TbTipoUsuarios!
-  deleteTipoUsuarios(tipo_usuario_id: Float!): TbTipoUsuarios!
+  createEstadoUsuario(data: CreateEstadoUsuarioInput!): TbEstadosUsuarios!
+  updateEstadoUsuario(data: UpdateEstadoUsuarioInput!): TbEstadosUsuarios!
+  deleteEstadoUsuario(estado_usuario_id: Float!): TbEstadosUsuarios!
+  createTipoUsuario(data: CreateTipoUsuarioInput!): TbTipoUsuarios!
+  updateTipoUsuario(data: UpdateTipoUsuarioInput!): TbTipoUsuarios!
+  deleteTipoUsuario(tipo_usuario_id: Float!): TbTipoUsuarios!
   createRootMenu: Menus!
   createMenu(data: CreateMenuInput!): Menus!
   updateMenu(data: String!): [Menus!]!
@@ -291,20 +291,20 @@ type Mutation {
   deleteFuncionalidad(funcionalidad_id: Float!): Funcionalidades!
 }
 
-input CreateEstadosUsuariosInput {
+input CreateEstadoUsuarioInput {
   nombre: String!
 }
 
-input UpdateEstadosUsuariosInput {
+input UpdateEstadoUsuarioInput {
   estado_usuario_id: Float!
   nombre: String!
 }
 
-input CreateTipoUsuariosInput {
+input CreateTipoUsuarioInput {
   nombre: String!
 }
 
-input UpdateTipoUsuariosInput {
+input UpdateTipoUsuarioInput {
   tipo_usuario_id: Float!
   nombre: String
   estado: Estado
