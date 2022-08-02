@@ -3,7 +3,7 @@ import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { TbEstadosUsuarios } from '../EstadosUsuarios/entities/tbestadosusuarios.entity'
 import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbmetodosautenticacion.entity'
-import { TbRoles } from 'src/modules/GestionFuncionalidades/Roles/entities/tbroles.entity'
+import { TbRoles } from '../../../modules/GestionFuncionalidades/Roles/entities/tbroles.entity'
 import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
 import { UsuariosSesiones } from './usuariossesiones.entity'
 
