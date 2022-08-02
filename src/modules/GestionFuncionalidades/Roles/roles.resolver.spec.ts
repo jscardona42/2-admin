@@ -1,18 +1,18 @@
 import { Test } from '@nestjs/testing';
 import { AddFuncionalidadesToRolInput, CreateRolInput, UpdateRolInput } from './dto/roles.dto';
-import { RolesResolver } from './roles.resolver';
-import { RolesService } from './roles.service';
+import { TbRolesResolver } from './roles.resolver';
+import { TbRolesService } from './roles.service';
 
 describe('Roles Resolver', () => {
-  let roleResolver: RolesResolver;
-  let roleService: RolesService;
+  let roleResolver: TbRolesResolver;
+  let roleService: TbRolesService;
 
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       providers: [
-        RolesResolver,
+        TbRolesResolver,
         {
-          provide: RolesService,
+          provide: TbRolesService,
           useFactory: () => ({
             getRoles: jest.fn(),
             getRolById: jest.fn(),
@@ -26,8 +26,8 @@ describe('Roles Resolver', () => {
       ],
     }).compile();
 
-    roleResolver = module.get<RolesResolver>(RolesResolver);
-    roleService = module.get<RolesService>(RolesService);
+    roleResolver = module.get<TbRolesResolver>(TbRolesResolver);
+    roleService = module.get<TbRolesService>(TbRolesService);
   });
 
 

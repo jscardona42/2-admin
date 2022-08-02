@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
+
 import { UsuariosResolver } from './usuarios.resolver';
 import { UsuariosService } from './usuarios.service';
 
@@ -60,8 +61,8 @@ describe('Iconos Resolver', () => {
     describe('Query signInLogin)', () => {
         it('should invoke usuariosService.signInLogin', async () => {
             const testParams: SignInUserInput = {
-                username: "usuario1",
-                password: "12345"
+                nombre_usuario: "usuario1",
+                contrasena: "12345"
             };
             await usuariosResolver.signInLogin(testParams);
             expect(usuariosService.signInLogin).toHaveBeenCalled();

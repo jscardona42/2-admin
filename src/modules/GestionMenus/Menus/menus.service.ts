@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import { TbRolesService } from '../../../modules/GestionFuncionalidades/Roles/roles.service';
 import { EntidadesService } from '../../../modules/Admin/Entidades/entidades.service';
-import { RolesService } from '../../GestionFuncionalidades/Roles/roles.service';
 import { UsuariosService } from '../../../modules/Usuarios/usuarios.service';
 import { PrismaService } from '../../../prisma.service';
 import { CreateMenuInput } from './dto/menus.dto';
@@ -12,7 +12,7 @@ export class MenusService {
     private prismaService: PrismaService,
     private usuariosService: UsuariosService,
     private entidadesService: EntidadesService,
-    private rolesService: RolesService
+    private rolesService: TbRolesService
   ) { }
 
   // Obtener todos los menús
