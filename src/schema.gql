@@ -386,8 +386,9 @@ input SignUpUserInput {
 
 input ChangePasswordInput {
   usuario_id: Float!
-  contrasena: String!
+  contrasena: String
   nueva_contrasena: String!
+  tipo_solicitud: Float!
 }
 
 input SendCodeVerificationInput {

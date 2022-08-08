@@ -70,7 +70,7 @@ export class UsuariosService {
             throw new UnauthorizedException('El usuario ya se encuentra registrado');
         }
         let contrasena_provisional = this.createRandomPassword();
-        
+
         const user = this.prismaService.usuarios.create({
             data: {
                 nombre_usuario: data.nombre_usuario,
@@ -183,34 +183,50 @@ export class UsuariosService {
             where: { usuario_id: data.usuario_id },
             select: { salt: true },
         })
-        
+
         if (salt === null) {
-            throw new AuthenticationError('Invalid credentials');
+            throw new AuthenticationError('Credenciales invalidas');
         }
+        if (data.tipo_solicitud == 1) {
+            const login = await this.prismaService.usuarios.findFirst({
+                where: {
+                    contrasena: await this.hashPassword(data.contrasena, salt.salt)
+                },
+            })
 
-        const login = await this.prismaService.usuarios.findFirst({
-            where: {
-                contrasena: await this.hashPassword(data.contrasena, salt.salt)
-            },
+            if (login === null) {
+                throw new AuthenticationError('Credenciales invalidas');
+            }
+        }
+        const user0 = await this.getUsuarioById(data.usuario_id)
+
+        let usuarioparametro = await this.prismaService.usuariosParametros.findFirst({
+            where: { alias: "autvigenciacontrasena" },
+            select: { usuario_parametro_id: true }
         })
-
-        if (login === null) {
-            throw new AuthenticationError('Invalid credentials');
-        }
-
+        let parametrovalor = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_id: usuarioparametro.usuario_parametro_id, usuario_id: user0.usuario_id },
+            select: { usuario_parametro_valor_id: true, valor: true }
+        })
+        
+        let tiempo00 = await this.addDaysToDate(new Date(), parametrovalor.valor)
         const new_salt = await bcrypt.genSalt();
-
+        
         const user = await this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
                 contrasena: await this.hashPassword(data.nueva_contrasena, new_salt),
                 salt: new_salt,
+                estado_usuario_id: 1,
+                sol_cambio_contrasena: false,
+                cant_intentos: 0,
+                fecha_vigencia_contrasena: tiempo00
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
 
         if (user === null) {
-            throw new UnauthorizedException('User does not exist');
+            throw new UnauthorizedException('No existe este usuario');
         }
 
         return user;
@@ -315,11 +331,12 @@ export class UsuariosService {
     }
 
     public async exValidationCodeVerification(data: ValidationCodeVerificationInput): Promise<any> {
-
+ // limite 60 segundos
         const user = await this.getUsuarioByUsername(data.nombre_usuario)
 
         let Result = await this.prismaService.usuariosParametrosValores.findFirst({
             where: {
+                usuario_id: user.usuario_id,
                 valor: await bcrypt.hash(data.codigo, user.salt)
             },
         })
@@ -328,13 +345,7 @@ export class UsuariosService {
             throw new UnauthorizedException("Incorrect validation code");
         }
 
-        await this.prismaService.usuarios.update({
-            where: { usuario_id: user.usuario_id },
-            data: {
-                cant_intentos: 0,
-                estado_usuario_id: { set: 1 }
-            }
-        })
+        
         return user;
     }
     async aumentoIntentos(data) {
@@ -367,7 +378,7 @@ export class UsuariosService {
         return tiempo.toString()
     }
 
-    public async addDaysToDate(date, days){
+    public async addDaysToDate(date, days) {
         let res = new Date(date);
         res.setDate(res.getDate() + days);
         return res;

@@ -44,13 +44,16 @@ export class ChangePasswordInput {
     @IsNotEmpty()
     usuario_id: number
 
-    @Field()
-    @IsNotEmpty()
-    contrasena: string
+    @Field({nullable: true})
+    contrasena?: string
 
     @Field()
     @IsNotEmpty()
     nueva_contrasena: string
+
+    @Field()
+    @IsNotEmpty()
+    tipo_solicitud: number
 }
 
 @InputType()
