@@ -115,7 +115,7 @@ model UsuariosParametrosValores {
   usuario_parametro_valor_id Int                @id(map: "UsuarioParametroValor_id") @default(autoincrement())
   usuario_id                 Int
   usuario_parametro_id       Int
-  valor                      String?            @db.VarChar(50)
+  valor                      String?            @db.VarChar(255)
   UsuariosParametros         UsuariosParametros @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "UsuarioParametro_fk")
   Usuarios                   Usuarios           @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 

@@ -11,10 +11,6 @@ export class SignUpUserInput {
 
     @Field(() => String)
     @IsNotEmpty()
-    contrasena: string
-
-    @Field(() => String)
-    @IsNotEmpty()
     correo: string
 
     @Field(() => Int)
@@ -55,4 +51,24 @@ export class ChangePasswordInput {
     @Field()
     @IsNotEmpty()
     nueva_contrasena: string
+}
+
+@InputType()
+export class SendCodeVerificationInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_usuario: string
+}
+
+@InputType()
+export class ValidationCodeVerificationInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo: string
+
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_usuario: string
 }
