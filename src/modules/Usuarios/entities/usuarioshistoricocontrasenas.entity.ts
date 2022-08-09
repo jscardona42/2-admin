@@ -3,7 +3,7 @@ import { Field, ObjectType } from "@nestjs/graphql"
 import { Usuarios } from './usuarios.entity'
 
 @ObjectType()
-export class UsuariosSesionesSec {
+export class UsuariosHistoricoContrasenas {
 
     @Field(() => Number)
     usu_historico_contrasena_id: number 

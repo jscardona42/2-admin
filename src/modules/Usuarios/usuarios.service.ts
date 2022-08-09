@@ -6,6 +6,8 @@ import { AuthenticationError } from 'apollo-server-express';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 import { MailerService } from '@nestjs-modules/mailer';
+import { prisma } from '@prisma/client';
+import { RFC_2822 } from 'moment';
 
 
 @Injectable()
@@ -115,6 +117,11 @@ export class UsuariosService {
         })
 
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
+
+        if (user0.sol_cambio_contrasena == true) {
+            throw new UnauthorizedException('Debe cambiar la contrasena')
+        }
+
         let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
         let tiempo = await this.timeCalculateDays(user0);
 
@@ -160,6 +167,20 @@ export class UsuariosService {
 
     }
 
+    async createHistoricoContrasena(data: any) {
+        return this.prismaService.usuarios.update({
+            where: { usuario_id: data.usuario_id_ },
+            data: {
+                UsuariosHistoricoContrasenasSec: {
+                    create: {
+                        contrasena: data.contrasena,
+                        fecha_actualizacion: new Date()
+                    }
+                }
+            }
+        })
+    }
+
     async logOutLogin(usuario_id) {
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
@@ -169,20 +190,20 @@ export class UsuariosService {
 
     async exChangePasswordLogin(data: ChangePasswordInput): Promise<any> {
 
-        await this.getUsuarioById(data.usuario_id);
-
+        let user9 = await this.getUsuarioById(data.usuario_id);
         const salt = await this.prismaService.usuarios.findFirst({
-            where: { usuario_id: data.usuario_id },
+            where: { usuario_id: user9.usuario_id },
             select: { salt: true },
         })
 
         if (salt === null) {
             throw new AuthenticationError('Credenciales invalidas');
         }
-        if (data.tipo_solicitud == 1) {
+        if (user9.sol_cambio_contrasena == true) {
             const login = await this.prismaService.usuarios.findFirst({
                 where: {
-                    contrasena: await this.hashPassword(data.contrasena, salt.salt)
+                    contrasena: await this.hashPassword(data.contrasena, salt.salt),
+                    usuario_id: data.usuario_id
                 },
             })
 
@@ -190,19 +211,26 @@ export class UsuariosService {
                 throw new AuthenticationError('Credenciales invalidas');
             }
         }
+
+        await this.ValidationHistoricoContrasenas(data)
+
         let usuarioparametro = await this.getUsuarioParametros(data.usuario_id, "autvigenciacontrasena")
         let tiempo00 = await this.addDaysToDate(new Date(), parseInt(usuarioparametro.valor))
-        const new_salt = await bcrypt.genSalt();
 
         const user = await this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
-                contrasena: await this.hashPassword(data.nueva_contrasena, new_salt),
-                salt: new_salt,
+                contrasena: await this.hashPassword(data.nueva_contrasena, salt.salt),
                 estado_usuario_id: 1,
                 sol_cambio_contrasena: false,
                 cant_intentos: 0,
-                fecha_vigencia_contrasena: tiempo00
+                fecha_vigencia_contrasena: tiempo00,
+                UsuariosHistoricoContrasenasSec: {
+                    create: {
+                        contrasena: await this.hashPassword(data.nueva_contrasena, salt.salt),
+                        fecha_actualizacion: new Date()
+                    }
+                }
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
@@ -227,6 +255,40 @@ export class UsuariosService {
         }
     }
 
+    async ValidationHistoricoContrasenas(data: any) {
+
+        let user = await this.getUsuarioById(data.usuario_id);
+        let numerocontrasenas = await this.getUsuarioParametros(data.usuario_id, "autnumcontant")
+        let historialcontrasenas = await this.prismaService.usuariosHistoricoContrasenas.findMany({
+            take: parseInt(numerocontrasenas.valor),
+            orderBy: { fecha_actualizacion: "desc" },
+            where: {
+                usuario_id: user.usuario_id
+            },
+            select: { usu_historico_contrasena_id: true }
+        })
+
+        let hisids = []
+        historialcontrasenas.forEach((his) => {
+            hisids.push(his.usu_historico_contrasena_id)
+        })
+
+        let validacioncontrasenas = await this.prismaService.usuariosHistoricoContrasenas.findMany({
+            where: {
+                usu_historico_contrasena_id: { in: hisids }, contrasena: await this.hashPassword(data.nueva_contrasena, user.salt)
+            },
+        })
+
+        if (user.nombre_usuario == data.nueva_contrasena) {
+            throw new UnauthorizedException('La contrasena no puede ser igual al nombre de usuario');
+        }
+
+        if (validacioncontrasenas.length > 0) {
+            throw new UnauthorizedException('La contrasena no puede ser igual a una contrasena anterior');
+        }
+
+    }
+
     async hashPassword(contrasena: string, salt: string): Promise<any> {
         return bcrypt.hash(contrasena, salt);
     }
@@ -241,7 +303,6 @@ export class UsuariosService {
                         create: {
                             token: token,
                             fecha_ultimo_login: new Date()
-
                         },
                         update: {
                             token: token,
@@ -252,17 +313,6 @@ export class UsuariosService {
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
-    }
-
-    codeForgetPassword(): string {
-        let min = 0;
-        let max = 9999999999;
-        let Code = Math.floor(Math.random() * (max - min)) + min;
-        return Code.toString();
-    }
-
-    createRandomPassword(): string {
-        return Math.random().toString(36).slice(-8);
     }
 
     public async exSendCodeVerification(data: SendCodeVerificationInput) {
@@ -282,12 +332,12 @@ export class UsuariosService {
         let time1 = Date.parse(parametrovalor1.valor)
         let time2 = new Date(time1)
         let tiempo = await this.timeCalculateSecs(time2);
-        if(tiempo <= 60){
+        if (tiempo <= 60) {
             throw new UnauthorizedException("Debe esperar 60 segundos para generar otro codigo");
         }
 
-        await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id, )
-        let updateData = await this.updateUsuarioParametro(user.usuario_id, new Date().toString(), parametrovalor1.usuario_parametro_valor_id, )
+        await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
+        let updateData = await this.updateUsuarioParametro(user.usuario_id, new Date().toString(), parametrovalor1.usuario_parametro_valor_id,)
         try {
             await this.mailerService.sendMail({
                 to: user.correo,
@@ -305,20 +355,32 @@ export class UsuariosService {
     public async exValidationCodeVerification(data: ValidationCodeVerificationInput): Promise<any> {
 
         const user0 = await this.getUsuarioById(data.usuario_id)
-        
-            let Result = await this.prismaService.usuariosParametrosValores.findFirst({
-                where: {
-                    usuario_id: user0.usuario_id,
-                    valor: await bcrypt.hash(data.codigo, user0.salt)
-                },
-            })
 
-            if (Result === null) {
-                throw new UnauthorizedException("Codigo invalido");
-            }
+        let Result = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: {
+                usuario_id: user0.usuario_id,
+                valor: await bcrypt.hash(data.codigo, user0.salt)
+            },
+        })
 
-            return user0;
+        if (Result === null) {
+            throw new UnauthorizedException("Codigo invalido");
+        }
+
+        return user0;
     }
+
+    codeForgetPassword(): string {
+        let min = 0;
+        let max = 9999999999;
+        let Code = Math.floor(Math.random() * (max - min)) + min;
+        return Code.toString();
+    }
+
+    createRandomPassword(): string {
+        return Math.random().toString(36).slice(-8);
+    }
+    
     async addIntentos(data) {
 
         const user0 = await this.getUsuarioByUsername(data)
@@ -378,7 +440,7 @@ export class UsuariosService {
 
     }
 
-    public async updateUsuarioParametro(usuario_id: number, valor: string, usuario_parametro_valor_id: number){
+    public async updateUsuarioParametro(usuario_id: number, valor: string, usuario_parametro_valor_id: number) {
 
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
