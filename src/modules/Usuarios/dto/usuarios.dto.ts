@@ -50,10 +50,6 @@ export class ChangePasswordInput {
     @Field()
     @IsNotEmpty()
     nueva_contrasena: string
-
-    @Field()
-    @IsNotEmpty()
-    tipo_solicitud: number
 }
 
 @InputType()
