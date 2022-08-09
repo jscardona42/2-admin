@@ -249,7 +249,7 @@ input SignInUserInput {
 
 input ValidationCodeVerificationInput {
   codigo: String!
-  nombre_usuario: String!
+  usuario_id: Float!
 }
 
 input FilterFuncionalidadesInput {

@@ -1,8 +1,9 @@
 import 'reflect-metadata'
 import { Field, ObjectType } from "@nestjs/graphql"
+import { UsuariosParametros } from './usuariosparametros.entity'
 
 @ObjectType()
-export class UsuariosParametros {
+export class usuariosParametrosValores {
 
     @Field(() => Number)
     usuario_parametro_valor_id: number 

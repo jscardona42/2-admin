@@ -71,7 +71,7 @@ export class ValidationCodeVerificationInput {
     @IsNotEmpty()
     codigo: string
 
-    @Field(() => String)
+    @Field(() => Number)
     @IsNotEmpty()
-    nombre_usuario: string
+    usuario_id: number
 }
