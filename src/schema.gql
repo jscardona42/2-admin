@@ -154,10 +154,10 @@ type Usuarios {
   fecha_actualizacion: String!
   cant_intentos: Float!
   TbEstadosUsuarios: TbEstadosUsuarios!
-  TbMetodosAutenticacion: TbMetodosAutenticacion!
+  TbMetodosAutenticacion: TbMetodosAutenticacion
   TbRoles: TbRoles!
   TbTipoUsuarios: TbTipoUsuarios!
-  UsuariosSesionesSec: UsuariosSesiones!
+  UsuariosSesionesSec: UsuariosSesiones
 }
 
 type Traducciones {
@@ -381,14 +381,13 @@ input SignUpUserInput {
   rol_id: Int!
   estado_usuario_id: Float!
   tipo_usuario_id: Float!
-  metodo_autenticacion_id: Float!
+  metodo_autenticacion_id: Float
 }
 
 input ChangePasswordInput {
   usuario_id: Float!
   contrasena: String
   nueva_contrasena: String!
-  tipo_solicitud: Float!
 }
 
 input SendCodeVerificationInput {
