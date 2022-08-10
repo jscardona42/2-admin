@@ -213,6 +213,7 @@ type Query {
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
   signInLogin(data: SignInUserInput!): Usuarios!
+  exValidationCodeVerification(data: ValidationCodeVerificationInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -246,6 +247,11 @@ input SignInUserInput {
   contrasena: String!
 }
 
+input ValidationCodeVerificationInput {
+  codigo: String!
+  usuario_id: Float!
+}
+
 input FilterFuncionalidadesInput {
   nombre: String
   entidad_nombre: String
@@ -276,6 +282,7 @@ type Mutation {
   signUpLogin(data: SignUpUserInput!): Usuarios!
   logOutLogin(usuario_id: Float!): Usuarios!
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
+  exSendCodeVerification(data: SendCodeVerificationInput!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
@@ -370,7 +377,6 @@ input UpdatePermisoInput {
 
 input SignUpUserInput {
   nombre_usuario: String!
-  contrasena: String!
   correo: String!
   rol_id: Int!
   estado_usuario_id: Float!
@@ -380,8 +386,13 @@ input SignUpUserInput {
 
 input ChangePasswordInput {
   usuario_id: Float!
-  contrasena: String!
+  contrasena: String
   nueva_contrasena: String!
+  tipo_solicitud: Float!
+}
+
+input SendCodeVerificationInput {
+  nombre_usuario: String!
 }
 
 input CreateTraduccionesInput {

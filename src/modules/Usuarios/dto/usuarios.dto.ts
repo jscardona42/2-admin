@@ -4,14 +4,10 @@ import { IsNotEmpty } from 'class-validator'
 
 @InputType()
 export class SignUpUserInput {
-    
-    @Field(() => String)
-    @IsNotEmpty()
-    nombre_usuario: string
 
     @Field(() => String)
     @IsNotEmpty()
-    contrasena: string
+    nombre_usuario: string
 
     @Field(() => String)
     @IsNotEmpty()
@@ -28,9 +24,8 @@ export class SignUpUserInput {
     @IsNotEmpty()
     tipo_usuario_id: number
 
-    @Field(() => Number)
-    @IsNotEmpty()
-    metodo_autenticacion_id: number
+    @Field(() => Number, { nullable: true })
+    metodo_autenticacion_id?: number
 }
 
 @InputType()
@@ -48,11 +43,30 @@ export class ChangePasswordInput {
     @IsNotEmpty()
     usuario_id: number
 
-    @Field()
-    @IsNotEmpty()
-    contrasena: string
+    @Field({ nullable: true })
+    contrasena?: string
 
     @Field()
     @IsNotEmpty()
     nueva_contrasena: string
+}
+
+@InputType()
+export class SendCodeVerificationInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    nombre_usuario: string
+}
+
+@InputType()
+export class ValidationCodeVerificationInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
 }

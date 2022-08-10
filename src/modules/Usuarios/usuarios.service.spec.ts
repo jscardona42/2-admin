@@ -8,7 +8,8 @@ import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
 import { UsuariosService } from './usuarios.service';
 import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
-import { SignInUserInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 
 describe('Usuarios Service', () => {
@@ -18,6 +19,16 @@ describe('Usuarios Service', () => {
     beforeEach(async () => {
         const module = await Test.createTestingModule({
             imports: [
+                MailerModule.forRoot({
+                    transport: {
+                      host: process.env.HOST_MAILER,
+                      port: process.env.PORT_MAILER,
+                      auth: {
+                        user: process.env.USER_MAILER,
+                        pass: process.env.PASSWORD_MAILER
+                      },
+                    }
+                  }),
                 JwtModule.register({
                     secret: process.env.JWT_SECRET,
                     signOptions: {
@@ -26,15 +37,17 @@ describe('Usuarios Service', () => {
                 }),
             ],
             providers: [
-                UsuariosService, TbRolesService, PermisosService, EntidadesService, ValidacionesService, FuncionalidadesService,
+                UsuariosService, TbRolesService, PermisosService, MailerModule, EntidadesService, ValidacionesService, FuncionalidadesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
                         usuarios: {
                             findFirst: jest.fn(() => {
-                                return { salt: String }
+                                return { salt: String, correo: "andresfc-916@hotmail.com" }
                             }),
-                            findUnique: jest.fn(),
+                            findUnique: jest.fn(()=> {
+                                return{ correo: "andresfc-96@hotmail.com", salt: String } 
+                            }),
                             usernameExists: jest.fn(() => { return { usernameExists: false } }),
                             findMany: jest.fn(() => { return { usernameExists: false } }),
                             create: jest.fn(() => {
@@ -45,13 +58,25 @@ describe('Usuarios Service', () => {
                             update: jest.fn(() => { return { usernameExists: false } }),
                             delete: jest.fn(() => { return { usernameExists: false } }),
                         },
-                        auditorias: {
-                            findFirst: jest.fn(),
+                        usuariosParametros: {
+                            findFirst: jest.fn(() => { return { usuario_parametro_id: 1}}),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
-                        roles: {
+                        usuariosParametrosValores: {
+                            findFirst: jest.fn(() => { return { usuario_parametro_valor_id: 1}}),
+                            findMany: jest.fn(),
+                            findUnique: jest.fn(),
+                            create: jest.fn()
+                        },
+                        usuariosHistoricoContrasenas: {
+                            findFirst: jest.fn(() => { return { usu_historico_contrasena_id: 1}}),
+                            findMany: jest.fn(() => { return [{usu_historico_contrasena_id: 1}]}),
+                            findUnique: jest.fn(),
+                            create: jest.fn()
+                        },
+                        tbRoles: {
                             findUnique: jest.fn(() => { return { rol_id: 1 } })
                         },
                     }),
@@ -106,14 +131,47 @@ describe('Usuarios Service', () => {
         });
     });
 
+    // describe('exChangePasswordLogin method', () => {
+    //     it('should invoke prismaService.usuarios.findFirst', async () => {
+    //         let testParams: ChangePasswordInput = {
+    //             usuario_id: 7,
+    //             contrasena: "1234",
+    //             nueva_contrasena: "12345"
+    //         }
+    //         await usuariosService.exChangePasswordLogin(testParams);
+    //         expect(prismaService.usuarios.findFirst).toHaveBeenCalled();
+    //     });
+    // });
+
+    describe('exSendCodeVerification method', () => {
+        it('should invoke prismaService.usuarios.findFirst', async () => {
+            let testParams: SendCodeVerificationInput = {
+                nombre_usuario: "Andres"
+            }
+            await usuariosService.exSendCodeVerification(testParams);
+            expect(prismaService.usuarios.findFirst).toHaveBeenCalled();
+        });
+    });
+
+    describe('exValidationCodeVerification method', () => {
+        it('should invoke prismaService.usuariosParametrosValores.findFirst', async () => {
+            let testParams: ValidationCodeVerificationInput = {
+                codigo: "1234",
+                usuario_id: 7
+            }
+            await usuariosService.exValidationCodeVerification(testParams);
+            expect(prismaService.usuariosParametrosValores.findFirst).toHaveBeenCalled();
+        });
+    });
+
     // describe('signUpLogin method', () => {
     //     it('should invoke prismaService.usuarios.create', async () => {
-    //         var testParams: SignUpUserInput = {
-    //             email: "usuario@gmail.com",
-    //             nombre: "Johan Cardona",
-    //             password: "12121",
+    //         let testParams: SignUpUserInput = {
+    //             correo: "usuario@gmail.com",
+    //             nombre_usuario: "Johan Cardona",
     //             rol_id: 1,
-    //             username: "usuario2"
+    //             estado_usuario_id: 1,
+    //             tipo_usuario_id: 1
     //         }
     //         await usuariosService.signUpLogin(testParams);
     //         expect(prismaService.usuarios.create).toHaveBeenCalled();

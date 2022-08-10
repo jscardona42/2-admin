@@ -32,9 +32,9 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
         let authorization = req.headers.authorization;
 
-        if ((query !== "signInLogin" && query !== "logOutLogin" && query !== "exGetTraducciones" && authorization === undefined && query !== "saveEntidadesPermisosValidaciones")) {
+        if ((query !== "signInLogin" && query !== "logOutLogin" && query !== "exGetTraducciones" && authorization === undefined && query !== "saveEntidadesPermisosValidaciones" && query !== "exSendCodeVerification" && query !== "exValidationCodeVerification" && query !== "exChangePasswordLogin")) {
             throw new UnauthorizedException("Unauthorized");
-        } else if (query === "signInLogin" || query === "logOutLogin" || query === "exGetTraducciones" || query === "saveEntidadesPermisosValidaciones") {
+        } else if (query === "signInLogin" || query === "logOutLogin" || query === "exGetTraducciones" || query === "saveEntidadesPermisosValidaciones" || query === "exSendCodeVerification" || query === "exValidationCodeVerification" || query === "exChangePasswordLogin") {
             return true;
         }
 

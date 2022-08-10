@@ -1,11 +1,11 @@
 import { Test } from '@nestjs/testing';
-import { SignInUserInput, SignUpUserInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 
 import { UsuariosResolver } from './usuarios.resolver';
 import { UsuariosService } from './usuarios.service';
 
 
-describe('Iconos Resolver', () => {
+describe('Usuarios Resolver', () => {
     let usuariosResolver: UsuariosResolver;
     let usuariosService: UsuariosService;
 
@@ -21,6 +21,9 @@ describe('Iconos Resolver', () => {
                         getFilterUsuarios: jest.fn(),
                         signUpLogin: jest.fn(),
                         signInLogin: jest.fn(),
+                        exSendCodeVerification: jest.fn(),
+                        exValidationCodeVerification: jest.fn(),
+                        exChangePasswordLogin: jest.fn()
                     }),
                 },
             ],
@@ -75,6 +78,30 @@ describe('Iconos Resolver', () => {
             let testParams: SignUpUserInput;
             await usuariosResolver.signUpLogin(testParams);
             expect(usuariosService.signUpLogin).toHaveBeenCalledWith(testParams);
+        });
+    });
+
+    describe('Mutation exChangePasswordLogin()', () => {
+        it('should invoke usuariosService.exChangePasswordLogin', async () => {
+            let testParams: ChangePasswordInput;
+            await usuariosResolver.exChangePasswordLogin(testParams);
+            expect(usuariosService.exChangePasswordLogin).toHaveBeenCalledWith(testParams);
+        });
+    });
+
+    describe('Mutation exSendCodeVerification()', () => {
+        it('should invoke usuariosService.exSendCodeVerification', async () => {
+            let testParams: SendCodeVerificationInput;
+            await usuariosResolver.exSendCodeVerification(testParams);
+            expect(usuariosService.exSendCodeVerification).toHaveBeenCalledWith(testParams);
+        });
+    });
+
+    describe('Query exValidationCodeVerification()', () => {
+        it('should invoke usuariosService.exValidationCodeVerification', async () => {
+            let testParams: ValidationCodeVerificationInput;
+            await usuariosResolver.exValidationCodeVerification(testParams);
+            expect(usuariosService.exValidationCodeVerification).toHaveBeenCalledWith(testParams);
         });
     });
 
