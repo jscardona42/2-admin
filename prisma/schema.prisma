@@ -67,7 +67,7 @@ model Usuarios {
   correo                          String                         @db.VarChar(100)
   salt                            String                         @db.VarChar
   rol_id                          Int
-  metodo_autenticacion_id         Int
+  metodo_autenticacion_id         Int?
   tipo_usuario_id                 Int
   estado_usuario_id               Int
   sol_cambio_contrasena           Boolean?                       @default(false)
@@ -76,7 +76,7 @@ model Usuarios {
   fecha_actualizacion             DateTime?                      @db.Timestamp(6)
   cant_intentos                   Int                            @default(0)
   TbEstadosUsuarios               TbEstadosUsuarios              @relation(fields: [estado_usuario_id], references: [estado_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbEstadoUsuario_fk")
-  TbMetodosAutenticacion          TbMetodosAutenticacion         @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
+  TbMetodosAutenticacion          TbMetodosAutenticacion?        @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
   TbRoles                         TbRoles                        @relation(fields: [rol_id], references: [rol_id], onDelete: NoAction, onUpdate: NoAction, map: "TbRol_fk")
   TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbTipoUsuario_fk")
   UsuariosHistoricoContrasenasSec UsuariosHistoricoContrasenas[]

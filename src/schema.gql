@@ -154,10 +154,10 @@ type Usuarios {
   fecha_actualizacion: String!
   cant_intentos: Float!
   TbEstadosUsuarios: TbEstadosUsuarios!
-  TbMetodosAutenticacion: TbMetodosAutenticacion!
+  TbMetodosAutenticacion: TbMetodosAutenticacion
   TbRoles: TbRoles!
   TbTipoUsuarios: TbTipoUsuarios!
-  UsuariosSesionesSec: UsuariosSesiones!
+  UsuariosSesionesSec: UsuariosSesiones
 }
 
 type Traducciones {
