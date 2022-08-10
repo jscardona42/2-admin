@@ -2,12 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { AuthenticationError } from 'apollo-server-express';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 import { MailerService } from '@nestjs-modules/mailer';
-import { prisma } from '@prisma/client';
-import { RFC_2822 } from 'moment';
 
 
 @Injectable()
@@ -183,9 +180,16 @@ export class UsuariosService {
     }
 
     async logOutLogin(usuario_id) {
+        await this.getUsuarioById(usuario_id);
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
-            data: {}
+            data: {
+                UsuariosSesionesSec: {
+                    update: {
+                        token: null
+                    }
+                }
+            }
         })
     }
 
@@ -381,7 +385,7 @@ export class UsuariosService {
     createRandomPassword(): string {
         return Math.random().toString(36).slice(-8);
     }
-    
+
     async addIntentos(data) {
 
         const user0 = await this.getUsuarioByUsername(data)
