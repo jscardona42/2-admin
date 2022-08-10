@@ -114,26 +114,26 @@ export class UsuariosService {
             select: { salt: true, cant_intentos: true, },
         })
 
-        let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
-
-        if (user0.sol_cambio_contrasena) {
-            throw new UnauthorizedException({ codigo: "001", message: "Usuario nuevo, debe cambiar la contraseña" })
-        }
-
-        let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
-        let tiempo = await this.timeCalculateDays(user0);
-
-        if (tiempo >= parseInt(usuarioparametro.valor)) {
-            await this.statusChange(data.nombre_usuario)
-            throw new UnauthorizedException({ codigo: "002", message: "Su contraseña ha expirado, debe cambiarla" });
-        }
-
-        if (user0.cant_intentos >= process.env.INTENTOS) {
-            throw new UnauthorizedException({ codigo: "003", message: "Usuario bloqueado por intentos fallidos, restablezca su contraseña" });
-        }
-
         if (salt === null) {
             throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
+        }
+
+        let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
+
+        if (!user0.sol_cambio_contrasena) {
+            let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
+            let tiempo = await this.timeCalculateDays(user0);
+
+            if (tiempo >= parseInt(usuarioparametro.valor)) {
+                await this.statusChange(data.nombre_usuario)
+                Object.assign(user0, { error_code: "002" });
+                return user0;
+            }
+
+            if (user0.cant_intentos >= process.env.INTENTOS) {
+                Object.assign(user0, { error_code: "003" });
+                return user0;
+            }
         }
 
         const user = await this.prismaService.usuarios.findFirst({
@@ -153,6 +153,11 @@ export class UsuariosService {
             throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
         }
 
+        if (user.sol_cambio_contrasena) {
+            Object.assign(user, { error_code: "001" });
+            return user;
+        }
+
         const token = this.jwtService.sign({ userId: user.usuario_id });
         await this.prismaService.usuarios.update({
             where: { usuario_id: user.usuario_id },
@@ -162,7 +167,6 @@ export class UsuariosService {
         })
 
         return this.createToken(token, user);
-
     }
 
     async createHistoricoContrasena(data: any) {

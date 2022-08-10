@@ -70,4 +70,7 @@ export class Usuarios {
 
     @Field(() => UsuariosSesiones, { nullable: true })
     UsuariosSesionesSec?: UsuariosSesiones
+
+    @Field(() => String, { nullable: true })
+    error_code: string
 }
