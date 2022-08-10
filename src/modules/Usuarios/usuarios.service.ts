@@ -14,7 +14,7 @@ import { RFC_2822 } from 'moment';
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private Roles: TbRolesService,
+        private rolesService: TbRolesService,
         private mailerService: MailerService,
         private jwtService: JwtService,
     ) { }
@@ -65,7 +65,7 @@ export class UsuariosService {
 
     async signUpLogin(data: SignUpUserInput): Promise<any> {
 
-        await this.Roles.getRolById(data.rol_id);
+        await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (usernameExists) {
@@ -98,12 +98,13 @@ export class UsuariosService {
             await this.mailerService.sendMail({
                 to: data.correo,
                 from: process.env.USER_MAILER,
-                subject: 'Código de recuperacionn',
-                text: 'Código de recuperacionn',
-                html: `<b>Su código de recuperacionn es ${contrasena_provisional} </b>`,
+                subject: 'Clave temporal',
+                text: 'Clave temporal',
+                html: `<b>Usuario: ${data.nombre_usuario} </b>
+                <b>Clave temporal: ${contrasena_provisional} </b>`,
             })
         } catch (error) {
-            throw new UnauthorizedException("No se puede enviar el codigo de verificacion " + error);
+            throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
         }
 
         return user;
@@ -118,8 +119,8 @@ export class UsuariosService {
 
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
 
-        if (user0.sol_cambio_contrasena == true) {
-            throw new UnauthorizedException('Debe cambiar la contrasena')
+        if (user0.sol_cambio_contrasena) {
+            throw new UnauthorizedException({ codigo: "001", message: "Usuario nuevo, debe cambiar la contraseña" })
         }
 
         let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
@@ -127,15 +128,15 @@ export class UsuariosService {
 
         if (tiempo >= parseInt(usuarioparametro.valor)) {
             await this.statusChange(data.nombre_usuario)
-            throw new UnauthorizedException('El limite de tiempo de vigencia de la contrasena ha caducado');
+            throw new UnauthorizedException({ codigo: "002", message: "Su contraseña ha expirado, debe cambiarla" });
         }
 
         if (user0.cant_intentos >= process.env.INTENTOS) {
-            throw new UnauthorizedException('Cantidad de intentos superada, restablezca su contrasena');
+            throw new UnauthorizedException({ codigo: "003", message: "Usuario bloqueado por intentos fallidos, restablezca su contraseña" });
         }
 
         if (salt === null) {
-            throw new UnauthorizedException('Credenciales inválidas');
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
         }
 
         const user = await this.prismaService.usuarios.findFirst({
@@ -152,7 +153,7 @@ export class UsuariosService {
             if (user0.cant_intentos + 1 == process.env.INTENTOS) {
                 await this.statusChange(data.nombre_usuario)
             }
-            throw new UnauthorizedException('Credenciales inválidas');
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
         }
 
         const token = this.jwtService.sign({ userId: user.usuario_id });
@@ -197,9 +198,9 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            throw new AuthenticationError('Credenciales invalidas');
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
         }
-        if (user9.sol_cambio_contrasena == true) {
+        if (user9.sol_cambio_contrasena) {
             const login = await this.prismaService.usuarios.findFirst({
                 where: {
                     contrasena: await this.hashPassword(data.contrasena, salt.salt),
@@ -208,7 +209,7 @@ export class UsuariosService {
             })
 
             if (login === null) {
-                throw new AuthenticationError('Credenciales invalidas');
+                throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
             }
         }
 
@@ -280,11 +281,11 @@ export class UsuariosService {
         })
 
         if (user.nombre_usuario == data.nueva_contrasena) {
-            throw new UnauthorizedException('La contrasena no puede ser igual al nombre de usuario');
+            throw new UnauthorizedException({ codigo: "005", message: "La contraseña no puede ser igual al nombre de usuario" });
         }
 
         if (validacioncontrasenas.length > 0) {
-            throw new UnauthorizedException('La contrasena no puede ser igual a una contrasena anterior');
+            throw new UnauthorizedException({ codigo: "006", message: "La contraseña no puede ser igual a una contraseña anterior" });
         }
 
     }
@@ -342,12 +343,12 @@ export class UsuariosService {
             await this.mailerService.sendMail({
                 to: user.correo,
                 from: process.env.USER_MAILER,
-                subject: 'Código de recuperacionn',
-                text: 'Código de recuperacionn',
-                html: `<b>Su código de recuperacionn es ${recoveryCode} </b>`,
+                subject: 'Código de verificación',
+                text: 'Código de verificación',
+                html: `<b>Su código de verificación es ${recoveryCode} </b>`,
             })
         } catch (error) {
-            throw new UnauthorizedException("No se puede enviar el codigo de verificacion " + error);
+            throw new UnauthorizedException("No se puede enviar el codigo de verificación " + error);
         }
         return updateData;
     }

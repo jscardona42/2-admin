@@ -4,7 +4,7 @@ import { IsNotEmpty } from 'class-validator'
 
 @InputType()
 export class SignUpUserInput {
-    
+
     @Field(() => String)
     @IsNotEmpty()
     nombre_usuario: string
@@ -24,9 +24,8 @@ export class SignUpUserInput {
     @IsNotEmpty()
     tipo_usuario_id: number
 
-    @Field(() => Number)
-    @IsNotEmpty()
-    metodo_autenticacion_id: number
+    @Field(() => Number, { nullable: true })
+    metodo_autenticacion_id?: number
 }
 
 @InputType()
@@ -44,7 +43,7 @@ export class ChangePasswordInput {
     @IsNotEmpty()
     usuario_id: number
 
-    @Field({nullable: true})
+    @Field({ nullable: true })
     contrasena?: string
 
     @Field()
