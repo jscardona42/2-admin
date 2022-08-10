@@ -9,6 +9,7 @@ import { ValidacionesService } from '../../Admin/Validaciones/validaciones.servi
 import { CreateMenuInput } from './dto/menus.dto';
 import { FuncionalidadesService } from '../../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
 import { TbRolesService } from '../../../modules/GestionFuncionalidades/Roles/roles.service';
+import { MailerModule } from '@nestjs-modules/mailer';
 
 describe('Menu Service', () => {
   let menusService: MenusService;
@@ -17,6 +18,16 @@ describe('Menu Service', () => {
   beforeEach(async () => {
     const module = await Test.createTestingModule({
       imports: [
+        MailerModule.forRoot({
+          transport: {
+            host: process.env.HOST_MAILER,
+            port: process.env.PORT_MAILER,
+            auth: {
+              user: process.env.USER_MAILER,
+              pass: process.env.PASSWORD_MAILER
+            },
+          }
+        }),
         JwtModule.register({
           secret: process.env.JWT_SECRET,
           signOptions: {
@@ -25,7 +36,7 @@ describe('Menu Service', () => {
         }),
       ],
       providers: [
-        MenusService, UsuariosService, EntidadesService, TbRolesService, PermisosService, ValidacionesService, FuncionalidadesService,
+        MenusService, UsuariosService, EntidadesService, TbRolesService, MailerModule,  PermisosService, ValidacionesService, FuncionalidadesService,
         {
           provide: PrismaService,
           useFactory: () => ({
