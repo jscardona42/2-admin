@@ -129,11 +129,11 @@ export class UsuariosService {
                 Object.assign(user0, { error_code: "002" });
                 return user0;
             }
+        }
 
-            if (user0.cant_intentos >= process.env.INTENTOS) {
-                Object.assign(user0, { error_code: "003" });
-                return user0;
-            }
+        if (user0.cant_intentos >= process.env.INTENTOS) {
+            Object.assign(user0, { error_code: "003" });
+            return user0;
         }
 
         const user = await this.prismaService.usuarios.findFirst({
