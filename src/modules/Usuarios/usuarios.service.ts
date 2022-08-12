@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
-import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 
 
@@ -158,6 +158,10 @@ export class UsuariosService {
             return user;
         }
 
+        if (user.metodo_autenticacion_id !== null){
+            return user
+        }
+        
         const token = this.jwtService.sign({ userId: user.usuario_id });
         await this.prismaService.usuarios.update({
             where: { usuario_id: user.usuario_id },
@@ -333,7 +337,7 @@ export class UsuariosService {
 
         const user = await this.getUsuarioByUsername(data.nombre_usuario)
 
-        let recoveryCode = this.codeForgetPassword().padStart(8, "0");
+        let recoveryCode = this.randomCode().padStart(8, "0");
         let hashRecoveryCode = await bcrypt.hash(recoveryCode, user.salt);
         let parametrovalor = await this.getUsuarioParametros(user.usuario_id, "autcodrestabcontra")
         let parametrovalor1 = await this.getUsuarioParametros(user.usuario_id, "autfecharestabcontra")
@@ -379,7 +383,7 @@ export class UsuariosService {
         return user0;
     }
 
-    codeForgetPassword(): string {
+    randomCode(): string {
         let min = 0;
         let max = 9999999999;
         let Code = Math.floor(Math.random() * (max - min)) + min;
@@ -467,4 +471,78 @@ export class UsuariosService {
         });
     }
 
+    public async sendCodeMail(usuario_id: number) {
+
+        let user = await this.getUsuarioById(usuario_id);
+
+        if (user.metodo_autenticacion_id !== 2) {
+            throw new UnauthorizedException("The user does not have the two-factor function activated with EMAIL.");
+        }
+
+        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
+        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
+
+        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
+            where:{ usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
+            select:{ valor: true }
+        })
+        let tiempo = await this.timeCalculateSecs(new Date(validacion.valor));
+        if (tiempo > 60) {
+            let recoveryCode = this.randomCode().padStart(8, "0");
+            let hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
+            await this.prismaService.usuariosParametrosValores.update({
+                where: { usuario_parametro_valor_id: id.usuario_parametro_valor_id },
+                data: {
+                    valor: await hashRecoveryCode, 
+                },
+            });
+            await this.prismaService.usuariosParametrosValores.update({
+                where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
+                data: {
+                    valor: new Date().toString(), 
+                },
+            });
+            try {
+                await this.mailerService.sendMail({
+                    to: user.correo,
+                    from: process.env.USER_MAILER,
+                    subject: 'Código de verificación',
+                    text: 'Código de verificación',
+                    html: `<b>Su código de verificación es ${recoveryCode} </b>`,
+                })
+            } catch (error) {
+                throw new UnauthorizedException("Unable to send verification code " + error);
+            }
+            return user;
+        }
+        else throw new UnauthorizedException(`Debe esperar ${60 - tiempo} segundos, para volver a generar el codigo de verificacion`);
+    }
+
+    public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
+
+        let user = await this.getUsuarioById(data.usuario_id);
+
+        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
+        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
+        
+        let variable = await this.prismaService.usuariosParametrosValores.findFirst({
+            where:{ usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
+            select:{ valor: true }
+        })
+        let tiempo = await this.timeCalculateSecs(variable.valor);
+        if (tiempo > (15 * 60)) {
+            throw new UnauthorizedException("El codigo expiro, recuerdo que la vigencia del codigo es de 15 minutos");
+        }
+        
+        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: {
+                usuario_parametro_valor_id: id.usuario_parametro_valor_id,
+                valor: await bcrypt.hash(data.codigo, user.salt)
+            },
+        })
+        if (validacion === null) {
+            throw new UnauthorizedException("Codigo Incorrecto");
+        }
+        return user;
+    }
 }

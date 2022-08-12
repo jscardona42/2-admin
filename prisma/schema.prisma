@@ -25,7 +25,7 @@ model TbEstadosUsuarios {
 
 model TbMetodosAutenticacion {
   metodo_autenticacion_id Int                 @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
-  nombre                  String              @db.VarChar(100)
+  nombre                  String              @unique() @db.VarChar(100)
   Usuarios                Usuarios[]
   MetodosParametrosSec    MetodosParametros[]
 

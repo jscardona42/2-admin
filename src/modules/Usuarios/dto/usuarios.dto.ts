@@ -70,3 +70,15 @@ export class ValidationCodeVerificationInput {
     @IsNotEmpty()
     usuario_id: number
 }
+
+@InputType()
+export class ValidationCodeMailInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}

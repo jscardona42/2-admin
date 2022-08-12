@@ -1,6 +1,6 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
@@ -70,6 +70,20 @@ export class UsuariosResolver {
     async exValidationCodeVerification(
         @Args("data") data: ValidationCodeVerificationInput): Promise<any> {
             return this.usuariosService.exValidationCodeVerification(data);
+    }
+
+    @Mutation(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exSendMail(
+        @Args("usuario_id") usuario_id: number): Promise<any> {
+            return this.usuariosService.sendCodeMail(usuario_id);
+        }
+
+    @Query(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exValidationCodeMail(
+        @Args("data") data: ValidationCodeMailInput): Promise<any> {
+        return this.usuariosService.validationCodeMail(data);
     }
 
 }

@@ -32,9 +32,11 @@ import { TbTipoUsuariosResolver } from './modules/Usuarios/TipoUsuarios/tipousua
 import { TbTipoUsuariosService } from './modules/Usuarios/TipoUsuarios/tipousuarios.service';
 import { TbEstadosUsuariosService } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.service';
 import { TbEstadosUsuariosResolver } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.resolver';
+import { TbMetodosAutenticacionService } from './modules/MetodosAutenticacion/metodosautenticacion.service';
+import { TbMetodosAutenticacionResolver } from './modules/MetodosAutenticacion/metodosautenticacion.resolver';
 
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver,TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver,TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
 
 @Module({
   imports: [
