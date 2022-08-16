@@ -82,3 +82,27 @@ export class ValidationCodeMailInput {
     @IsNotEmpty()
     usuario_id: number
 }
+
+@InputType()
+export class DoblesFactoresValidarInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}
+
+@InputType()
+export class CodigoRecuperacionInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo_acceso: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}

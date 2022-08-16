@@ -1,6 +1,6 @@
-import { UsePipes, ValidationPipe } from '@nestjs/common';
+import { UnauthorizedException, UsePipes, ValidationPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CodigoRecuperacionInput, DoblesFactoresValidarInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
@@ -84,6 +84,34 @@ export class UsuariosResolver {
     async exValidationCodeMail(
         @Args("data") data: ValidationCodeMailInput): Promise<any> {
         return this.usuariosService.validationCodeMail(data);
+    }
+
+    @Mutation(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async configTotp(
+        @Args("usuario_id") usuario_id: number): Promise<any> {
+        return this.usuariosService.configTotp(usuario_id);
+    }
+
+    @Mutation(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exSetActivateConfigTotp(
+        @Args("usuario_id") usuario_id: number): Promise<any> {
+        return this.usuariosService.exSetActivateConfigTotp(usuario_id);
+    }
+    
+    @Query(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exValidateTotpCode(
+        @Args("data") data: DoblesFactoresValidarInput): Promise<any> {
+        return this.usuariosService.exValidateTotpCode(data);
+    }
+    
+    @Query(() => Usuarios)
+    @UsePipes(ValidationPipe)
+    async exValidateRecoveryCode(
+        @Args("data") data: CodigoRecuperacionInput): Promise<any> {
+        return this.usuariosService.exValidateRecoveryCode(data);
     }
 
 }

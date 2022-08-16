@@ -72,5 +72,8 @@ export class Usuarios {
     UsuariosSesionesSec?: UsuariosSesiones
 
     @Field(() => String, { nullable: true })
-    error_code: string
+    error_code?: string
+
+    @Field(() => String, { nullable: true })
+    qr_code?: string
 }

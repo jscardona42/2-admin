@@ -159,6 +159,7 @@ type Usuarios {
   TbTipoUsuarios: TbTipoUsuarios!
   UsuariosSesionesSec: UsuariosSesiones
   error_code: String
+  qr_code: String
 }
 
 type Traducciones {
@@ -216,6 +217,8 @@ type Query {
   signInLogin(data: SignInUserInput!): Usuarios!
   exValidationCodeVerification(data: ValidationCodeVerificationInput!): Usuarios!
   exValidationCodeMail(data: ValidationCodeMailInput!): Usuarios!
+  exValidateTotpCode(data: DoblesFactoresValidarInput!): Usuarios!
+  exValidateRecoveryCode(data: CodigoRecuperacionInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -262,6 +265,16 @@ input ValidationCodeMailInput {
   usuario_id: Float!
 }
 
+input DoblesFactoresValidarInput {
+  codigo: String!
+  usuario_id: Float!
+}
+
+input CodigoRecuperacionInput {
+  codigo_acceso: String!
+  usuario_id: Float!
+}
+
 input FilterFuncionalidadesInput {
   nombre: String
   entidad_nombre: String
@@ -298,6 +311,8 @@ type Mutation {
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   exSendCodeVerification(data: SendCodeVerificationInput!): Usuarios!
   exSendMail(usuario_id: Float!): Usuarios!
+  configTotp(usuario_id: Float!): Usuarios!
+  exSetActivateConfigTotp(usuario_id: Float!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
