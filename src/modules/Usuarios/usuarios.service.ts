@@ -65,6 +65,8 @@ export class UsuariosService {
     }
 
     async signUpLogin(data: SignUpUserInput): Promise<any> {
+        let metodoAutenticacion = undefined;
+        let parametrosIds: any = [];
 
         await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
@@ -73,6 +75,18 @@ export class UsuariosService {
             throw new UnauthorizedException('El usuario ya se encuentra registrado');
         }
         let contrasena_provisional = this.createRandomPassword();
+
+        if (data.metodo_autenticacion_id !== undefined && data.metodo_autenticacion_id !== null) {
+            metodoAutenticacion = { connect: { metodo_autenticacion_id: data.metodo_autenticacion_id } };
+        }
+
+        const usuariosParametros = await this.prismaService.usuariosParametros.findMany({
+            select: { usuario_parametro_id: true }
+        });
+
+        usuariosParametros.forEach(parametro => {
+            parametrosIds.push({ usuario_parametro_id: parametro.usuario_parametro_id },);
+        });
 
         const user = this.prismaService.usuarios.create({
             data: {
@@ -85,9 +99,12 @@ export class UsuariosService {
                 fecha_actualizacion: new Date(),
                 TbRoles: { connect: { rol_id: data.rol_id } },
                 TbEstadosUsuarios: { connect: { estado_usuario_id: data.estado_usuario_id } },
-                TbMetodosAutenticacion: { connect: { metodo_autenticacion_id: data.metodo_autenticacion_id } },
+                TbMetodosAutenticacion: metodoAutenticacion,
                 TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
                 sol_cambio_contrasena: true,
+                UsuarioParametroValor: {
+                    create: parametrosIds
+                }
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
@@ -123,23 +140,26 @@ export class UsuariosService {
         }
 
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
-
+        let numerocontrasenas = await this.getUsuarioParametros(user0.usuario_id, "autnummaxintentos")
         if (!user0.sol_cambio_contrasena) {
-            let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
-            let tiempo = await this.timeCalculateDays(user0);
+            let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");
+            if (vencimientocontrasena.valor == "true") {
+                let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
 
-            if (tiempo >= parseInt(usuarioparametro.valor)) {
-                await this.statusChange(data.nombre_usuario)
-                Object.assign(user0, { error_code: "002" });
+                let tiempo = await this.timeCalculateDays(user0);
+
+                if (tiempo >= parseInt(usuarioparametro.valor)) {
+                    await this.statusChange(data.nombre_usuario)
+                    Object.assign(user0, { error_code: "002" });
+                    return user0;
+                }
+            }
+
+            if (user0.cant_intentos >= numerocontrasenas.valor) {
+                Object.assign(user0, { error_code: "003" });
                 return user0;
             }
-        }
 
-        let numerocontrasenas = await this.getUsuarioParametros(user0.usuario_id, "autnummaxintentos")
-
-        if (user0.cant_intentos >= numerocontrasenas.valor) {
-            Object.assign(user0, { error_code: "003" });
-            return user0;
         }
 
         const user = await this.prismaService.usuarios.findFirst({
@@ -151,9 +171,11 @@ export class UsuariosService {
         })
 
         if (!user) {
-            await this.addIntentos(data.nombre_usuario)
-            if (user0.cant_intentos + 1 >= numerocontrasenas.valor) {
-                await this.statusChange(data.nombre_usuario)
+            if (!user0.sol_cambio_contrasena) {
+                await this.addIntentos(data.nombre_usuario)
+                if (user0.cant_intentos + 1 >= numerocontrasenas.valor) {
+                    await this.statusChange(data.nombre_usuario)
+                }
             }
             throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
         }
@@ -234,7 +256,7 @@ export class UsuariosService {
 
         let usuarioparametro = await this.getUsuarioParametros(data.usuario_id, "autvigenciacontrasena")
         let tiempo00 = await this.addDaysToDate(new Date(), parseInt(usuarioparametro.valor))
-        
+
 
         const user = await this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
@@ -259,19 +281,6 @@ export class UsuariosService {
         }
 
         return user;
-    }
-
-    async usernameExists(nombre_usuario): Promise<any> {
-        const user = await this.prismaService.usuarios.findFirst({
-            where: { nombre_usuario: nombre_usuario },
-            select: { nombre_usuario: true }
-        })
-
-        if (user === null) {
-            return false;
-        } else {
-            return true;
-        }
     }
 
     async ValidationHistoricoContrasenas(data: any) {
@@ -308,32 +317,6 @@ export class UsuariosService {
 
     }
 
-    async hashPassword(contrasena: string, salt: string): Promise<any> {
-        return bcrypt.hash(contrasena, salt);
-    }
-
-    async createToken(token: string, user): Promise<any> {
-
-        return this.prismaService.usuarios.update({
-            where: { usuario_id: user.usuario_id, },
-            data: {
-                UsuariosSesionesSec: {
-                    upsert: {
-                        create: {
-                            token: token,
-                            fecha_ultimo_login: new Date()
-                        },
-                        update: {
-                            token: token,
-                            fecha_ultimo_login: new Date()
-                        }
-                    }
-                }
-            },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
-        })
-    }
-
     public async exSendCodeVerification(data: SendCodeVerificationInput) {
 
         const usernameExists = await this.usernameExists(data.nombre_usuario);
@@ -357,7 +340,8 @@ export class UsuariosService {
         let time2 = new Date(time1)
         let tiempo = await this.timeCalculateSecs(time2);
         if (tiempo <= 60) {
-            throw new UnauthorizedException("Debe esperar 60 segundos para generar otro codigo");
+            Object.assign(user, { error_code: "007", message: "Debe esperar 60 segundos para generar otro código" });
+            return user;
         }
 
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
@@ -392,6 +376,264 @@ export class UsuariosService {
         }
 
         return user0;
+    }
+
+    public async sendCodeMail(usuario_id: number) {
+
+        let user = await this.getUsuarioById(usuario_id);
+
+        if (user.metodo_autenticacion_id !== 2) {
+            throw new UnauthorizedException("The user does not have the two-factor function activated with EMAIL.");
+        }
+
+        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
+        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
+
+        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
+            select: { valor: true }
+        })
+        let tiempo = await this.timeCalculateSecs(new Date(validacion.valor));
+        if (tiempo > 60) {
+            let recoveryCode = this.randomCode().padStart(8, "0");
+            let hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
+
+            this.updateUsuarioParametro(user.usuario_id, await hashRecoveryCode, id.usuario_parametro_valor_id)
+
+            this.updateUsuarioParametro(user.usuario_id, new Date().toString(), fecha.usuario_parametro_valor_id)
+
+            try {
+                await this.mailerService.sendMail({
+                    to: user.correo,
+                    from: process.env.USER_MAILER,
+                    subject: 'Código de verificación',
+                    text: 'Código de verificación',
+                    html: `<b>Su código de verificación es ${recoveryCode} </b>`,
+                })
+            } catch (error) {
+                throw new UnauthorizedException("Unable to send verification code " + error);
+            }
+            return user;
+        }
+        else throw new UnauthorizedException(`Debe esperar ${60 - tiempo} segundos, para volver a generar el codigo de verificacion`);
+    }
+
+    public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
+
+        let user = await this.getUsuarioById(data.usuario_id);
+
+        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
+        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
+
+        let variable = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
+            select: { valor: true }
+        })
+        let tiempo = await this.timeCalculateSecs(variable.valor);
+        if (tiempo > (15 * 60)) {
+            throw new UnauthorizedException("El codigo expiro, recuerdo que la vigencia del codigo es de 15 minutos");
+        }
+
+        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: {
+                usuario_parametro_valor_id: id.usuario_parametro_valor_id,
+                valor: await bcrypt.hash(data.codigo, user.salt)
+            },
+        })
+        if (validacion === null) {
+            throw new UnauthorizedException("Codigo Incorrecto");
+        }
+        return user;
+    }
+
+    async configTotp(usuario_id: number): Promise<any> {
+
+        let user = await this.getUsuarioById(usuario_id);
+
+        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
+            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
+        }
+
+        let configuracion_TOTP = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
+        let otplib_secreta = await this.getUsuarioParametros(usuario_id, "auttotplibsecreta")
+
+        let configuracion = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_valor_id: configuracion_TOTP.usuario_parametro_valor_id },
+            select: { valor: true }
+        })
+
+        if (configuracion.valor == "false") {
+
+            const { otpauthUrl, secret } = await this.generateAuthenticationSecret(usuario_id);
+            const qrCodeUrl = this.buildQrCodeUrl(otpauthUrl);
+
+            let totp = this.prismaService.usuariosParametrosValores.update({
+                where: { usuario_parametro_valor_id: otplib_secreta.usuario_parametro_valor_id },
+                data: {
+                    valor: secret
+                }
+            })
+
+            return Object.assign(totp, { qr_code: JSON.stringify(qrCodeUrl) });
+        }
+        return Object.assign(user, { qr_code: "" });
+    }
+
+    async exSetActivateConfigTotp(usuario_id: number): Promise<any> {
+
+        let user = await this.getUsuarioById(usuario_id);
+        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
+            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
+        }
+
+        try {
+            let recoveryCode = this.generateRecoveryCode(20);
+            try {
+                await this.mailerService.sendMail({
+                    to: user.correo,
+                    from: process.env.USER_MAILER,
+                    subject: 'Código de activación',
+                    text: 'Código de activación',
+                    html: `<b>Su código de activación para el metodo de autenticación TOTP es ${recoveryCode} </b>`,
+                })
+
+                let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
+                let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup")
+
+                this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id)
+
+                this.updateUsuarioParametro(usuario_id, recoveryCode, usuario_parametro_codigo.usuario_parametro_valor_id)
+
+            } catch (error) {
+                throw new UnauthorizedException("Unable to send verification code " + error);
+            }
+
+            return user
+        } catch (error) {
+            console.log(error)
+            throw new UnauthorizedException("Unable to generate recovery codes");
+        }
+    }
+
+    public async exValidateTotpCode(data: DoblesFactoresValidarInput) {
+
+        let user = await this.getUsuarioById(data.usuario_id);
+        let ss = await this.getUsuarioParametros(data.usuario_id, "auttotpcodrecup")
+
+        let secret_code = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_valor_id: ss.usuario_parametro_valor_id },
+            select: { valor: true }
+        })
+
+        authenticator.verify({
+            token: data.codigo,
+            secret: secret_code.valor
+        })
+        return user
+    }
+
+    async exValidateRecoveryCode(data: CodigoRecuperacionInput): Promise<any> {
+        let user = await this.getUsuarioById(data.usuario_id);
+
+        let usuario_parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig")
+
+        if (user) {
+            await this.prismaService.usuarios.update({
+                where: { usuario_id: user.usuario_id },
+                data: {
+                    UsuarioParametroValor: {
+                        update: {
+                            where: {
+                                usuario_parametro_valor_id: usuario_parametro_config.usuario_parametro_valor_id
+                            },
+                            data: {
+                                valor: "false"
+                            }
+                        }
+                    }
+                }
+            })
+        }
+        if (user !== null) {
+            return user;
+        } else {
+            throw new UnauthorizedException("Invalid recovery code");
+        }
+    }
+
+    async createToken(token: string, user): Promise<any> {
+
+        return this.prismaService.usuarios.update({
+            where: { usuario_id: user.usuario_id, },
+            data: {
+                UsuariosSesionesSec: {
+                    upsert: {
+                        create: {
+                            token: token,
+                            fecha_ultimo_login: new Date()
+                        },
+                        update: {
+                            token: token,
+                            fecha_ultimo_login: new Date()
+                        }
+                    }
+                }
+            },
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
+        })
+    }
+
+    public async updateUsuarioParametro(usuario_id: number, valor: string, usuario_parametro_valor_id: number) {
+
+        return this.prismaService.usuarios.update({
+            where: { usuario_id: usuario_id },
+            include: { UsuarioParametroValor: true },
+            data: {
+                UsuarioParametroValor: {
+                    update: {
+                        where: { usuario_parametro_valor_id: usuario_parametro_valor_id },
+                        data: {
+                            valor: valor
+                        }
+                    }
+                }
+            }
+        });
+    }
+
+    public async getUsuarioParametros(usuario_id: number, alias: string) {
+        let usuarioparametro = await this.prismaService.usuariosParametros.findFirst({
+            where: { alias: alias },
+            select: { usuario_parametro_id: true, valor_defecto: true }
+        })
+        let parametrovalor = await this.prismaService.usuariosParametrosValores.findFirst({
+            where: { usuario_parametro_id: usuarioparametro.usuario_parametro_id, usuario_id: usuario_id },
+        })
+
+        if (parametrovalor.valor == null) {
+            Object.assign(parametrovalor, { valor: usuarioparametro.valor_defecto });
+            if (parametrovalor.valor === null) {
+                throw new UnauthorizedException(`El parámetro ${alias} no está configurado`);
+            }
+        }
+        return parametrovalor;
+    }
+
+    async usernameExists(nombre_usuario): Promise<any> {
+        const user = await this.prismaService.usuarios.findFirst({
+            where: { nombre_usuario: nombre_usuario },
+            select: { nombre_usuario: true }
+        })
+
+        if (user === null) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    async hashPassword(contrasena: string, salt: string): Promise<any> {
+        return bcrypt.hash(contrasena, salt);
     }
 
     randomCode(): string {
@@ -449,114 +691,6 @@ export class UsuariosService {
         return res;
     }
 
-    public async getUsuarioParametros(usuario_id: number, alias: string) {
-        let usuarioparametro = await this.prismaService.usuariosParametros.findFirst({
-            where: { alias: alias },
-            select: { usuario_parametro_id: true }
-        })
-        let parametrovalor = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_id: usuarioparametro.usuario_parametro_id, usuario_id: usuario_id },
-        })
-        if (parametrovalor == null) {
-            throw new UnauthorizedException(`El parametro solicitado no esta configurado`);
-        }
-        return parametrovalor;
-
-    }
-
-    public async updateUsuarioParametro(usuario_id: number, valor: string, usuario_parametro_valor_id: number) {
-
-        return this.prismaService.usuarios.update({
-            where: { usuario_id: usuario_id },
-            include: { UsuarioParametroValor: true },
-            data: {
-                UsuarioParametroValor: {
-                    update: {
-                        where: { usuario_parametro_valor_id: usuario_parametro_valor_id },
-                        data: {
-                            valor: valor
-                        }
-                    }
-                }
-            }
-        });
-    }
-
-    public async sendCodeMail(usuario_id: number) {
-
-        let user = await this.getUsuarioById(usuario_id);
-
-        if (user.metodo_autenticacion_id !== 2) {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with EMAIL.");
-        }
-
-        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
-        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
-
-        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-        let tiempo = await this.timeCalculateSecs(new Date(validacion.valor));
-        if (tiempo > 60) {
-            let recoveryCode = this.randomCode().padStart(8, "0");
-            let hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
-            await this.prismaService.usuariosParametrosValores.update({
-                where: { usuario_parametro_valor_id: id.usuario_parametro_valor_id },
-                data: {
-                    valor: await hashRecoveryCode,
-                },
-            });
-            await this.prismaService.usuariosParametrosValores.update({
-                where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
-                data: {
-                    valor: new Date().toString(),
-                },
-            });
-            try {
-                await this.mailerService.sendMail({
-                    to: user.correo,
-                    from: process.env.USER_MAILER,
-                    subject: 'Código de verificación',
-                    text: 'Código de verificación',
-                    html: `<b>Su código de verificación es ${recoveryCode} </b>`,
-                })
-            } catch (error) {
-                throw new UnauthorizedException("Unable to send verification code " + error);
-            }
-            return user;
-        }
-        else throw new UnauthorizedException(`Debe esperar ${60 - tiempo} segundos, para volver a generar el codigo de verificacion`);
-    }
-
-    public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
-
-        let user = await this.getUsuarioById(data.usuario_id);
-        
-        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
-        let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
-
-        let variable = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-        let tiempo = await this.timeCalculateSecs(variable.valor);
-        if (tiempo > (15 * 60)) {
-            throw new UnauthorizedException("El codigo expiro, recuerdo que la vigencia del codigo es de 15 minutos");
-        }
-
-        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: {
-                usuario_parametro_valor_id: id.usuario_parametro_valor_id,
-                valor: await bcrypt.hash(data.codigo, user.salt)
-            },
-        })
-        if (validacion === null) {
-            throw new UnauthorizedException("Codigo Incorrecto");
-        }
-        return user;
-    }
-
     public async generateAuthenticationSecret(usuario_id: number) {
         let user = await this.getUsuarioById(usuario_id);
 
@@ -577,138 +711,11 @@ export class UsuariosService {
         });
     }
 
-    async configTotp(usuario_id: number): Promise<any> {
-
-        let user = await this.getUsuarioById(usuario_id);
-
-        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
-        }
-
-        let configuracion_TOTP = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
-        let otplib_secreta = await this.getUsuarioParametros(usuario_id, "auttotplibsecreta")
-
-        let configuracion = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: configuracion_TOTP.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-
-        if (configuracion.valor == "false") {
-
-            const { otpauthUrl, secret } = await this.generateAuthenticationSecret(usuario_id);
-            const qrCodeUrl = this.buildQrCodeUrl(otpauthUrl);
-
-            let totp = this.prismaService.usuariosParametrosValores.update({
-                where: { usuario_parametro_valor_id: otplib_secreta.usuario_parametro_valor_id },
-                data: {
-                    valor: secret
-                }
-            })
-
-            return Object.assign(totp, { qr_code: JSON.stringify(qrCodeUrl) });
-        }
-        return Object.assign(user, { qr_code: "" });
-
-    }
-
-    async exSetActivateConfigTotp(usuario_id: number): Promise<any> {
-
-        let user = await this.getUsuarioById(usuario_id);
-        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
-        }
-
-        try {
-            let recoveryCode = this.generateRecoveryCode(20);
-            try {
-                await this.mailerService.sendMail({
-                    to: user.correo,
-                    from: process.env.USER_MAILER,
-                    subject: 'Código de recuperación',
-                    text: 'Código de recuperación',
-                    html: `<b>Su código de recuperación es ${recoveryCode} </b>`,
-                })
-
-            let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
-            let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup")
-
-            await this.prismaService.usuariosParametrosValores.update({
-                where: { usuario_parametro_valor_id: usuario_parametro_config.usuario_parametro_valor_id },
-                data: {
-                    valor: "true"
-                }
-            })
-
-            await this.prismaService.usuariosParametrosValores.update({
-                where: { usuario_parametro_valor_id: usuario_parametro_codigo.usuario_parametro_valor_id },
-                data: {
-                    valor: recoveryCode
-                }
-            })
-
-            } catch (error) {
-                throw new UnauthorizedException("Unable to send verification code " + error);
-            }
-
-            return user
-        } catch (error) {
-            console.log(error)
-            throw new UnauthorizedException("Unable to generate recovery codes");
-        }
-    }
-
     generateRecoveryCode(max): string {
         let text = "";
         let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
         for (let i = 0; i < max; i++)
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         return text;
-    }
-
-
-    public async exValidateTotpCode(data: DoblesFactoresValidarInput) {
-
-        let user = await this.getUsuarioById(data.usuario_id);
-        let ss = await this.getUsuarioParametros(data.usuario_id, "auttotpcodrecup")
-
-        let secret_code = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: ss.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-        
-        authenticator.verify({
-            token: data.codigo,
-            secret: secret_code.valor
-        })
-        return user
-    }
-
-    async exValidateRecoveryCode(data: CodigoRecuperacionInput): Promise<any> {
-        let user = await this.getUsuarioById(data.usuario_id);
-
-        let usuario_parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig")
-
-        if (user) {
-            await this.prismaService.usuarios.update({
-                where: { usuario_id: user.usuario_id },
-                data: {
-                    UsuarioParametroValor:{
-                        update:{
-                            where:{
-                                usuario_parametro_valor_id: usuario_parametro_config.usuario_parametro_valor_id
-                            },
-                            data:{
-                                valor: "false"
-                            }
-                        }
-                    }
-                }
-            })
-        }
-        if (user !== null) {
-            return user;
-        } else {
-            throw new UnauthorizedException("Invalid recovery code");
-        }
     }
 }
