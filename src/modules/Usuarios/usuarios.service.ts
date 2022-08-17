@@ -136,7 +136,7 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
         }
 
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
@@ -177,7 +177,7 @@ export class UsuariosService {
                     await this.statusChange(data.nombre_usuario)
                 }
             }
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
         }
 
         if (user.sol_cambio_contrasena) {
@@ -237,7 +237,7 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
+            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
         }
         if (user9.sol_cambio_contrasena) {
             const login = await this.prismaService.usuarios.findFirst({
@@ -248,7 +248,7 @@ export class UsuariosService {
             })
 
             if (login === null) {
-                throw new UnauthorizedException({ codigo: "004", message: "Credenciales Invalidas" });
+                throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
             }
         }
 
@@ -673,16 +673,14 @@ export class UsuariosService {
         let date1 = new Date(user.fecha_creacion);
         let date2 = new Date();
         let time = date2.getTime() - date1.getTime();
-        let tiempo = time / (86400000);
-        return tiempo
+        return time / (86400000);
     }
 
     public async timeCalculateSecs(data) {
         let date1 = new Date(data);
         let date2 = new Date();
         let time = date2.getTime() - date1.getTime();
-        let tiempo = Math.round(time / (1000));
-        return tiempo
+        return Math.round(time / (1000));
     }
 
     public async addDaysToDate(date, days) {
