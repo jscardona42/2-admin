@@ -119,8 +119,8 @@ export class UsuariosService {
                 subject: 'Usuario y contraseña temporal',
                 text: 'Usuario y contraseña temporal',
                 html: `<p style="margin-left: 10px;">A continuación encontrará sus datos de acceso:</p>
-                    <h3 style="text-align: center;">Nombre de usuario: <strong>${data.nombre_usuario}</strong></h3>
-                    <h3 style="text-align: center;">Contraseña temporal: <strong>${contrasena_provisional}</strong></h3>`,
+                    <p style="margin-left: 10px;">Nombre de usuario: <strong>${data.nombre_usuario}</strong></p>
+                    <p style="margin-left: 10px;">Contraseña temporal: <strong>${contrasena_provisional}</strong></p>`,
             })
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
