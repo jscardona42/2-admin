@@ -116,10 +116,11 @@ export class UsuariosService {
             await this.mailerService.sendMail({
                 to: data.correo,
                 from: process.env.USER_MAILER,
-                subject: 'Clave temporal',
-                text: 'Clave temporal',
-                html: `<b>Usuario: ${data.nombre_usuario} </b>
-                <b>Clave temporal: ${contrasena_provisional} </b>`,
+                subject: 'Usuario y contraseña temporal',
+                text: 'Usuario y contraseña temporal',
+                html: `<p style="margin-left: 10px;">A continuación encontrará sus datos de acceso:</p>
+                    <h3 style="text-align: center;">Nombre de usuario: <strong>${data.nombre_usuario}</strong></h3>
+                    <h3 style="text-align: center;">Contraseña temporal: <strong>${contrasena_provisional}</strong></h3>`,
             })
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
@@ -257,7 +258,7 @@ export class UsuariosService {
 
         await this.getUsuarioById(data.usuario_id);
 
-        return this.prismaService.usuarios.update({
+        let user = await this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
                 contrasena: await this.hashPassword(data.nueva_contrasena, salt.salt),
@@ -274,12 +275,27 @@ export class UsuariosService {
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
+
+        try {
+            await this.mailerService.sendMail({
+                to: user.correo,
+                from: process.env.USER_MAILER,
+                subject: 'Confirmación cambio de contraseña',
+                text: 'Confirmación cambio de contraseña',
+                html: `<p style="margin-left: 10px;">Hola <strong>${user.nombre_usuario}</strong></p>
+                        <p style="margin-left: 10px;" > El cambio de contraseña se realizó satisfactoriamente."</p>
+                        <p style = "margin-left: 10px;">Si usted no ha hecho esta solicitud, por favor contacte el administrador del sistema."</p>`,
+            })
+
+        } catch (error) {
+            throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
+        }
+        return user;
     }
 
     async ValidationHistoricoContrasenas(data: any) {
 
         let user = await this.getUsuarioById(data.usuario_id);
-        let user1 = await this.getUsuarioByUsername(user.nombre_usuario);
         let numerocontrasenas = await this.getUsuarioParametros(data.usuario_id, "autnumcontant")
         let historialcontrasenas = await this.prismaService.usuariosHistoricoContrasenas.findMany({
             take: parseInt(numerocontrasenas.valor),
@@ -342,12 +358,17 @@ export class UsuariosService {
             await this.mailerService.sendMail({
                 to: user.correo,
                 from: process.env.USER_MAILER,
-                subject: 'Código de verificación',
-                text: 'Código de verificación',
-                html: `<b>Su código de verificación es ${recoveryCode} </b>`,
+                subject: 'Restablecer contraseña',
+                text: 'Restablecer contraseña',
+                html: `<p style="margin-left: 10px;">Hemos recibido una solicitud para restablecer la contraseña, para continuar con el
+                proceso introduzca este código de verificación en la página de restablecimiento de contraseña</p>
+                <h1 style="text-align: center;">${recoveryCode}</h1>
+                <p style="margin-left: 10px;">Recuerda que por seguridad el código es temporal y caducará en 15 minutos. Si no ha
+                solicitado este cambio, haga caso omiso de este mensaje."</p>`
+                // html: `<b>Su código de verificación es ${recoveryCode} </b>`,
             })
         } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el có digo de verificación " + error);
+            throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
         }
         return updateData;
     }
@@ -400,7 +421,10 @@ export class UsuariosService {
                     from: process.env.USER_MAILER,
                     subject: 'Código de verificación',
                     text: 'Código de verificación',
-                    html: `<b>Su código de verificación es ${recoveryCode} </b>`,
+                    html: `<p style="margin-left: 10px;">Su código de verificación es:</p>
+                        <h1 style="text-align: center;">${recoveryCode}</h1>
+                        <p style="margin-left: 10px;">Recuerda que por seguridad el código es temporal y caducará en 15 minutos. Si no ha
+                        solicitado este cambio, haga caso omiso de este mensaje."</p>`,
                 })
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
@@ -484,9 +508,11 @@ export class UsuariosService {
                 await this.mailerService.sendMail({
                     to: user.correo,
                     from: process.env.USER_MAILER,
-                    subject: 'Código de activación',
-                    text: 'Código de activación',
-                    html: `<b>Su código de activación para el metodo de autenticación TOTP es ${recoveryCode} </b>`,
+                    subject: 'Código de recuperación',
+                    text: 'Código de recuperación',
+                    html: `<p style="margin-left: 10px;">El código de recuperación para restablecer el QR en caso de que pierda la informacón de Google Autenticathor es:</p>
+                        <h1 style="text-align: center;">${recoveryCode}</h1>
+                        <p style="margin-left: 10px;">Recuerda que este código sólo se puede usar una vez."</p>`,
                 })
 
                 let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
@@ -604,9 +630,6 @@ export class UsuariosService {
 
         if (parametrovalor.valor == null) {
             Object.assign(parametrovalor, { valor: usuarioparametro.valor_defecto });
-            if (parametrovalor.valor === null) {
-                throw new UnauthorizedException(`El parámetro ${alias} no está configurado`);
-            }
         }
         return parametrovalor;
     }
