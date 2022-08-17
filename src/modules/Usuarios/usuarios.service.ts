@@ -33,7 +33,7 @@ export class UsuariosService {
         })
 
         if (usuarios === null) {
-            throw new UnauthorizedException(`El usuario con id ${usuario_id} no existe`);
+            throw new UnauthorizedException({ error_code: "009", message: "El usuario no se encuentra registrado" });
         }
 
         return usuarios;
@@ -46,7 +46,7 @@ export class UsuariosService {
         })
 
         if (user === null) {
-            throw new UnauthorizedException(`El usuario ${nombre_usuario} no existe`);
+            throw new UnauthorizedException({ error_code: "009", message: "El usuario no se encuentra registrado" });
         }
 
         return user;
@@ -72,7 +72,7 @@ export class UsuariosService {
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (usernameExists) {
-            throw new UnauthorizedException('El usuario ya se encuentra registrado');
+            throw new UnauthorizedException({ error_code: "010", message: "El usuario ya se encuentra registrado" });
         }
         let contrasena_provisional = this.createRandomPassword();
 
@@ -136,7 +136,7 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
+            throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
@@ -150,14 +150,12 @@ export class UsuariosService {
 
                 if (tiempo >= parseInt(usuarioparametro.valor)) {
                     await this.statusChange(data.nombre_usuario)
-                    Object.assign(user0, { error_code: "002" });
-                    return user0;
+                    throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: user0 });
                 }
             }
 
             if (user0.cant_intentos >= numerocontrasenas.valor) {
-                Object.assign(user0, { error_code: "003" });
-                return user0;
+                throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: user0 });
             }
 
         }
@@ -177,16 +175,15 @@ export class UsuariosService {
                     await this.statusChange(data.nombre_usuario)
                 }
             }
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
+            throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
         if (user.sol_cambio_contrasena) {
-            Object.assign(user, { error_code: "001" });
-            return user;
+            throw new UnauthorizedException({ error_code: "001", message: "Usuario nuevo", data: user0 });
         }
 
         if (user.metodo_autenticacion_id !== null) {
-            return user
+            return user;
         }
 
         const token = this.jwtService.sign({ userId: user.usuario_id });
@@ -237,7 +234,7 @@ export class UsuariosService {
         })
 
         if (salt === null) {
-            throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
+            throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
         if (user9.sol_cambio_contrasena) {
             const login = await this.prismaService.usuarios.findFirst({
@@ -248,7 +245,7 @@ export class UsuariosService {
             })
 
             if (login === null) {
-                throw new UnauthorizedException({ codigo: "004", message: "Credenciales inválidas" });
+                throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
             }
         }
 
@@ -256,13 +253,15 @@ export class UsuariosService {
 
         let usuarioparametro = await this.getUsuarioParametros(data.usuario_id, "autvigenciacontrasena")
         let tiempo00 = await this.addDaysToDate(new Date(), parseInt(usuarioparametro.valor))
+        let estadoUsuario = await this.getEstadoUsuario("ACTIVO");
 
+        await this.getUsuarioById(data.usuario_id);
 
-        const user = await this.prismaService.usuarios.update({
+        return this.prismaService.usuarios.update({
             where: { usuario_id: data.usuario_id },
             data: {
                 contrasena: await this.hashPassword(data.nueva_contrasena, salt.salt),
-                estado_usuario_id: 1,
+                estado_usuario_id: estadoUsuario.estado_usuario_id,
                 sol_cambio_contrasena: false,
                 cant_intentos: 0,
                 fecha_vigencia_contrasena: tiempo00,
@@ -275,17 +274,12 @@ export class UsuariosService {
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
-
-        if (user === null) {
-            throw new UnauthorizedException('No existe este usuario');
-        }
-
-        return user;
     }
 
     async ValidationHistoricoContrasenas(data: any) {
 
         let user = await this.getUsuarioById(data.usuario_id);
+        let user1 = await this.getUsuarioByUsername(user.nombre_usuario);
         let numerocontrasenas = await this.getUsuarioParametros(data.usuario_id, "autnumcontant")
         let historialcontrasenas = await this.prismaService.usuariosHistoricoContrasenas.findMany({
             take: parseInt(numerocontrasenas.valor),
@@ -308,11 +302,11 @@ export class UsuariosService {
         })
 
         if (user.nombre_usuario == data.nueva_contrasena) {
-            throw new UnauthorizedException({ codigo: "005", message: "La contraseña no puede ser igual al nombre de usuario" });
+            throw new UnauthorizedException({ error_code: "005", message: "La contraseña no puede ser igual al nombre de usuario" });
         }
 
         if (validacioncontrasenas.length > 0) {
-            throw new UnauthorizedException({ codigo: "006", message: "La contraseña no puede ser igual a una contraseña anterior" });
+            throw new UnauthorizedException({ error_code: "006", message: "La contraseña no puede ser igual a una contraseña anterior" });
         }
 
     }
@@ -321,14 +315,13 @@ export class UsuariosService {
 
         const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (!usernameExists) {
-            throw new UnauthorizedException('El usuario no existe');
+            throw new UnauthorizedException({ error_code: "009", message: "El usuario no se encuentra registrado" });
         }
 
         const user = await this.getUsuarioByUsername(data.nombre_usuario)
 
-        if (user.sol_cambio_contrasena) {
-            Object.assign(user, { error_code: "005", message: "Usuario nuevo, no puede cambiar su contraseña" });
-            return user;
+        if (user.sol_cambio_contrasena && data.tipo_solicitud !== "NUEVO") {
+            throw new UnauthorizedException({ error_code: "008", message: "Usuario nuevo, no puede cambiar su contraseña" });
         }
 
         let recoveryCode = this.randomCode().padStart(8, "0");
@@ -340,8 +333,7 @@ export class UsuariosService {
         let time2 = new Date(time1)
         let tiempo = await this.timeCalculateSecs(time2);
         if (tiempo <= 60) {
-            Object.assign(user, { error_code: "007", message: "Debe esperar 60 segundos para generar otro código" });
-            return user;
+            throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación" });
         }
 
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
@@ -355,7 +347,7 @@ export class UsuariosService {
                 html: `<b>Su código de verificación es ${recoveryCode} </b>`,
             })
         } catch (error) {
-            throw new UnauthorizedException("No se puede enviar el codigo de verificación " + error);
+            throw new UnauthorizedException("No se pudo enviar el có digo de verificación " + error);
         }
         return updateData;
     }
@@ -372,7 +364,7 @@ export class UsuariosService {
         })
 
         if (Result === null) {
-            throw new UnauthorizedException("Codigo invalido");
+            throw new UnauthorizedException({ error_code: "011", message: "El código es incorrecto, vuelve a intentarlo" });
         }
 
         return user0;
@@ -382,8 +374,8 @@ export class UsuariosService {
 
         let user = await this.getUsuarioById(usuario_id);
 
-        if (user.metodo_autenticacion_id !== 2) {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with EMAIL.");
+        if (user.TbMetodosAutenticacion.nombre !== "EMAIL") {
+            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con EMAIL");
         }
 
         let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
@@ -411,11 +403,11 @@ export class UsuariosService {
                     html: `<b>Su código de verificación es ${recoveryCode} </b>`,
                 })
             } catch (error) {
-                throw new UnauthorizedException("Unable to send verification code " + error);
+                throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
             }
             return user;
         }
-        else throw new UnauthorizedException(`Debe esperar ${60 - tiempo} segundos, para volver a generar el codigo de verificacion`);
+        else throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación" });
     }
 
     public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
@@ -431,7 +423,7 @@ export class UsuariosService {
         })
         let tiempo = await this.timeCalculateSecs(variable.valor);
         if (tiempo > (15 * 60)) {
-            throw new UnauthorizedException("El codigo expiro, recuerdo que la vigencia del codigo es de 15 minutos");
+            throw new UnauthorizedException({ error_code: "013", message: "El código expiró, recuerde que la vigencia del código es de 15 minutos" });
         }
 
         let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
@@ -441,7 +433,7 @@ export class UsuariosService {
             },
         })
         if (validacion === null) {
-            throw new UnauthorizedException("Codigo Incorrecto");
+            throw new UnauthorizedException({ error_code: "011", message: "El código es incorrecto, vuelve a intentarlo" });
         }
         return user;
     }
@@ -451,7 +443,7 @@ export class UsuariosService {
         let user = await this.getUsuarioById(usuario_id);
 
         if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
+            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con TOTP");
         }
 
         let configuracion_TOTP = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
@@ -483,7 +475,7 @@ export class UsuariosService {
 
         let user = await this.getUsuarioById(usuario_id);
         if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("The user does not have the two-factor function activated with TOTP.");
+            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con TOTP");
         }
 
         try {
@@ -505,13 +497,13 @@ export class UsuariosService {
                 this.updateUsuarioParametro(usuario_id, recoveryCode, usuario_parametro_codigo.usuario_parametro_valor_id)
 
             } catch (error) {
-                throw new UnauthorizedException("Unable to send verification code " + error);
+                throw new UnauthorizedException("No se puedo enviar el código de activación " + error);
             }
 
             return user
         } catch (error) {
             console.log(error)
-            throw new UnauthorizedException("Unable to generate recovery codes");
+            throw new UnauthorizedException("No se pudo generar el código de recuperación");
         }
     }
 
@@ -658,13 +650,26 @@ export class UsuariosService {
         })
     }
 
+    async getEstadoUsuario(nombre: string) {
+        let estado = await this.prismaService.tbEstadosUsuarios.findFirst({
+            where: { nombre: nombre }
+        });
+
+        if (estado === null) {
+            throw new UnauthorizedException(`El estado ${nombre} no existe`);
+        }
+        return estado;
+    }
+
     async statusChange(nombre_usuario) {
 
-        const user0 = await this.getUsuarioByUsername(nombre_usuario)
+        const user0 = await this.getUsuarioByUsername(nombre_usuario);
+        let estadoUsuario = await this.getEstadoUsuario("BLOQUEADO");
+
         await this.prismaService.usuarios.update({
             where: { usuario_id: user0.usuario_id },
             data: {
-                estado_usuario_id: { set: 2 }
+                estado_usuario_id: estadoUsuario.estado_usuario_id
             }
         })
     }
@@ -702,7 +707,7 @@ export class UsuariosService {
         return new Promise(function (resolve) {
             QRCode.toDataURL(str, function (err, url) {
                 if (err) {
-                    throw new AuthenticationError("Could not build the qr");
+                    throw new AuthenticationError("No se puedo construir el código QR");
                 }
                 resolve(url);
             });

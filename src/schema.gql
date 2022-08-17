@@ -425,6 +425,7 @@ input ChangePasswordInput {
 
 input SendCodeVerificationInput {
   nombre_usuario: String!
+  tipo_solicitud: String
 }
 
 input CreateTraduccionesInput {

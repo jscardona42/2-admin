@@ -57,6 +57,9 @@ export class SendCodeVerificationInput {
     @Field(() => String)
     @IsNotEmpty()
     nombre_usuario: string
+
+    @Field(() => String, { nullable: true })
+    tipo_solicitud?: string
 }
 
 @InputType()
