@@ -149,17 +149,17 @@ export class UsuariosService {
 
                 let tiempo = await this.timeCalculateDays(user0);
 
-                console.log(tiempo);
-
                 if (tiempo >= parseInt(usuarioparametro.valor)) {
                     await this.statusChange(data.nombre_usuario)
-                    throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: user0 });
+                    let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+                    throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: userReturn });
                 }
             }
         }
 
         if (user0.cant_intentos >= numerocontrasenas.valor) {
-            throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: user0 });
+            let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+            throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: userReturn });
         }
 
         const user = await this.prismaService.usuarios.findFirst({
@@ -181,7 +181,8 @@ export class UsuariosService {
         }
 
         if (user.sol_cambio_contrasena) {
-            throw new UnauthorizedException({ error_code: "001", message: "Usuario nuevo", data: user0 });
+            let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+            throw new UnauthorizedException({ error_code: "001", message: "Usuario nuevo", data: userReturn });
         }
 
         if (user.metodo_autenticacion_id !== null) {
