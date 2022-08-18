@@ -42,7 +42,7 @@ export class UsuariosService {
     async getUsuarioByUsername(nombre_usuario: string): Promise<any> {
         let user = await this.prismaService.usuarios.findFirst({
             where: { nombre_usuario: nombre_usuario },
-            select: { TbEstadosUsuarios: true, TbMetodosAutenticacion: true, usuario_id: true, correo: true, salt: true, sol_cambio_contrasena: true, nombre_usuario: true, estado_usuario_id: true, metodo_autenticacion_id: true, cant_intentos: true }
+            select: { TbEstadosUsuarios: true, TbMetodosAutenticacion: true, usuario_id: true, correo: true, salt: true, sol_cambio_contrasena: true, nombre_usuario: true, estado_usuario_id: true, metodo_autenticacion_id: true, cant_intentos: true, fecha_creacion: true, fecha_vigencia_contrasena: true }
         })
 
         if (user === null) {
@@ -145,9 +145,11 @@ export class UsuariosService {
         if (!user0.sol_cambio_contrasena) {
             let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");
             if (vencimientocontrasena.valor == "true") {
-                let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena")
+                let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena");
 
                 let tiempo = await this.timeCalculateDays(user0);
+
+                console.log(tiempo);
 
                 if (tiempo >= parseInt(usuarioparametro.valor)) {
                     await this.statusChange(data.nombre_usuario)

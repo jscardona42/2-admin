@@ -101,7 +101,7 @@ model UsuariosParametros {
   clase_parametro_id           Int
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
-  descripcion                  String                      @db.VarChar(100)
+  descripcion                  String                      @db.VarChar(255)
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
   TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
