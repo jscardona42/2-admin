@@ -275,6 +275,8 @@ export class UsuariosService {
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
 
+        await this.logOutLogin(user.usuario_id);
+
         try {
             await this.mailerService.sendMail({
                 to: user.correo,
@@ -394,9 +396,7 @@ export class UsuariosService {
 
         let user = await this.getUsuarioById(usuario_id);
 
-        if (user.TbMetodosAutenticacion.nombre !== "EMAIL") {
-            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con EMAIL");
-        }
+        await this.validateMetodoAutenticacion(user, "EMAIL");
 
         let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
         let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
@@ -436,29 +436,26 @@ export class UsuariosService {
     public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
 
         let user = await this.getUsuarioById(data.usuario_id);
+        await this.validateMetodoAutenticacion(user, "EMAIL");
 
-        let id = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
+        let codigo_acceso = await this.getUsuarioParametros(user.usuario_id, "autemailcodrecup")
         let fecha = await this.getUsuarioParametros(user.usuario_id, "autfechacodrecup")
 
-        let variable = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: fecha.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-        let tiempo = await this.timeCalculateSecs(variable.valor);
+        if (fecha.valor == null) {
+            throw new UnauthorizedException("El usuario no tiene configurado el parámetro autfechacodrecup");
+        }
+
+        let tiempo = await this.timeCalculateSecs(fecha.valor);
         if (tiempo > (15 * 60)) {
             throw new UnauthorizedException({ error_code: "013", message: "El código expiró, recuerde que la vigencia del código es de 15 minutos" });
         }
 
-        let validacion = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: {
-                usuario_parametro_valor_id: id.usuario_parametro_valor_id,
-                valor: await bcrypt.hash(data.codigo, user.salt)
-            },
-        })
-        if (validacion === null) {
+        if (codigo_acceso.valor !== await bcrypt.hash(data.codigo, user.salt)) {
             throw new UnauthorizedException({ error_code: "011", message: "El código es incorrecto, vuelve a intentarlo" });
         }
-        return user;
+
+        const token = this.jwtService.sign({ userId: user.usuario_id });
+        return this.createToken(token, user);
     }
 
     async configTotp(usuario_id: number): Promise<any> {
@@ -553,7 +550,8 @@ export class UsuariosService {
         if (!isCodeValid) {
             throw new UnauthorizedException('Código de autenticación errado');
         }
-        return user;
+        const token = this.jwtService.sign({ userId: user.usuario_id });
+        return this.createToken(token, user);
     }
 
     async exValidateRecoveryCode(data: ValidationRecoveryCodeInput): Promise<any> {
@@ -706,8 +704,8 @@ export class UsuariosService {
         return time / (86400000);
     }
 
-    public async timeCalculateSecs(data) {
-        let date1 = new Date(data);
+    public async timeCalculateSecs(fecha_creacion: any) {
+        let date1 = new Date(fecha_creacion);
         let date2 = new Date();
         let time = date2.getTime() - date1.getTime();
         return Math.round(time / (1000));
