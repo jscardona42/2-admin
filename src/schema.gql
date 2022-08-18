@@ -144,10 +144,6 @@ type Usuarios {
   contrasena: String!
   correo: String!
   salt: String!
-  rol_id: Float!
-  metodo_autenticacion_id: Float!
-  tipo_usuario_id: Float!
-  estado_usuario_id: Float!
   sol_cambio_contrasena: Boolean!
   fecha_vigencia_contrasena: String!
   fecha_creacion: String!
@@ -217,8 +213,8 @@ type Query {
   signInLogin(data: SignInUserInput!): Usuarios!
   exValidationCodeVerification(data: ValidationCodeVerificationInput!): Usuarios!
   exValidationCodeMail(data: ValidationCodeMailInput!): Usuarios!
-  exValidateTotpCode(data: DoblesFactoresValidarInput!): Usuarios!
-  exValidateRecoveryCode(data: CodigoRecuperacionInput!): Usuarios!
+  exValidateTotpCode(data: ValidationCodeTotpInput!): Usuarios!
+  exValidateRecoveryCode(data: ValidationRecoveryCodeInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -265,13 +261,13 @@ input ValidationCodeMailInput {
   usuario_id: Float!
 }
 
-input DoblesFactoresValidarInput {
-  codigo: String!
+input ValidationCodeTotpInput {
+  codigo_acceso: String!
   usuario_id: Float!
 }
 
-input CodigoRecuperacionInput {
-  codigo_acceso: String!
+input ValidationRecoveryCodeInput {
+  codigo_recuperacion: String!
   usuario_id: Float!
 }
 

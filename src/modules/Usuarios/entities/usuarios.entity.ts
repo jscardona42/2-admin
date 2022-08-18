@@ -29,18 +29,6 @@ export class Usuarios {
     @Field(() => String)
     salt: string
 
-    @Field(() => Number)
-    rol_id: number
-
-    @Field(() => Number)
-    metodo_autenticacion_id: number
-
-    @Field(() => Number)
-    tipo_usuario_id: number
-
-    @Field(() => Number)
-    estado_usuario_id: number
-
     @Field(() => Boolean)
     sol_cambio_contrasena?: boolean
 

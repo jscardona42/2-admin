@@ -87,11 +87,11 @@ export class ValidationCodeMailInput {
 }
 
 @InputType()
-export class DoblesFactoresValidarInput {
+export class ValidationCodeTotpInput {
 
     @Field(() => String)
     @IsNotEmpty()
-    codigo: string
+    codigo_acceso: string
 
     @Field(() => Number)
     @IsNotEmpty()
@@ -99,11 +99,11 @@ export class DoblesFactoresValidarInput {
 }
 
 @InputType()
-export class CodigoRecuperacionInput {
+export class ValidationRecoveryCodeInput {
 
     @Field(() => String)
     @IsNotEmpty()
-    codigo_acceso: string
+    codigo_recuperacion: string
 
     @Field(() => Number)
     @IsNotEmpty()

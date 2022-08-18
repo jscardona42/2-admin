@@ -3,7 +3,7 @@ import { PrismaService } from '../../prisma.service';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
-import { ChangePasswordInput, CodigoRecuperacionInput, DoblesFactoresValidarInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { MailerService } from '@nestjs-modules/mailer';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
@@ -154,11 +154,10 @@ export class UsuariosService {
                     throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: user0 });
                 }
             }
+        }
 
-            if (user0.cant_intentos >= numerocontrasenas.valor) {
-                throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: user0 });
-            }
-
+        if (user0.cant_intentos >= numerocontrasenas.valor) {
+            throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: user0 });
         }
 
         const user = await this.prismaService.usuarios.findFirst({
@@ -465,10 +464,7 @@ export class UsuariosService {
     async configTotp(usuario_id: number): Promise<any> {
 
         let user = await this.getUsuarioById(usuario_id);
-
-        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con TOTP");
-        }
+        await this.validateMetodoAutenticacion(user, "TOTP");
 
         let configuracion_TOTP = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
         let otplib_secreta = await this.getUsuarioParametros(usuario_id, "auttotplibsecreta")
@@ -481,16 +477,18 @@ export class UsuariosService {
         if (configuracion.valor == "false") {
 
             const { otpauthUrl, secret } = await this.generateAuthenticationSecret(usuario_id);
-            const qrCodeUrl = this.buildQrCodeUrl(otpauthUrl);
+            const qrCodeUrl = await this.buildQrCodeUrl(otpauthUrl);
 
-            let totp = this.prismaService.usuariosParametrosValores.update({
+            await this.prismaService.usuariosParametrosValores.update({
                 where: { usuario_parametro_valor_id: otplib_secreta.usuario_parametro_valor_id },
                 data: {
                     valor: secret
                 }
             })
 
-            return Object.assign(totp, { qr_code: JSON.stringify(qrCodeUrl) });
+            let user0 = await this.getUsuarioById(usuario_id);
+
+            return Object.assign(user0, { qr_code: JSON.stringify(qrCodeUrl) });
         }
         return Object.assign(user, { qr_code: "" });
     }
@@ -498,8 +496,12 @@ export class UsuariosService {
     async exSetActivateConfigTotp(usuario_id: number): Promise<any> {
 
         let user = await this.getUsuarioById(usuario_id);
-        if (user.TbMetodosAutenticacion.nombre !== "TOTP") {
-            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con TOTP");
+        await this.validateMetodoAutenticacion(user, "TOTP");
+        let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
+        let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup")
+
+        if (usuario_parametro_config.valor == "true") {
+            throw new UnauthorizedException("El usuario ya tiene configurado un método de autenticación TOTP");
         }
 
         try {
@@ -515,12 +517,9 @@ export class UsuariosService {
                         <p style="margin-left: 10px;">Recuerda que este código sólo se puede usar una vez."</p>`,
                 })
 
-                let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
-                let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup")
+                await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
 
-                this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id)
-
-                this.updateUsuarioParametro(usuario_id, recoveryCode, usuario_parametro_codigo.usuario_parametro_valor_id)
+                await this.updateUsuarioParametro(usuario_id, await this.hashPassword(recoveryCode, user.salt), usuario_parametro_codigo.usuario_parametro_valor_id);
 
             } catch (error) {
                 throw new UnauthorizedException("No se puedo enviar el código de activación " + error);
@@ -533,50 +532,43 @@ export class UsuariosService {
         }
     }
 
-    public async exValidateTotpCode(data: DoblesFactoresValidarInput) {
+    public async exValidateTotpCode(data: ValidationCodeTotpInput) {
 
         let user = await this.getUsuarioById(data.usuario_id);
-        let ss = await this.getUsuarioParametros(data.usuario_id, "auttotpcodrecup")
+        let otplib_secreta = await this.getUsuarioParametros(data.usuario_id, "auttotplibsecreta");
 
         let secret_code = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: ss.usuario_parametro_valor_id },
+            where: { usuario_parametro_valor_id: otplib_secreta.usuario_parametro_valor_id },
             select: { valor: true }
         })
 
-        authenticator.verify({
-            token: data.codigo,
+        if (secret_code.valor == null) {
+            throw new UnauthorizedException('El usuario no tiene configurada una otplib secreta');
+        }
+
+        let isCodeValid = authenticator.verify({
+            token: data.codigo_acceso,
             secret: secret_code.valor
         })
-        return user
+        if (!isCodeValid) {
+            throw new UnauthorizedException('Código de autenticación errado');
+        }
+        return user;
     }
 
-    async exValidateRecoveryCode(data: CodigoRecuperacionInput): Promise<any> {
+    async exValidateRecoveryCode(data: ValidationRecoveryCodeInput): Promise<any> {
         let user = await this.getUsuarioById(data.usuario_id);
 
-        let usuario_parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig")
+        let parametro_recuperacion = await this.getUsuarioParametros(data.usuario_id, "auttotpcodrecup");
+        let parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig");
+        console.log(await this.hashPassword(data.codigo_recuperacion, user.salt));
 
-        if (user) {
-            await this.prismaService.usuarios.update({
-                where: { usuario_id: user.usuario_id },
-                data: {
-                    UsuarioParametroValor: {
-                        update: {
-                            where: {
-                                usuario_parametro_valor_id: usuario_parametro_config.usuario_parametro_valor_id
-                            },
-                            data: {
-                                valor: "false"
-                            }
-                        }
-                    }
-                }
-            })
+        if (parametro_recuperacion.valor !== await this.hashPassword(data.codigo_recuperacion, user.salt)) {
+            throw new UnauthorizedException("Código de recuperación inválido, vuelva a intentarlo.");
         }
-        if (user !== null) {
-            return user;
-        } else {
-            throw new UnauthorizedException("Invalid recovery code");
-        }
+        await this.updateUsuarioParametro(data.usuario_id, "false", parametro_config.usuario_parametro_valor_id);
+
+        return user;
     }
 
     async createToken(token: string, user): Promise<any> {
@@ -599,6 +591,16 @@ export class UsuariosService {
             },
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
+    }
+
+    async validateMetodoAutenticacion(user: any, metodo: string) {
+        if (user.metodo_autenticacion_id === null || user.metodo_autenticacion_id === undefined) {
+            throw new UnauthorizedException("El usuario no tiene activa la doble autenticación");
+        }
+
+        if (user.TbMetodosAutenticacion.nombre !== metodo) {
+            throw new UnauthorizedException("El usuario no tiene configurada la doble autenticación con", metodo);
+        }
     }
 
     public async updateUsuarioParametro(usuario_id: number, valor: string, usuario_parametro_valor_id: number) {
@@ -722,7 +724,7 @@ export class UsuariosService {
 
         authenticator.options = { window: 0 };
         const secret = authenticator.generateSecret();
-        const otpauthUrl = authenticator.keyuri(user.email, "Maia ERP", secret);
+        const otpauthUrl = authenticator.keyuri(user.correo, "Maia ERP", secret);
         return { secret, otpauthUrl }
     }
 
