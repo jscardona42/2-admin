@@ -278,8 +278,6 @@ export class UsuariosService {
             include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
         })
 
-        await this.logOutLogin(user.usuario_id);
-
         try {
             await this.mailerService.sendMail({
                 to: user.correo,
@@ -527,7 +525,6 @@ export class UsuariosService {
 
             return user
         } catch (error) {
-            console.log(error)
             throw new UnauthorizedException("No se pudo generar el código de recuperación");
         }
     }
@@ -562,7 +559,6 @@ export class UsuariosService {
 
         let parametro_recuperacion = await this.getUsuarioParametros(data.usuario_id, "auttotpcodrecup");
         let parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig");
-        console.log(await this.hashPassword(data.codigo_recuperacion, user.salt));
 
         if (parametro_recuperacion.valor !== await this.hashPassword(data.codigo_recuperacion, user.salt)) {
             throw new UnauthorizedException("Código de recuperación inválido, vuelva a intentarlo.");

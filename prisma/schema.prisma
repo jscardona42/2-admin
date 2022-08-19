@@ -24,22 +24,11 @@ model TbEstadosUsuarios {
 }
 
 model TbMetodosAutenticacion {
-  metodo_autenticacion_id Int                 @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
-  nombre                  String              @unique() @db.VarChar(100)
+  metodo_autenticacion_id Int        @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
+  nombre                  String     @unique() @db.VarChar(100)
   Usuarios                Usuarios[]
-  MetodosParametrosSec    MetodosParametros[]
 
   @@index([metodo_autenticacion_id], name: "pk_metodo_autenticacion_id")
-}
-
-model MetodosParametros {
-  metodo_parametro_id     Int                    @id(map: "TbMetodoParametro_id") @default(autoincrement())
-  metodo_autenticacion_id Int
-  usuario_parametro_id    Int
-  TbMetodosAutenticacion  TbMetodosAutenticacion @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
-  UsuariosParametros      UsuariosParametros     @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbUusarioParametro_fk")
-
-  @@index([metodo_parametro_id], name: "pk_metodo_parametro_id")
 }
 
 model TbRoles {
@@ -106,7 +95,6 @@ model UsuariosParametros {
   requerido                    Boolean?                    @default(false)
   TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
   UsuariosParametrosValoresSec UsuariosParametrosValores[]
-  MetodosParametros            MetodosParametros[]
 
   @@index([usuario_parametro_id], name: "pk_usuario_parametro_id")
 }
