@@ -34,31 +34,17 @@ export class TbMetodosAutenticacionService {
     }
 
     async createMetodoAutenticacion(data: CreateMetodoAutenticacionInput): Promise<any> {
-        let arreglo = []
-        if (data.nombre.toUpperCase() == "TOTP") {
-            arreglo = ["auttotplibsecreta", "auttotpconfig", "auttotpcodrecup"];
-        }
-        else if (data.nombre.toUpperCase() == "EMAIL") {
-            arreglo = ["autemailcodrecup", "autfechacodrecup"];
-        }
-        let usuarios_parametros = await this.prismaService.usuariosParametros.findMany(({
-            where: { alias: { in: arreglo } },
-            select: { usuario_parametro_id: true }
-        }))
         try {
             return await this.prismaService.tbMetodosAutenticacion.create({
                 data: {
-                    nombre: data.nombre,
-                    MetodosParametrosSec: {
-                        create: usuarios_parametros
-                    }
+                    nombre: data.nombre
                 },
-                include: { Usuarios: true, MetodosParametrosSec: true }
+                include: { Usuarios: true }
             });
         }
         catch (e) {
             if (e.code === 'P2002') {
-                throw new UnauthorizedException(`El nombre ya se encuentra registrado/a`);
+                throw new UnauthorizedException(`El nombre ya se encuentra registrado`);
             }
         }
     }
