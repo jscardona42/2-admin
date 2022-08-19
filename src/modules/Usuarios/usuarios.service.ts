@@ -433,7 +433,7 @@ export class UsuariosService {
             }
             return user;
         }
-        else throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación" });
+        else throw new UnauthorizedException({ error_code: "014", message: "Debe esperar 60 segundos para volver a generar el código de verificación" });
     }
 
     public async validationCodeMail(data: ValidationCodeMailInput): Promise<any> {
