@@ -133,7 +133,7 @@ type TbTipoUsuarios {
 type UsuariosSesiones {
   usuario_sesion_id: Float!
   usuario_id: Float!
-  token: String!
+  token: String
   fecha_ultimo_login: String!
   Usuarios: Usuarios!
 }
@@ -144,10 +144,6 @@ type Usuarios {
   contrasena: String!
   correo: String!
   salt: String!
-  rol_id: Float!
-  metodo_autenticacion_id: Float!
-  tipo_usuario_id: Float!
-  estado_usuario_id: Float!
   sol_cambio_contrasena: Boolean!
   fecha_vigencia_contrasena: String!
   fecha_creacion: String!
@@ -158,6 +154,8 @@ type Usuarios {
   TbRoles: TbRoles!
   TbTipoUsuarios: TbTipoUsuarios!
   UsuariosSesionesSec: UsuariosSesiones
+  error_code: String
+  qr_code: String
 }
 
 type Traducciones {
@@ -214,6 +212,9 @@ type Query {
   getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
   signInLogin(data: SignInUserInput!): Usuarios!
   exValidationCodeVerification(data: ValidationCodeVerificationInput!): Usuarios!
+  exValidationCodeMail(data: ValidationCodeMailInput!): Usuarios!
+  exValidateTotpCode(data: ValidationCodeTotpInput!): Usuarios!
+  exValidateRecoveryCode(data: ValidationRecoveryCodeInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
   getIconos: [Iconos!]!
@@ -226,6 +227,9 @@ type Query {
   getFuncionalidadesByentidad(input: FilterFuncionalidadesInput!): [Funcionalidades!]!
   getFuncionalidadById(funcionalidad_id: Float!): Funcionalidades!
   getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
+  getMetodosAutenticacion: [TbMetodosAutenticacion!]!
+  getMetodoAutenticacionById(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
+  getFilterMetodosAutenticacion(data: FilterMetodosAutenticacionInput): [TbMetodosAutenticacion!]!
 }
 
 input FilterEstadoUsuariosInput {
@@ -252,10 +256,29 @@ input ValidationCodeVerificationInput {
   usuario_id: Float!
 }
 
+input ValidationCodeMailInput {
+  codigo: String!
+  usuario_id: Float!
+}
+
+input ValidationCodeTotpInput {
+  codigo_acceso: String!
+  usuario_id: Float!
+}
+
+input ValidationRecoveryCodeInput {
+  codigo_recuperacion: String!
+  usuario_id: Float!
+}
+
 input FilterFuncionalidadesInput {
   nombre: String
   entidad_nombre: String
   entidad_id: Float
+}
+
+input FilterMetodosAutenticacionInput {
+  nombre: String
 }
 
 type Mutation {
@@ -283,6 +306,9 @@ type Mutation {
   logOutLogin(usuario_id: Float!): Usuarios!
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   exSendCodeVerification(data: SendCodeVerificationInput!): Usuarios!
+  exSendMail(usuario_id: Float!): Usuarios!
+  configTotp(usuario_id: Float!): Usuarios!
+  exSetActivateConfigTotp(usuario_id: Float!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
@@ -296,6 +322,9 @@ type Mutation {
   updateFuncionalidad(data: UpdateFuncionalidadInput!): Funcionalidades!
   addPermisosToFuncionalidad(data: AddPermisosToFuncionalidadInput!): Funcionalidades!
   deleteFuncionalidad(funcionalidad_id: Float!): Funcionalidades!
+  createMetodoAutenticacion(data: CreateMetodoAutenticacionInput!): TbMetodosAutenticacion!
+  updateMetodoAutenticacion(data: UpdateMetodoAutenticacionInput!): TbMetodosAutenticacion!
+  deleteMetodoAutenticacion(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
 }
 
 input CreateEstadoUsuarioInput {
@@ -392,6 +421,7 @@ input ChangePasswordInput {
 
 input SendCodeVerificationInput {
   nombre_usuario: String!
+  tipo_solicitud: String
 }
 
 input CreateTraduccionesInput {
@@ -455,4 +485,13 @@ input UpdateFuncionalidadPermisosInput {
 input AddPermisosToFuncionalidadInput {
   funcionalidad_id: Float!
   FuncionalidadesPermisos: [CreateFuncionalidadPermisosInput!]!
+}
+
+input CreateMetodoAutenticacionInput {
+  nombre: String!
+}
+
+input UpdateMetodoAutenticacionInput {
+  metodo_autenticacion_id: Float!
+  nombre: String
 }

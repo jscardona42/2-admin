@@ -57,6 +57,9 @@ export class SendCodeVerificationInput {
     @Field(() => String)
     @IsNotEmpty()
     nombre_usuario: string
+
+    @Field(() => String, { nullable: true })
+    tipo_solicitud?: string
 }
 
 @InputType()
@@ -65,6 +68,42 @@ export class ValidationCodeVerificationInput {
     @Field(() => String)
     @IsNotEmpty()
     codigo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}
+
+@InputType()
+export class ValidationCodeMailInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}
+
+@InputType()
+export class ValidationCodeTotpInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo_acceso: string
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    usuario_id: number
+}
+
+@InputType()
+export class ValidationRecoveryCodeInput {
+
+    @Field(() => String)
+    @IsNotEmpty()
+    codigo_recuperacion: string
 
     @Field(() => Number)
     @IsNotEmpty()
