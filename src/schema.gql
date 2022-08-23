@@ -155,6 +155,7 @@ type Usuarios {
   TbTipoUsuarios: TbTipoUsuarios!
   UsuariosSesionesSec: UsuariosSesiones
   config_totp: String
+  cod_recuperacion: String
   qr_code: String
 }
 

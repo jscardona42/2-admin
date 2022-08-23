@@ -63,5 +63,8 @@ export class Usuarios {
     config_totp?: string
 
     @Field(() => String, { nullable: true })
+    cod_recuperacion?: string
+
+    @Field(() => String, { nullable: true })
     qr_code?: string
 }

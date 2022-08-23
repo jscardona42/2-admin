@@ -490,8 +490,8 @@ export class UsuariosService {
 
         let user = await this.getUsuarioById(usuario_id);
         await this.validateMetodoAutenticacion(user, "TOTP");
-        let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
-        let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup")
+        let usuario_parametro_config = await this.getUsuarioParametros(usuario_id, "auttotpconfig");
+        let usuario_parametro_codigo = await this.getUsuarioParametros(usuario_id, "auttotpcodrecup");
 
         if (usuario_parametro_config.valor == "true") {
             throw new UnauthorizedException("El usuario ya tiene configurado un método de autenticación TOTP");
@@ -518,7 +518,7 @@ export class UsuariosService {
                 throw new UnauthorizedException("No se puedo enviar el código de activación " + error);
             }
 
-            return user
+            return Object.assign(user, { cod_recuperacion: recoveryCode });
         } catch (error) {
             throw new UnauthorizedException("No se pudo generar el código de recuperación");
         }
