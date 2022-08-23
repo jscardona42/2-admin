@@ -154,7 +154,7 @@ type Usuarios {
   TbRoles: TbRoles!
   TbTipoUsuarios: TbTipoUsuarios!
   UsuariosSesionesSec: UsuariosSesiones
-  error_code: String
+  config_totp: String
   qr_code: String
 }
 

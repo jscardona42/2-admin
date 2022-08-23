@@ -467,12 +467,7 @@ export class UsuariosService {
         let configuracion_TOTP = await this.getUsuarioParametros(usuario_id, "auttotpconfig")
         let otplib_secreta = await this.getUsuarioParametros(usuario_id, "auttotplibsecreta")
 
-        let configuracion = await this.prismaService.usuariosParametrosValores.findFirst({
-            where: { usuario_parametro_valor_id: configuracion_TOTP.usuario_parametro_valor_id },
-            select: { valor: true }
-        })
-
-        if (configuracion.valor == "false") {
+        if (configuracion_TOTP.valor == "false") {
 
             const { otpauthUrl, secret } = await this.generateAuthenticationSecret(usuario_id);
             const qrCodeUrl = await this.buildQrCodeUrl(otpauthUrl);
@@ -486,9 +481,9 @@ export class UsuariosService {
 
             let user0 = await this.getUsuarioById(usuario_id);
 
-            return Object.assign(user0, { qr_code: JSON.stringify(qrCodeUrl) });
+            return Object.assign(user0, { qr_code: JSON.stringify(qrCodeUrl), config_totp: configuracion_TOTP.valor });
         }
-        return Object.assign(user, { qr_code: "" });
+        return Object.assign(user, { qr_code: "", config_totp: configuracion_TOTP.valor });
     }
 
     async exSetActivateConfigTotp(usuario_id: number): Promise<any> {
