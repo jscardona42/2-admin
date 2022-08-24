@@ -545,7 +545,7 @@ export class UsuariosService {
             secret: secret_code.valor
         })
         if (!isCodeValid) {
-            throw new UnauthorizedException('Código de autenticación errado');
+            throw new UnauthorizedException({ error_code: "015", message: "El código de validación es incorrecto." });
         }
         const token = this.jwtService.sign({ userId: user.usuario_id });
         return this.createToken(token, user);
@@ -558,7 +558,7 @@ export class UsuariosService {
         let parametro_config = await this.getUsuarioParametros(data.usuario_id, "auttotpconfig");
 
         if (parametro_recuperacion.valor !== await this.hashPassword(data.codigo_recuperacion, user.salt)) {
-            throw new UnauthorizedException("Código de recuperación inválido, vuelva a intentarlo.");
+            throw new UnauthorizedException({ error_code: "016", message: "El código de recuperación no es válido." });
         }
         await this.updateUsuarioParametro(data.usuario_id, "false", parametro_config.usuario_parametro_valor_id);
 
