@@ -353,7 +353,7 @@ export class UsuariosService {
         let time2 = new Date(time1)
         let tiempo = await this.timeCalculateSecs(time2);
         if (tiempo <= 60) {
-            throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación" });
+            throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación", data: user });
         }
 
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
