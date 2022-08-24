@@ -52,6 +52,19 @@ export class UsuariosService {
         return user;
     }
 
+    async getDataErrorReturn(usuario_id: number): Promise<any> {
+        let user = await this.prismaService.usuarios.findUnique({
+            where: { usuario_id: usuario_id },
+            select: { usuario_id: true, correo: true, nombre_usuario: true, TbMetodosAutenticacion: true }
+        })
+
+        if (user === null) {
+            throw new UnauthorizedException({ error_code: "009", message: "El usuario no se encuentra registrado" });
+        }
+
+        return user;
+    }
+
     async getFilterUsuarios(nombre_usuario: string, correo: string): Promise<any> {
         return this.prismaService.usuarios.findMany({
             where: {
@@ -153,14 +166,14 @@ export class UsuariosService {
 
                 if (tiempo >= parseInt(usuarioparametro.valor)) {
                     await this.statusChange(data.nombre_usuario)
-                    let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+                    let userReturn = await this.getDataErrorReturn(user0.usuario_id);
                     throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: userReturn });
                 }
             }
         }
 
         if (user0.cant_intentos >= numerocontrasenas.valor) {
-            let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+            let userReturn = await this.getDataErrorReturn(user0.usuario_id);
             throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: userReturn });
         }
 
@@ -183,7 +196,7 @@ export class UsuariosService {
         }
 
         if (user.sol_cambio_contrasena) {
-            let userReturn = await this.getUsuarioByUsername(data.nombre_usuario)
+            let userReturn = await this.getDataErrorReturn(user0.usuario_id);
             throw new UnauthorizedException({ error_code: "001", message: "Usuario nuevo", data: userReturn });
         }
 
@@ -353,7 +366,8 @@ export class UsuariosService {
         let time2 = new Date(time1)
         let tiempo = await this.timeCalculateSecs(time2);
         if (tiempo <= 60) {
-            throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación", data: user });
+            let userReturn = await this.getDataErrorReturn(user.usuario_id);
+            throw new UnauthorizedException({ error_code: "007", message: "Debe esperar 60 segundos para volver a generar el codigo de verificación", data: userReturn });
         }
 
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
