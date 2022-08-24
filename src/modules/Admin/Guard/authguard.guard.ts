@@ -22,7 +22,7 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
             try {
                 var url = jwt.verify(referer, process.env.JWT_SECRET_URL);
-                if (url === process.env.JWT_URL) {          
+                if (url === process.env.JWT_URL) {
                     return true;
                 }
             } catch (error) {
@@ -32,9 +32,9 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
 
         let authorization = req.headers.authorization;
 
-        if ((query !== "signInLogin" && query !== "logOutLogin" && query !== "exGetTraducciones" && authorization === undefined && query !== "saveEntidadesPermisosValidaciones" && query !== "exSendCodeVerification" && query !== "exValidationCodeVerification" && query !== "exChangePasswordLogin")) {
+        if ((query !== "signInLogin" && query !== "logOutLogin" && query !== "exGetTraducciones" && authorization === undefined && query !== "saveEntidadesPermisosValidaciones" && query !== "exSendCodeVerification" && query !== "exValidationCodeVerification" && query !== "exChangePasswordLogin" && query !== "exSendMail" && query !== "exValidationCodeMail" && query !== "exConfigTotp" && query !== "exSetActivateConfigTotp" && query !== "exValidateTotpCode" && query !== "exValidateRecoveryCode")) {
             throw new UnauthorizedException("Unauthorized");
-        } else if (query === "signInLogin" || query === "logOutLogin" || query === "exGetTraducciones" || query === "saveEntidadesPermisosValidaciones" || query === "exSendCodeVerification" || query === "exValidationCodeVerification" || query === "exChangePasswordLogin") {
+        } else if (query === "signInLogin" || query === "logOutLogin" || query === "exGetTraducciones" || query === "saveEntidadesPermisosValidaciones" || query === "exSendCodeVerification" || query === "exValidationCodeVerification" || query === "exChangePasswordLogin" || query === "exSendMail" || query === "exValidationCodeMail" || query === "exConfigTotp" || query === "exSetActivateConfigTotp" || query === "exValidateTotpCode" || query === "exValidateRecoveryCode") {
             return true;
         }
 

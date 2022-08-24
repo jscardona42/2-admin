@@ -88,7 +88,7 @@ export class UsuariosResolver {
 
     @Mutation(() => Usuarios)
     @UsePipes(ValidationPipe)
-    async configTotp(
+    async exConfigTotp(
         @Args("usuario_id") usuario_id: number): Promise<any> {
         return this.usuariosService.configTotp(usuario_id);
     }

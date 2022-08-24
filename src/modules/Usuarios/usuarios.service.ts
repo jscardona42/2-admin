@@ -67,6 +67,7 @@ export class UsuariosService {
     async signUpLogin(data: SignUpUserInput): Promise<any> {
         let metodoAutenticacion = undefined;
         let parametrosIds: any = [];
+        let user: any;
 
         await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
@@ -88,30 +89,31 @@ export class UsuariosService {
             parametrosIds.push({ usuario_parametro_id: parametro.usuario_parametro_id },);
         });
 
-        const user = this.prismaService.usuarios.create({
-            data: {
-                nombre_usuario: data.nombre_usuario,
-                contrasena: await this.hashPassword(contrasena_provisional, salt),
-                correo: data.correo,
-                salt: salt,
-                fecha_vigencia_contrasena: await this.addDaysToDate(new Date(), 90),
-                fecha_creacion: new Date(),
-                fecha_actualizacion: new Date(),
-                TbRoles: { connect: { rol_id: data.rol_id } },
-                TbEstadosUsuarios: { connect: { estado_usuario_id: data.estado_usuario_id } },
-                TbMetodosAutenticacion: metodoAutenticacion,
-                TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
-                sol_cambio_contrasena: true,
-                UsuarioParametroValor: {
-                    create: parametrosIds
-                }
-            },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
-        })
-
-        if (user === null) {
-            throw new UnauthorizedException('El usuario no pudo ser creado');
+        try {
+            user = await this.prismaService.usuarios.create({
+                data: {
+                    nombre_usuario: data.nombre_usuario,
+                    contrasena: await this.hashPassword(contrasena_provisional, salt),
+                    correo: data.correo,
+                    salt: salt,
+                    fecha_vigencia_contrasena: await this.addDaysToDate(new Date(), 90),
+                    fecha_creacion: new Date(),
+                    fecha_actualizacion: new Date(),
+                    TbRoles: { connect: { rol_id: data.rol_id } },
+                    TbEstadosUsuarios: { connect: { estado_usuario_id: data.estado_usuario_id } },
+                    TbMetodosAutenticacion: metodoAutenticacion,
+                    TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
+                    sol_cambio_contrasena: true,
+                    UsuarioParametroValor: {
+                        create: parametrosIds
+                    }
+                },
+                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            })
+        } catch (error) {
+            throw new UnauthorizedException("Ocurrió un error durante la creación del usuario " + error);
         }
+
         try {
             await this.mailerService.sendMail({
                 to: data.correo,
