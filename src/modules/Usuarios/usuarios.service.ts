@@ -186,11 +186,9 @@ export class UsuariosService {
         })
 
         if (!user) {
-            if (!user0.sol_cambio_contrasena) {
-                await this.addIntentos(data.nombre_usuario)
-                if (user0.cant_intentos + 1 >= numerocontrasenas.valor) {
-                    await this.statusChange(data.nombre_usuario)
-                }
+            await this.addIntentos(data.nombre_usuario)
+            if (user0.cant_intentos + 1 >= numerocontrasenas.valor) {
+                await this.statusChange(data.nombre_usuario)
             }
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
@@ -254,7 +252,7 @@ export class UsuariosService {
         if (salt === null) {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
-        if (user9.sol_cambio_contrasena) {
+        if (user9.sol_cambio_contrasena && (data.contrasena !== undefined && data.contrasena !== null)) {
             const login = await this.prismaService.usuarios.findFirst({
                 where: {
                     contrasena: await this.hashPassword(data.contrasena, salt.salt),
