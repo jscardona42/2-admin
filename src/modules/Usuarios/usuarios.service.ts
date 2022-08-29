@@ -155,7 +155,10 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
-        let user0 = await this.getUsuarioByUsername(data.nombre_usuario)
+        let user0 = await this.getUsuarioByUsername(data.nombre_usuario);
+        if (user0.TbEstadosUsuarios.nombre === "INACTIVO") {
+            throw new UnauthorizedException({ error_code: "012", message: "Usuario inactivo" });
+        }
         let numerocontrasenas = await this.getUsuarioParametros(user0.usuario_id, "autnummaxintentos")
         if (!user0.sol_cambio_contrasena) {
             let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");

@@ -308,7 +308,7 @@ type Mutation {
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   exSendCodeVerification(data: SendCodeVerificationInput!): Usuarios!
   exSendMail(usuario_id: Float!): Usuarios!
-  configTotp(usuario_id: Float!): Usuarios!
+  exConfigTotp(usuario_id: Float!): Usuarios!
   exSetActivateConfigTotp(usuario_id: Float!): Usuarios!
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
