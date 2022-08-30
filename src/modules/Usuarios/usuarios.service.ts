@@ -158,6 +158,8 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
+        console.log(salt);
+
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario);
         if (user0.TbEstadosUsuarios.nombre === "INACTIVO") {
             throw new UnauthorizedException({ error_code: "012", message: "Usuario inactivo" });
@@ -166,7 +168,7 @@ export class UsuariosService {
         if (!user0.sol_cambio_contrasena) {
             let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");
             if (vencimientocontrasena.valor == "true") {
-                
+
                 let newDate = await this.getLocaleDate();
 
                 if (newDate >= user0.fecha_vigencia_contrasena) {
@@ -305,8 +307,8 @@ export class UsuariosService {
                 subject: 'Confirmación cambio de contraseña',
                 text: 'Confirmación cambio de contraseña',
                 html: `<p style="margin-left: 10px;">Hola <strong>${user.nombre_usuario}</strong></p>
-                        <p style="margin-left: 10px;" > El cambio de contraseña se realizó satisfactoriamente."</p>
-                        <p style = "margin-left: 10px;">Si usted no ha hecho esta solicitud, por favor contacte el administrador del sistema."</p>`,
+                        <p style="margin-left: 10px;" > El cambio de contraseña se realizó satisfactoriamente.</p>
+                        <p style = "margin-left: 10px;">Si usted no ha hecho esta solicitud, por favor contacte el administrador del sistema.</p>`,
             })
 
         } catch (error) {
@@ -362,7 +364,7 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "008", message: "Usuario nuevo, no puede cambiar su contraseña" });
         }
 
-        let recoveryCode = this.randomCode().padStart(8, "0");
+        let recoveryCode = this.randomCode().padStart(6, "0");
         let hashRecoveryCode = await bcrypt.hash(recoveryCode, user.salt);
         let parametrovalor = await this.getUsuarioParametros(user.usuario_id, "autcodrestabcontra")
         let parametrovalor1 = await this.getUsuarioParametros(user.usuario_id, "autfecharestabcontra")
@@ -387,8 +389,7 @@ export class UsuariosService {
                 proceso introduzca este código de verificación en la página de restablecimiento de contraseña</p>
                 <h1 style="text-align: center;">${recoveryCode}</h1>
                 <p style="margin-left: 10px;">Recuerda que por seguridad el código es temporal y caducará en 15 minutos. Si no ha
-                solicitado este cambio, haga caso omiso de este mensaje."</p>`
-                // html: `<b>Su código de verificación es ${recoveryCode} </b>`,
+                solicitado este cambio, haga caso omiso de este mensaje.</p>`
             })
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
@@ -429,7 +430,7 @@ export class UsuariosService {
         })
         let tiempo = await this.timeCalculateSecs(new Date(validacion.valor));
         if (tiempo > 60) {
-            let recoveryCode = this.randomCode().padStart(8, "0");
+            let recoveryCode = this.randomCode().padStart(6, "0");
             let hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
 
             this.updateUsuarioParametro(user.usuario_id, await hashRecoveryCode, id.usuario_parametro_valor_id)
@@ -444,8 +445,7 @@ export class UsuariosService {
                     text: 'Código de verificación',
                     html: `<p style="margin-left: 10px;">Su código de verificación es:</p>
                         <h1 style="text-align: center;">${recoveryCode}</h1>
-                        <p style="margin-left: 10px;">Recuerda que por seguridad el código es temporal y caducará en 15 minutos. Si no ha
-                        solicitado este cambio, haga caso omiso de este mensaje."</p>`,
+                        <p style="text-align: center;">El código expirará después de 15 minutos.</p>`,
                 })
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
@@ -528,7 +528,7 @@ export class UsuariosService {
                     text: 'Código de recuperación',
                     html: `<p style="margin-left: 10px;">El código de recuperación para restablecer el QR en caso de que pierda la informacón de Google Autenticathor es:</p>
                         <h1 style="text-align: center;">${recoveryCode}</h1>
-                        <p style="margin-left: 10px;">Recuerda que este código sólo se puede usar una vez."</p>`,
+                        <p style="margin-left: 10px;">Recuerda que este código sólo se puede usar una vez.</p>`,
                 })
 
                 await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
@@ -675,7 +675,7 @@ export class UsuariosService {
 
     randomCode(): string {
         let min = 0;
-        let max = 9999999999;
+        let max = 999999;
         let Code = Math.floor(Math.random() * (max - min)) + min;
         return Code.toString();
     }
