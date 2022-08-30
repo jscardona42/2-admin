@@ -102,6 +102,9 @@ export class UsuariosService {
             parametrosIds.push({ usuario_parametro_id: parametro.usuario_parametro_id },);
         });
 
+        let vigencia = await this.getUsuarioParametros(0, "autvigenciacontrasena");
+        let newDate = await this.getLocaleDate();
+
         try {
             user = await this.prismaService.usuarios.create({
                 data: {
@@ -109,9 +112,9 @@ export class UsuariosService {
                     contrasena: await this.hashPassword(contrasena_provisional, salt),
                     correo: data.correo,
                     salt: salt,
-                    fecha_vigencia_contrasena: await this.addDaysToDate(new Date(), 90),
-                    fecha_creacion: new Date(),
-                    fecha_actualizacion: new Date(),
+                    fecha_vigencia_contrasena: await this.addDaysToDate(newDate, parseInt(vigencia.valor)),
+                    fecha_creacion: newDate,
+                    fecha_actualizacion: newDate,
                     TbRoles: { connect: { rol_id: data.rol_id } },
                     TbEstadosUsuarios: { connect: { estado_usuario_id: data.estado_usuario_id } },
                     TbMetodosAutenticacion: metodoAutenticacion,
@@ -163,11 +166,10 @@ export class UsuariosService {
         if (!user0.sol_cambio_contrasena) {
             let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");
             if (vencimientocontrasena.valor == "true") {
-                let usuarioparametro = await this.getUsuarioParametros(user0.usuario_id, "autvigenciacontrasena");
+                
+                let newDate = await this.getLocaleDate();
 
-                let tiempo = await this.timeCalculateDays(user0);
-
-                if (tiempo >= parseInt(usuarioparametro.valor)) {
+                if (newDate >= user0.fecha_vigencia_contrasena) {
                     await this.statusChange(data.nombre_usuario)
                     let userReturn = await this.getDataErrorReturn(user0.usuario_id);
                     throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: userReturn });
@@ -268,10 +270,11 @@ export class UsuariosService {
             }
         }
 
-        await this.ValidationHistoricoContrasenas(data)
+        await this.ValidationHistoricoContrasenas(data);
+        let newDate = await this.getLocaleDate();
 
         let usuarioparametro = await this.getUsuarioParametros(data.usuario_id, "autvigenciacontrasena")
-        let tiempo00 = await this.addDaysToDate(new Date(), parseInt(usuarioparametro.valor))
+        let tiempo00 = await this.addDaysToDate(newDate, parseInt(usuarioparametro.valor))
         let estadoUsuario = await this.getEstadoUsuario("ACTIVO");
 
         await this.getUsuarioById(data.usuario_id);
@@ -284,10 +287,11 @@ export class UsuariosService {
                 sol_cambio_contrasena: false,
                 cant_intentos: 0,
                 fecha_vigencia_contrasena: tiempo00,
+                fecha_actualizacion: newDate,
                 UsuariosHistoricoContrasenasSec: {
                     create: {
                         contrasena: await this.hashPassword(data.nueva_contrasena, salt.salt),
-                        fecha_actualizacion: new Date()
+                        fecha_actualizacion: newDate
                     }
                 }
             },
@@ -639,7 +643,14 @@ export class UsuariosService {
             where: { usuario_parametro_id: usuarioparametro.usuario_parametro_id, usuario_id: usuario_id },
         })
 
-        if (parametrovalor.valor == null) {
+        if (parametrovalor !== null) {
+            if (parametrovalor.valor !== null) {
+                return parametrovalor;
+            } else {
+                Object.assign(parametrovalor, { valor: usuarioparametro.valor_defecto });
+            }
+        } else {
+            parametrovalor = { usuario_parametro_valor_id: 0, valor: usuarioparametro.valor_defecto, usuario_id: 0, usuario_parametro_id: usuarioparametro.usuario_parametro_id }
             Object.assign(parametrovalor, { valor: usuarioparametro.valor_defecto });
         }
         return parametrovalor;
@@ -754,5 +765,12 @@ export class UsuariosService {
         for (let i = 0; i < max; i++)
             text += possible.charAt(Math.floor(Math.random() * possible.length));
         return text;
+    }
+
+    async getLocaleDate() {
+        let date = new Date().toLocaleString('en-US', { timeZone: 'America/New_York' });
+        let newDate = new Date(date);
+        newDate.setHours(newDate.getHours() - 6);
+        return newDate;
     }
 }
