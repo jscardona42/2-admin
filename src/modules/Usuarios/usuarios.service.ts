@@ -364,13 +364,13 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "008", message: "Usuario nuevo, no puede cambiar su contraseña" });
         }
 
-        let recoveryCode = this.randomCode().padStart(6, "0");
+        let recoveryCode = this.randomCode(9999999999).padStart(6, "0");
         let hashRecoveryCode = await bcrypt.hash(recoveryCode, user.salt);
         let parametrovalor = await this.getUsuarioParametros(user.usuario_id, "autcodrestabcontra")
         let parametrovalor1 = await this.getUsuarioParametros(user.usuario_id, "autfecharestabcontra")
 
-        let time1 = Date.parse(parametrovalor1.valor)
-        let time2 = new Date(time1)
+        let time1 = Date.parse(parametrovalor1.valor);
+        let time2 = new Date(time1);
         let tiempo = await this.timeCalculateSecs(time2);
         if (tiempo <= 60) {
             let userReturn = await this.getDataErrorReturn(user.usuario_id);
@@ -430,7 +430,7 @@ export class UsuariosService {
         })
         let tiempo = await this.timeCalculateSecs(new Date(validacion.valor));
         if (tiempo > 60) {
-            let recoveryCode = this.randomCode().padStart(6, "0");
+            let recoveryCode = this.randomCode(999999).padStart(6, "0");
             let hashRecoveryCode = bcrypt.hash(recoveryCode, user.salt);
 
             this.updateUsuarioParametro(user.usuario_id, await hashRecoveryCode, id.usuario_parametro_valor_id)
@@ -673,9 +673,8 @@ export class UsuariosService {
         return bcrypt.hash(contrasena, salt);
     }
 
-    randomCode(): string {
+    randomCode(max: number): string {
         let min = 0;
-        let max = 999999;
         let Code = Math.floor(Math.random() * (max - min)) + min;
         return Code.toString();
     }
