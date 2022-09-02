@@ -158,8 +158,6 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
-        console.log(salt);
-
         let user0 = await this.getUsuarioByUsername(data.nombre_usuario);
         if (user0.TbEstadosUsuarios.nombre === "INACTIVO") {
             throw new UnauthorizedException({ error_code: "012", message: "Usuario inactivo" });
@@ -210,12 +208,7 @@ export class UsuariosService {
         }
 
         const token = this.jwtService.sign({ userId: user.usuario_id });
-        await this.prismaService.usuarios.update({
-            where: { usuario_id: user.usuario_id },
-            data: {
-                cant_intentos: 0,
-            }
-        })
+        await this.renewCantidadIntentos(user.usuario_id);
 
         return this.createToken(token, user);
     }
@@ -477,6 +470,7 @@ export class UsuariosService {
         }
 
         const token = this.jwtService.sign({ userId: user.usuario_id });
+        await this.renewCantidadIntentos(user.usuario_id);
         return this.createToken(token, user);
     }
 
@@ -567,6 +561,7 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "015", message: "El código de validación es incorrecto." });
         }
         const token = this.jwtService.sign({ userId: user.usuario_id });
+        await this.renewCantidadIntentos(user.usuario_id);
         return this.createToken(token, user);
     }
 
@@ -771,5 +766,14 @@ export class UsuariosService {
         let newDate = new Date(date);
         newDate.setHours(newDate.getHours() - 6);
         return newDate;
+    }
+
+    async renewCantidadIntentos(usuario_id: number) {
+        await this.prismaService.usuarios.update({
+            where: { usuario_id: usuario_id },
+            data: {
+                cant_intentos: 0,
+            }
+        })
     }
 }
