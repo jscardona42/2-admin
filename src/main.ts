@@ -1,44 +1,33 @@
-import { ValidationPipe, NestApplicationOptions, Logger } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { GqlAuthGuard } from './modules/Admin/Guard/authguard.guard';
 import { AppModule } from './app.module';
-import * as cookieParser from 'cookie-parser';
-import { join } from 'path';
-import { readFileSync } from 'fs';
+import { ExpressAdapter } from '@nestjs/platform-express';
+import * as fs from 'fs';
+let https = require('https');
+const express = require("express");
 
-const options: NestApplicationOptions = {};
 async function bootstrap() {
-  const logger = new Logger('ADMIN');
+  const options: any = {};
 
-  logger.log('USE_SSL:' + process.env.USE_SSL);
-  const enabledSSL: boolean = process.env.USE_SSL === 'true';
-
-  const port = process.env.PORT || 3000;
-  let http = 'HTTP';
-
-  if (enabledSSL) {
-    const secretsDir = join(__dirname, '..', 'secrets');
-    logger.log('SSL certificate dir:' + secretsDir);
-    try {
-      const httpsOptions = {
-        key: readFileSync(`${secretsDir}/key.pem`),
-        cert: readFileSync(`${secretsDir}/cert.pem`),
-      };
-      options.httpsOptions = httpsOptions;
-      http = 'HTTPS';
-    } catch (error) {
-      logger.log(
-        'No SSL cert found, starting server without SSL. Error:' + error,
-      );
+  if (fs.existsSync(process.env.CERTIFICATE_SSL) && fs.existsSync(process.env.KEY_SSL)) {
+    options.httpsOptions = {
+      cert: fs.readFileSync(process.env.CERTIFICATE_SSL),
+      key: fs.readFileSync(process.env.KEY_SSL),
+      requestCert: false,
+      rejectUnauthorized: false,
     }
   }
-  const app = await NestFactory.create(AppModule, options);
+
+  const server = express();
+  const app = await NestFactory.create(
+    AppModule,
+    new ExpressAdapter(server),
+  );
   app.useGlobalGuards(new GqlAuthGuard());
   app.useGlobalPipes(new ValidationPipe());
-  app.use(cookieParser());
-  app.enableCors();
-  await app
-    .listen(port)
-    .then(() => logger.log(`${http} Server running on port ${port}`));
+  await app.init();
+
+  https.createServer(options.httpsOptions, server).listen(process.env.PORT || 3000);
 }
 bootstrap();
