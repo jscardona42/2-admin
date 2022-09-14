@@ -114,8 +114,6 @@ export class AppModule {
   }
 }
 
-
-
 export function ModelData() {
   let entidades = [];
   let fields = [];
@@ -136,14 +134,24 @@ export function ModelData() {
       if ((field.kind !== "object" && field.name !== "fecha_creacion" && field.name !== "fecha_actualizacion") || field.name.endsWith("Sec")) {
         if (field.name.includes("Secundaria")) {
           field_name = field.type;
+
           if (field.name.endsWith("Sec")) {
             field_type = "Grid"
+          }
+          else if (field.isId) {
+            field_type = "Serial"
+          } else if (field.isReadOnly) {
+            field_type = "List"
           } else {
             field_type = field.type
           }
         } else {
           if (field.name.endsWith("Sec")) {
             field_type = "Grid"
+          } else if (field.isId) {
+            field_type = "Serial"
+          } else if (field.isReadOnly) {
+            field_type = "List"
           } else {
             field_type = field.type
           }
@@ -163,9 +171,14 @@ export function ModelData() {
               if (mdfield.kind !== "object" && mdfield.name !== "fecha_creacion" && mdfield.name !== "fecha_actualizacion" || mdfield.name.endsWith("Sec")) {
                 if (mdfield.name.endsWith("Sec")) {
                   mdfield_type = "Grid"
+                } else if (mdfield.isId) {
+                  mdfield_type = "Serial"
+                } else if (mdfield.isReadOnly) {
+                  mdfield_type = "List"
                 } else {
                   mdfield_type = mdfield.type
                 }
+
                 EntidadesSecundariasCamposSec.push({
                   nombre: mdfield.name,
                   tipo: mdfield_type,
