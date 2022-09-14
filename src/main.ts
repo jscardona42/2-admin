@@ -18,16 +18,21 @@ async function bootstrap() {
       rejectUnauthorized: false,
     }
   }
-
-  const server = express();
-  const app = await NestFactory.create(
-    AppModule,
-    new ExpressAdapter(server),
-  );
-  app.useGlobalGuards(new GqlAuthGuard());
-  app.useGlobalPipes(new ValidationPipe());
-  await app.init();
-
-  https.createServer(options.httpsOptions, server).listen(process.env.PORT || 3000);
+  if (process.env.ENABLE_SSL === "true") {
+    const server = express();
+    const app = await NestFactory.create(
+      AppModule,
+      new ExpressAdapter(server),
+    );
+    app.useGlobalGuards(new GqlAuthGuard());
+    app.useGlobalPipes(new ValidationPipe());
+    await app.init();
+    https.createServer(options.httpsOptions, server).listen(process.env.PORT || 3000);
+  } else {
+    const app = await NestFactory.create(AppModule);
+    app.useGlobalGuards(new GqlAuthGuard());
+    app.useGlobalPipes(new ValidationPipe());
+    await app.listen(process.env.PORT || 3000)
+  }
 }
 bootstrap();
