@@ -41,7 +41,7 @@ export class PermisosService {
   }
 
   async preparePermisos() {
-    var providers = await this.prismaService.proveedoresServicios.findMany();
+    let providers = await this.prismaService.proveedoresServicios.findMany();
     providers.forEach(provider => {
       JSON.parse(provider.lista_proveedores).forEach(lista => {
         return this.saveEntidadesPermisosValidaciones(lista);
@@ -49,55 +49,82 @@ export class PermisosService {
     });
   }
   // Esta función se encarga de almacenar Entidades y Permisos
-  saveEntidadesPermisosValidaciones(nameMethods): string | void {
-    var dataPermisos: any = [];
-    var dataResolvers = [];
-    var dataValidaciones = [];
-    var is_public = false;
-    var k = 0;
+  async saveEntidadesPermisosValidaciones(nameMethods) {
+    let upsertEntidades = [];
+    let upsertPermisos = [];
+    let createPermisos = [];
 
-    try {
-      // Recorremos el arreglo con todos los resolver y sus métodos
-      nameMethods.forEach(function (nameClass, i) {
-        // Almacenamos los nombres de los resolver
-        dataResolvers[i] = { name: nameClass.nameClass, permiso: nameClass.nameClass, is_public: is_public };
-        nameClass.methods.forEach(function (nameMethod, j) {
-          if (nameMethod.includes("Referencia")) {
-            // Almacenamos las validaciones
-            dataValidaciones[j] = { id_referenciado: nameMethod, resolver: nameClass }
-          }
-          // Validamos qué métodos son públicos
-          if (nameMethod.startsWith("ex")) {
-            is_public = true;
-          }
-          if (!nameMethod.includes("Referencia")) {
-            dataPermisos[j] = { name: nameClass.nameClass, permiso: nameMethod, is_public: is_public };
-            k++;
-          }
-          // Almacenamos los nombres de los métodos separados por resolver
+    await nameMethods.reduce(async (promise, entidad) => {
+      await promise;
+      let entidad_id = 0;
+
+      let ent = await this.prismaService.entidades.findFirst({
+        where: { nombre: entidad.nameClass.replace("Resolver", "") }
+      });
+
+      if (ent !== null) {
+        entidad_id = ent.entidad_id;
+      }
+
+      await entidad.methods.reduce(async (promise2, permiso) => {
+        await promise2;
+
+        let is_public = false;
+        let per = await this.prismaService.permisos.findFirst({
+          where: { permiso: permiso, entidad_id: entidad_id }
         });
-      });
 
-      // Guardamos en BD las validaciones
-      dataValidaciones.forEach(validacion => {
-        this.validacionesService.createValidacion(validacion);
-      });
+        if (permiso.startsWith("ex")) {
+          is_public = true;
+        }
+        if (!permiso.includes("Referencia")) {
+          if (per === null) {
+            createPermisos.push({
+              permiso: permiso,
+              es_publico: is_public
+            });
+          } else {
+            upsertPermisos.push({
+              where: { permiso_id: per.permiso_id },
+              create: {
+                permiso: permiso,
+                es_publico: is_public
+              },
+              update: {
+                es_publico: is_public,
+                permiso: permiso
+              }
+            });
+          }
+        }
+      }, Promise.resolve());
 
-      // Guardamos en BD las entidades
-      dataResolvers.forEach(permission => {
-        this.entidadesService.createEntidad(permission);
-      });
+      upsertEntidades.unshift(this.prismaService.entidades.upsert({
+        where: { entidad_id: entidad_id },
+        create: {
+          nombre: entidad.nameClass.replace("Resolver", ""),
+          resolver: entidad.nameClass,
+          Permisos: {
+            create: createPermisos
+          }
+        },
+        update: {
+          nombre: entidad.nameClass.replace("Resolver", ""),
+          resolver: entidad.nameClass,
+          Permisos: {
+            upsert: upsertPermisos
+          },
+        }
+      }));
 
-      // Guardamos en BD los permisos
-      setTimeout(() => {
-        dataResolvers.concat(dataPermisos).forEach(permission => {
-          this.createPermisos(permission);
-        });
-      }, 1500);
+      upsertPermisos = [];
+      createPermisos = [];
 
-    } catch (error) {
-      return JSON.stringify({ status: 400 });
-    }
+    }, Promise.resolve());
+
+    await this.prismaService.$transaction(upsertEntidades);
+
+    return true;
   }
 
   // Esta función permite almacenar en BD el nombre los métodos por cada resolver

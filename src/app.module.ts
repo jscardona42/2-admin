@@ -124,7 +124,7 @@ export function ModelData() {
   let prismaModels = Prisma.dmmf.datamodel.models;
 
   //Recorremos las entidades
-  prismaModels.forEach((model, i) => {
+  prismaModels.forEach((model) => {
     cont = cont + 1;
     entidades.push(model.name);
     let field_name = "";
@@ -137,8 +137,7 @@ export function ModelData() {
 
           if (field.name.endsWith("Sec")) {
             field_type = "Grid"
-          }
-          else if (field.isId) {
+          } else if (field.isId) {
             field_type = "Serial"
           } else if (field.isReadOnly) {
             field_type = "List"
@@ -148,6 +147,12 @@ export function ModelData() {
         } else {
           if (field.name.endsWith("Sec")) {
             field_type = "Grid"
+          } else if (field.type === "String") {
+            if (field.default == "") {
+              field_type = "Text"
+            } else {
+              field_type = "String"
+            }
           } else if (field.isId) {
             field_type = "Serial"
           } else if (field.isReadOnly) {
@@ -171,6 +176,12 @@ export function ModelData() {
               if (mdfield.kind !== "object" && mdfield.name !== "fecha_creacion" && mdfield.name !== "fecha_actualizacion" || mdfield.name.endsWith("Sec")) {
                 if (mdfield.name.endsWith("Sec")) {
                   mdfield_type = "Grid"
+                } else if (mdfield.type === "String") {
+                  if (mdfield.default == "") {
+                    mdfield_type = "Text"
+                  } else {
+                    mdfield_type = "String"
+                  }
                 } else if (mdfield.isId) {
                   mdfield_type = "Serial"
                 } else if (mdfield.isReadOnly) {

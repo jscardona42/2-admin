@@ -69,7 +69,7 @@ export class EntidadesService {
   // Esta función permite almacenar en BD el nombre los resolver
   async createEntidad(cls): Promise<any> {
 
-    var entidades = await this.prismaService.entidades.findFirst({
+    let entidades = await this.prismaService.entidades.findFirst({
       where: { resolver: cls.name }
     })
 
@@ -84,7 +84,7 @@ export class EntidadesService {
   }
 
   async prepareSecondaryEntities() {
-    var providers = await this.prismaService.proveedoresServicios.findMany();
+    let providers = await this.prismaService.proveedoresServicios.findMany();
     providers.forEach(provider => {
       return this.saveSecondaryEntities(JSON.parse(provider.model_data));
     });
