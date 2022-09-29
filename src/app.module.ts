@@ -36,7 +36,7 @@ import { TbMetodosAutenticacionService } from './modules/MetodosAutenticacion/me
 import { TbMetodosAutenticacionResolver } from './modules/MetodosAutenticacion/metodosautenticacion.resolver';
 
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver,TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
 
 @Module({
   imports: [
@@ -124,7 +124,7 @@ export function ModelData() {
   let prismaModels = Prisma.dmmf.datamodel.models;
 
   //Recorremos las entidades
-  prismaModels.forEach((model) => {
+  prismaModels.forEach((model, i) => {
     cont = cont + 1;
     entidades.push(model.name);
     let field_name = "";

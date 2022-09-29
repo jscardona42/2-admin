@@ -48,7 +48,12 @@ export class EntidadesResolver {
     }
 
     @Mutation(() => [Entidades])
-    async saveSecondaryEntities(): Promise<any> {
-        return this.entidadesService.prepareSecondaryEntities();
+    async saveEntidadesDependientes(): Promise<any[]> {
+        return this.entidadesService.prepareSecondaryEntities("");
+    }
+
+    @Mutation(() => [Entidades])
+    async saveAdditionalEntidadesDependientes(): Promise<any[]> {
+        return this.entidadesService.prepareSecondaryEntities("add");
     }
 }

@@ -1,4 +1,5 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { ModelData } from 'src/app.module';
 import { PrismaService } from '../../../prisma.service';
 import { UpdateEntidadInput } from './dto/entidades.dto';
 import { Entidades } from './entities/entidades.entity';
@@ -79,20 +80,130 @@ export class EntidadesService {
         data: { resolver: cls.name, nombre: cls.name.replace("Resolver", "") },
       });
     }
-
     return entidades;
   }
 
-  async prepareSecondaryEntities() {
+  async prepareSecondaryEntities(tipo: string) {
     let providers = await this.prismaService.proveedoresServicios.findMany();
     providers.forEach(provider => {
-      return this.saveSecondaryEntities(JSON.parse(provider.model_data));
+      if (tipo === "add") {
+        this.saveAdditionalEntidades(JSON.parse(provider.model_data));
+      } else {
+        this.saveEntidadesDependientes(JSON.parse(provider.model_data));
+      }
+
+    });
+    return this.prismaService.entidades.findMany({
+      include: { EntidadesCamposSec: true, EntidadesSecundariasSec: { include: { EntidadesSecundariasCamposSec: true } }, Permisos: true }
     });
   }
 
-  async saveSecondaryEntities(modelData) {
+  async saveAdditionalEntidades(modelData: any[]) {
     let updateEntidadesSec = [];
-    let entidad_secundaria_campo_id = 0;
+    let updateEntidadesSecCampos = [];
+    let createEntidadesSecCampos = [];
+
+    let newModelData = await this.getPrimaryEntities(modelData);
+
+    await newModelData.reduce(async (promise, model) => {
+      await promise;
+
+      await model.entidadesSec.create.reduce(async (promise2, sec) => {
+        await promise2;
+
+        let entidad_secundaria_padre_id = await this.getEntidadSecundariaByNombreAndEntidadId(sec.nombre, model.entidad_id);
+
+        await sec.EntidadesSecundariasCamposSec.create.reduce(async (promise3, secCampo) => {
+          await promise3;
+
+          if (secCampo.tipo === "Grid") {
+            await modelData.reduce(async (promise4, model2) => {
+              await promise4;
+
+              if (secCampo.nombre == model2.name + "Sec") {
+                let entidad_secundaria_id = await this.getEntidadSecundariaByNombreAndEntidadId(model2.name, model.entidad_id);
+
+                await model2.fields.create.reduce(async (promise4, field2) => {
+                  await promise4;
+
+                  let entidad_secundaria_campo_id = await this.getEntidadSecundariaCampoByNombreAndEntidadId(field2.nombre, entidad_secundaria_id);
+
+                  if (entidad_secundaria_campo_id === 0) {
+                    createEntidadesSecCampos.push(await this.buildEntidadesDependientesCampos(field2));
+                  }
+                  updateEntidadesSecCampos.push(await this.buildUpsertEntidadesDependientesCampos(entidad_secundaria_campo_id, field2));
+
+                }, Promise.resolve());
+
+                updateEntidadesSec.push(await this.buildUpsertEntidadesDependientes(entidad_secundaria_id, model2, entidad_secundaria_padre_id, updateEntidadesSecCampos, createEntidadesSecCampos));
+
+                createEntidadesSecCampos = [];
+                updateEntidadesSecCampos = [];
+              }
+
+            }, Promise.resolve());
+          }
+
+        }, Promise.resolve());
+      }, Promise.resolve());
+
+      if (updateEntidadesSec[0] != undefined) {
+        await this.prismaService.entidades.update({
+          where: { entidad_id: model.entidad_id },
+          data: {
+            EntidadesSecundariasSec: {
+              upsert: updateEntidadesSec
+            }
+          }
+        })
+      }
+      updateEntidadesSec = [];
+    }, Promise.resolve());
+  }
+
+  async buildUpsertEntidadesDependientesCampos(entidad_secundaria_campo_id: number, field2: any,) {
+    return {
+      where: { entidad_secundaria_campo_id: entidad_secundaria_campo_id },
+      update: {
+        nombre: field2.nombre,
+        tipo: field2.tipo
+      },
+      create: {
+        nombre: field2.nombre,
+        tipo: field2.tipo
+      }
+    };
+  }
+
+  async buildEntidadesDependientesCampos(field2: any) {
+    return {
+      nombre: field2.nombre,
+      tipo: field2.tipo
+    };
+  }
+
+  async buildUpsertEntidadesDependientes(entidad_secundaria_id: number, model2: any, entidad_secundaria_padre_id: number, updateEntidadesSecCampos: any[], createEntidadesSecCampos: any[]) {
+    return {
+      where: { entidad_secundaria_id: entidad_secundaria_id },
+      update: {
+        nombre: model2.name,
+        padre_id: entidad_secundaria_padre_id,
+        EntidadesSecundariasCamposSec: {
+          upsert: updateEntidadesSecCampos
+        }
+      },
+      create: {
+        nombre: model2.name,
+        padre_id: entidad_secundaria_padre_id,
+        EntidadesSecundariasCamposSec: {
+          create: createEntidadesSecCampos
+        }
+      }
+    };
+  }
+
+  async saveEntidadesDependientes(modelData) {
+    let updateEntidadesSec = [];
     let updateEntidadesSecCampos = [];
     let createEntidadesSecCampos = [];
     let updateEntidadesCampos = [];
@@ -130,29 +241,12 @@ export class EntidadesService {
         await sec.EntidadesSecundariasCamposSec.create.reduce(async (promise4, secCampo, j) => {
           await promise4;
 
-          let entidadSecundariaCampo = await this.getEntidadSecundariaCampoByNombreAndEntidadId(secCampo.nombre, entidad_secundaria_id);
+          let entidad_secundaria_campo_id = await this.getEntidadSecundariaCampoByNombreAndEntidadId(secCampo.nombre, entidad_secundaria_id);
 
-          if (entidadSecundariaCampo !== null) {
-            entidad_secundaria_campo_id = entidadSecundariaCampo.entidad_secundaria_campo_id;
-          } else {
-            createEntidadesSecCampos.push({
-              nombre: secCampo.nombre,
-              tipo: secCampo.tipo
-            });
-            entidad_secundaria_campo_id = 0;
+          if (entidad_secundaria_campo_id === 0) {
+            createEntidadesSecCampos.push(await this.buildEntidadesDependientesCampos(secCampo));
           }
-
-          updateEntidadesSecCampos.push({
-            where: { entidad_secundaria_campo_id: entidad_secundaria_campo_id },
-            update: {
-              nombre: secCampo.nombre,
-              tipo: secCampo.tipo
-            },
-            create: {
-              nombre: secCampo.nombre,
-              tipo: secCampo.tipo
-            }
-          });
+          updateEntidadesSecCampos.push(await this.buildUpsertEntidadesDependientesCampos(entidad_secundaria_campo_id, secCampo));
 
         }, Promise.resolve());
 
@@ -197,7 +291,8 @@ export class EntidadesService {
     let cont = 0;
     let newModelData = [];
 
-    await Promise.all(modelData.map(async (element, i) => {
+    await modelData.reduce(async (promise5, element,i) => {
+      await promise5;
       let entidad = await this.prismaService.entidades.findFirst({
         where: { nombre: element.name },
         select: { entidad_id: true }
@@ -208,7 +303,7 @@ export class EntidadesService {
         newModelData[cont]["entidad_id"] = entidad.entidad_id;
         cont = cont + 1;
       }
-    }))
+    }, Promise.resolve());
     return newModelData;
   }
 
@@ -240,9 +335,16 @@ export class EntidadesService {
   }
 
   async getEntidadSecundariaCampoByNombreAndEntidadId(nombre: string, entidad_secundaria_id: number): Promise<any> {
-    return this.prismaService.entidadesSecundariasCampos.findFirst({
+    let entidad_secundaria_campo_id = 0;
+
+    let entidadSecundariaCampo = await this.prismaService.entidadesSecundariasCampos.findFirst({
       where: { nombre: nombre, entidad_secundaria_id: entidad_secundaria_id },
       select: { entidad_secundaria_campo_id: true },
     });
+
+    if (entidadSecundariaCampo !== null) {
+      entidad_secundaria_campo_id = entidadSecundariaCampo.entidad_secundaria_campo_id;
+    }
+    return entidad_secundaria_campo_id;
   }
 }
