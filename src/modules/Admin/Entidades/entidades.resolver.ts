@@ -35,6 +35,11 @@ export class EntidadesResolver {
         return this.entidadesService.getFilterEntidades(nombre);
     }
 
+    @Query(() => Entidades)
+    async getInfoEntidades(@Args("entidad_id") entidad_id: number): Promise<any> {
+        return this.entidadesService.getInfoEntidades(entidad_id);
+    }
+
     @Mutation(() => Entidades)
     async updateEntidad(@Args("data") data: UpdateEntidadInput): Promise<Entidades> {
         return this.entidadesService.updateEntidad(data);
