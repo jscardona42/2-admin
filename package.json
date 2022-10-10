@@ -65,6 +65,7 @@
     "reflect-metadata": "0.1.13",
     "rimraf": "3.0.2",
     "rxjs": "7.4.0",
+    "sib-api-v3-typescript": "^2.2.2",
     "ts-morph": "12.2.0"
   },
   "devDependencies": {
@@ -114,7 +115,7 @@
     "testEnvironment": "node",
     "testResultsProcessor": "jest-sonar-reporter",
     "collectCoverage": true,
-    "testPathIgnorePatterns" : [
+    "testPathIgnorePatterns": [
       "usuario.resolver.spec.ts",
       "menus.resolver.spec.ts",
       "roles.service.spec.ts",

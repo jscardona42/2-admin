@@ -7,7 +7,9 @@ import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, Valida
 import { MailerService } from '@nestjs-modules/mailer';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
-let QRCode = require('qrcode')
+import { Usuarios } from './entities/usuarios.entity';
+let QRCode = require('qrcode');
+const SibApiV3Sdk = require('sib-api-v3-typescript');
 
 
 
@@ -131,15 +133,8 @@ export class UsuariosService {
         }
 
         try {
-            await this.mailerService.sendMail({
-                to: data.correo,
-                from: process.env.USER_MAILER,
-                subject: 'Usuario y contraseña temporal',
-                text: 'Usuario y contraseña temporal',
-                html: `<p style="margin-left: 10px;">A continuación encontrará sus datos de acceso:</p>
-                    <p style="margin-left: 10px;">Nombre de usuario: <strong>${data.nombre_usuario}</strong></p>
-                    <p style="margin-left: 10px;">Contraseña temporal: <strong>${contrasena_provisional}</strong></p>`,
-            })
+            let params = { name: user.nombre_usuario, password: contrasena_provisional };
+            await this.sendinBlueMail("usuario_nuevo", user, params);
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
         }
@@ -294,16 +289,8 @@ export class UsuariosService {
         })
 
         try {
-            await this.mailerService.sendMail({
-                to: user.correo,
-                from: process.env.USER_MAILER,
-                subject: 'Confirmación cambio de contraseña',
-                text: 'Confirmación cambio de contraseña',
-                html: `<p style="margin-left: 10px;">Hola <strong>${user.nombre_usuario}</strong></p>
-                        <p style="margin-left: 10px;" > El cambio de contraseña se realizó satisfactoriamente.</p>
-                        <p style = "margin-left: 10px;">Si usted no ha hecho esta solicitud, por favor contacte el administrador del sistema.</p>`,
-            })
-
+            let params = { name: user.nombre_usuario };
+            await this.sendinBlueMail("confirmacion", user9, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
         }
@@ -371,19 +358,11 @@ export class UsuariosService {
         }
 
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
-        let updateData = await this.updateUsuarioParametro(user.usuario_id, new Date().toString(), parametrovalor1.usuario_parametro_valor_id,)
+        let updateData = await this.updateUsuarioParametro(user.usuario_id, new Date().toString(), parametrovalor1.usuario_parametro_valor_id,);
+
         try {
-            await this.mailerService.sendMail({
-                to: user.correo,
-                from: process.env.USER_MAILER,
-                subject: 'Restablecer contraseña',
-                text: 'Restablecer contraseña',
-                html: `<p style="margin-left: 10px;">Hemos recibido una solicitud para restablecer la contraseña, para continuar con el
-                proceso introduzca este código de verificación en la página de restablecimiento de contraseña</p>
-                <h1 style="text-align: center;">${recoveryCode}</h1>
-                <p style="margin-left: 10px;">Recuerda que por seguridad el código es temporal y caducará en 15 minutos. Si no ha
-                solicitado este cambio, haga caso omiso de este mensaje.</p>`
-            })
+            let params = { name: user.nombre_usuario, codigo: recoveryCode };
+            await this.sendinBlueMail("codigo_verificacion", user, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
         }
@@ -431,15 +410,8 @@ export class UsuariosService {
             this.updateUsuarioParametro(user.usuario_id, new Date().toString(), fecha.usuario_parametro_valor_id)
 
             try {
-                await this.mailerService.sendMail({
-                    to: user.correo,
-                    from: process.env.USER_MAILER,
-                    subject: 'Código de verificación',
-                    text: 'Código de verificación',
-                    html: `<p style="margin-left: 10px;">Su código de verificación es:</p>
-                        <h1 style="text-align: center;">${recoveryCode}</h1>
-                        <p style="text-align: center;">El código expirará después de 15 minutos.</p>`,
-                })
+                let params = { name: user.nombre_usuario, codigo: recoveryCode };
+                await this.sendinBlueMail("codigo_email", user, params);
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
             }
@@ -515,15 +487,8 @@ export class UsuariosService {
         try {
             let recoveryCode = this.generateRecoveryCode(20);
             try {
-                await this.mailerService.sendMail({
-                    to: user.correo,
-                    from: process.env.USER_MAILER,
-                    subject: 'Código de recuperación',
-                    text: 'Código de recuperación',
-                    html: `<p style="margin-left: 10px;">El código de recuperación para restablecer el QR en caso de que pierda la informacón de Google Autenticathor es:</p>
-                        <h1 style="text-align: center;">${recoveryCode}</h1>
-                        <p style="margin-left: 10px;">Recuerda que este código sólo se puede usar una vez.</p>`,
-                })
+                let params = { name: user.nombre_usuario, codigo: recoveryCode };
+                await this.sendinBlueMail("codigo_recuperacion", user, params);
 
                 await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
 
@@ -775,5 +740,29 @@ export class UsuariosService {
                 cant_intentos: 0,
             }
         })
+    }
+
+    async sendinBlueMail(nombre: string, user: Usuarios, params: any) {
+
+        let sendinblue = await this.prismaService.sendinBlue.findFirst({
+            where: { nombre: nombre.toLowerCase() }
+        });
+
+        let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
+
+        let apiKey = apiInstance.authentications['apiKey'];
+        apiKey.apiKey = process.env.SENDINBLUE_KEY;
+
+        let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
+
+        sendSmtpEmail.templateId = sendinblue.template_id;
+        sendSmtpEmail.to = [{ email: sendinblue.email, "name": "Tiresia" }];
+        sendSmtpEmail.cc = [{ email: user.correo, name: user.nombre_usuario }];
+        sendSmtpEmail.params = params;
+
+        apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
+        }, function (error) {
+            console.error(error);
+        });
     }
 }

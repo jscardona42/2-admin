@@ -291,7 +291,7 @@ export class EntidadesService {
     let cont = 0;
     let newModelData = [];
 
-    await modelData.reduce(async (promise5, element,i) => {
+    await modelData.reduce(async (promise5, element, i) => {
       await promise5;
       let entidad = await this.prismaService.entidades.findFirst({
         where: { nombre: element.name },
@@ -348,50 +348,52 @@ export class EntidadesService {
     return entidad_secundaria_campo_id;
   }
 
-  async getInfoEntidades(entidad_id: number): Promise<any> {
+  async getEntidadesRelacionadas(entidad_id: number): Promise<any> {
 
-    let entidadesRelacionadas_level1 = [];
-    let entidadesRelacionadas2_level2 = [];
-    let entidad_principal = await this.prismaService.entidades.findUnique({
+    let entidadesRelacionadasLevel1 = [];
+    let entidadesRelacionadasLevel2 = [];
+
+    let entidadPrincipal = await this.prismaService.entidades.findUnique({
       where: { entidad_id: entidad_id },
       include: { EntidadesCamposSec: true }
     })
-    let entidad_final = await this.prismaService.entidades.findUnique({
+
+    let entidadFinal = await this.prismaService.entidades.findUnique({
       where: { entidad_id: entidad_id },
       select: { nombre: true, entidad_id: true }
     })
 
-    await entidad_principal.EntidadesCamposSec.reduce(async (promise01, element) => {
+    entidadesRelacionadasLevel1 = await this.buildEntidadesRelacionadas(entidadPrincipal);
+
+    Object.assign(entidadFinal, { EntidadesRelacionadas: entidadesRelacionadasLevel1 });
+
+    await entidadFinal["EntidadesRelacionadas"].reduce(async (promise02, element2, i) => {
+      await promise02;
+      entidadesRelacionadasLevel2 = await this.buildEntidadesRelacionadas(element2.Entidades);
+
+      Object.assign(entidadFinal["EntidadesRelacionadas"][i]["Entidades"], { EntidadesRelacionadas: entidadesRelacionadasLevel2 });
+      entidadesRelacionadasLevel2 = [];
+    }, Promise.resolve());
+
+    return entidadFinal;
+  }
+
+  async buildEntidadesRelacionadas(entidad: any) {
+    let entidadesRelacionadas = [];
+
+    await entidad.EntidadesCamposSec.reduce(async (promise01, campo) => {
       await promise01;
-      if (element.tipo == "List") {
-        let info = await this.prismaService.entidadesCampos.findFirst({
-          where: { nombre: element.nombre, tipo: "Serial" },
+
+      if (campo.tipo == "List") {
+        let entidadCampo = await this.prismaService.entidadesCampos.findFirst({
+          where: { nombre: campo.nombre, tipo: "Serial" },
           include: { Entidades: { include: { EntidadesCamposSec: true } } }
         })
-        entidadesRelacionadas_level1.push(info)
+
+        entidadesRelacionadas.push(entidadCampo)
       }
     }, Promise.resolve());
-
-    Object.assign(entidad_final, { EntidadesRelacionadas: entidadesRelacionadas_level1 })
-
-    await entidad_final["EntidadesRelacionadas"].reduce(async (promise02, element2, i) => {
-      await promise02;
-      await element2.Entidades.EntidadesCamposSec.reduce(async (promise03, element3) => {
-        await promise03;
-        if (element3.tipo == "List") {
-          let info2 = await this.prismaService.entidadesCampos.findFirst({
-            where: { nombre: element3.nombre, tipo: "Serial" },
-            include: { Entidades: { include: { EntidadesCamposSec: true } } }
-          })
-
-          entidadesRelacionadas2_level2.push(info2)
-        }
-      }, Promise.resolve());
-
-      Object.assign(entidad_final["EntidadesRelacionadas"][i]["Entidades"], { EntidadesRelacionadas: entidadesRelacionadas2_level2 })
-      entidadesRelacionadas2_level2 = [];
-    }, Promise.resolve());
-
-    return entidad_final
+    return entidadesRelacionadas;
   }
+
 }

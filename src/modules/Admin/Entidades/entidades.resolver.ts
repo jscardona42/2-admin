@@ -36,8 +36,8 @@ export class EntidadesResolver {
     }
 
     @Query(() => Entidades)
-    async getInfoEntidades(@Args("entidad_id") entidad_id: number): Promise<any> {
-        return this.entidadesService.getInfoEntidades(entidad_id);
+    async getEntidadesRelacionadas(@Args("entidad_id") entidad_id: number): Promise<any> {
+        return this.entidadesService.getEntidadesRelacionadas(entidad_id);
     }
 
     @Mutation(() => Entidades)
@@ -46,9 +46,7 @@ export class EntidadesResolver {
     }
 
     @Mutation(() => Entidades)
-    async deleteEntidad(
-        @Args("entidad_id") entidad_id: number
-    ): Promise<Entidades> {
+    async deleteEntidad(@Args("entidad_id") entidad_id: number): Promise<Entidades> {
         return this.entidadesService.deleteEntidad(entidad_id);
     }
 
