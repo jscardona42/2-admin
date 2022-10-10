@@ -90,7 +90,7 @@ model UsuariosParametros {
   clase_parametro_id           Int
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
-  descripcion                  String                      @db.VarChar(255)
+  descripcion                  String                      @default("") @db.Text()
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
   TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
@@ -134,7 +134,10 @@ model EntidadesSecundarias {
   entidad_secundaria_id         Int                          @id @default(autoincrement())
   nombre                        String                       @db.VarChar(255)
   entidad_id                    Int
-  Entidades                     Entidades?                   @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_sec_entidad_id")
+  padre_id                      Int?
+  Entidades                     Entidades                    @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_sec_entidad_id")
+  EntidadesSecundarias          EntidadesSecundarias?        @relation("EntidadesSecundarias_padre_id", fields: [padre_id], references: [entidad_secundaria_id], onDelete: Restrict, map: "fk_entidades_secundarias_padre_id")
+  EntidadesSecundariasPadre     EntidadesSecundarias[]       @relation("EntidadesSecundarias_padre_id")
   EntidadesSecundariasCamposSec EntidadesSecundariasCampos[]
 }
 
@@ -269,6 +272,16 @@ model RolesFuncionalidades {
   rol_id               Int
   Funcionalidades      Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_rol_fun_funcionalidad_id")
   TbRoles              TbRoles         @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
+}
+
+model SendinBlue {
+  sendinblue_id Int     @id @default(autoincrement())
+  nombre        String  @db.VarChar(100)
+  email         String  @db.VarChar(100)
+  password      String  @db.VarChar(250)
+  servidor      String  @db.VarChar(250)
+  template_id   Int?
+  descripcion   String? @default("") @db.Text()
 }
 
 enum Estado {
