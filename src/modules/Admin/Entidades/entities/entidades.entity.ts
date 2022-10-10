@@ -22,4 +22,7 @@ export class Entidades {
 
     @Field(() => [Permisos])
     Permisos: Permisos[]
+
+    @Field(() => [EntidadesCampos], { nullable: true })
+    EntidadesRelacionadas?: EntidadesCampos[]
 }

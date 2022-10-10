@@ -347,4 +347,51 @@ export class EntidadesService {
     }
     return entidad_secundaria_campo_id;
   }
+
+  async getInfoEntidades(entidad_id: number): Promise<any> {
+
+    let entidadesRelacionadas_level1 = [];
+    let entidadesRelacionadas2_level2 = [];
+    let entidad_principal = await this.prismaService.entidades.findUnique({
+      where: { entidad_id: entidad_id },
+      include: { EntidadesCamposSec: true }
+    })
+    let entidad_final = await this.prismaService.entidades.findUnique({
+      where: { entidad_id: entidad_id },
+      select: { nombre: true, entidad_id: true }
+    })
+
+    await entidad_principal.EntidadesCamposSec.reduce(async (promise01, element) => {
+      await promise01;
+      if (element.tipo == "List") {
+        let info = await this.prismaService.entidadesCampos.findFirst({
+          where: { nombre: element.nombre, tipo: "Serial" },
+          include: { Entidades: { include: { EntidadesCamposSec: true } } }
+        })
+        entidadesRelacionadas_level1.push(info)
+      }
+    }, Promise.resolve());
+
+    Object.assign(entidad_final, { EntidadesRelacionadas: entidadesRelacionadas_level1 })
+
+    await entidad_final["EntidadesRelacionadas"].reduce(async (promise02, element2, i) => {
+      await promise02;
+      await element2.Entidades.EntidadesCamposSec.reduce(async (promise03, element3) => {
+        await promise03;
+        if (element3.tipo == "List") {
+          let info2 = await this.prismaService.entidadesCampos.findFirst({
+            where: { nombre: element3.nombre, tipo: "Serial" },
+            include: { Entidades: { include: { EntidadesCamposSec: true } } }
+          })
+
+          entidadesRelacionadas2_level2.push(info2)
+        }
+      }, Promise.resolve());
+
+      Object.assign(entidad_final["EntidadesRelacionadas"][i]["Entidades"], { EntidadesRelacionadas: entidadesRelacionadas2_level2 })
+      entidadesRelacionadas2_level2 = [];
+    }, Promise.resolve());
+
+    return entidad_final
+  }
 }

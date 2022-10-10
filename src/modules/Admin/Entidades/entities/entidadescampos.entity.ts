@@ -1,4 +1,5 @@
 import { Field, Int, ObjectType } from "@nestjs/graphql"
+import { Entidades } from "./entidades.entity"
 
 @ObjectType()
 export class EntidadesCampos {
@@ -10,4 +11,7 @@ export class EntidadesCampos {
 
     @Field(() => String)
     tipo: string
+
+    @Field(() => Entidades)
+    Entidades: Entidades
 }
