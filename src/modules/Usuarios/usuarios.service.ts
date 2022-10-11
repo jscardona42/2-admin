@@ -754,8 +754,8 @@ export class UsuariosService {
         let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
         sendSmtpEmail.templateId = sendinblue.template_id;
-        sendSmtpEmail.to = [{ email: sendinblue.email, "name": "Tiresia" }];
-        sendSmtpEmail.cc = [{ email: user.correo, name: user.nombre_usuario }];
+        sendSmtpEmail.sender = { email: sendinblue.email, name: sendinblue.nombre };
+        sendSmtpEmail.to = [{ email: user.correo, name: user.nombre_usuario }];
         sendSmtpEmail.params = params;
 
         apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
