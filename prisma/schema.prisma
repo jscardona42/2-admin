@@ -125,6 +125,7 @@ model Entidades {
   nombre                  String                 @db.VarChar(255)
   resolver                String?                @db.VarChar(255)
   Permisos                Permisos[]
+  microservicio_id        Int?
   Funcionalidades         Funcionalidades[]
   EntidadesSecundariasSec EntidadesSecundarias[]
   EntidadesCamposSec      EntidadesCampos[]
