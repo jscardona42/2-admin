@@ -4,7 +4,6 @@ import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
-import { MailerService } from '@nestjs-modules/mailer';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 import { Usuarios } from './entities/usuarios.entity';
@@ -18,7 +17,6 @@ export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
         private rolesService: TbRolesService,
-        private mailerService: MailerService,
         private jwtService: JwtService,
     ) { }
 

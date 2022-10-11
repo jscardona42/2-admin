@@ -114,7 +114,7 @@
     "coverageDirectory": "../coverage",
     "testEnvironment": "node",
     "testResultsProcessor": "jest-sonar-reporter",
-    "collectCoverage": true,
+    "collectCoverage": false,
     "testPathIgnorePatterns": [
       "usuario.resolver.spec.ts",
       "menus.resolver.spec.ts",

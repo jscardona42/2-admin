@@ -40,16 +40,6 @@ const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosR
 
 @Module({
   imports: [
-    MailerModule.forRoot({
-      transport: {
-        host: process.env.HOST_MAILER,
-        port: process.env.PORT_MAILER,
-        auth: {
-          user: process.env.USER_MAILER,
-          pass: process.env.PASSWORD_MAILER
-        },
-      }
-    }),
     JwtModule.register({
       secret: process.env.JWT_SECRET,
       signOptions: {
@@ -74,7 +64,7 @@ const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosR
   ],
   controllers: [ProveedoresServiciosController],
   providers: MyProviders,
-  exports: [MailerModule]
+  exports: []
 })
 
 export class AppModule {
