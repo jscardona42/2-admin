@@ -21,14 +21,14 @@ describe('Usuarios Service', () => {
             imports: [
                 MailerModule.forRoot({
                     transport: {
-                      host: process.env.HOST_MAILER,
-                      port: process.env.PORT_MAILER,
-                      auth: {
-                        user: process.env.USER_MAILER,
-                        pass: process.env.PASSWORD_MAILER
-                      },
+                        host: process.env.HOST_MAILER,
+                        port: process.env.PORT_MAILER,
+                        auth: {
+                            user: process.env.USER_MAILER,
+                            pass: process.env.PASSWORD_MAILER
+                        },
                     }
-                  }),
+                }),
                 JwtModule.register({
                     secret: process.env.JWT_SECRET,
                     signOptions: {
@@ -43,10 +43,10 @@ describe('Usuarios Service', () => {
                     useFactory: () => ({
                         usuarios: {
                             findFirst: jest.fn(() => {
-                                return { salt: String, correo: "andresfc-916@hotmail.com" }
+                                return { salt: String, correo: "andresfc-916@hotmail.com", TbEstadosUsuarios: { nombre: "Juan" } }
                             }),
-                            findUnique: jest.fn(()=> {
-                                return{ correo: "andresfc-96@hotmail.com", salt: String } 
+                            findUnique: jest.fn(() => {
+                                return { correo: "andresfc-96@hotmail.com", salt: String }
                             }),
                             usernameExists: jest.fn(() => { return { usernameExists: false } }),
                             findMany: jest.fn(() => { return { usernameExists: false } }),
@@ -59,20 +59,20 @@ describe('Usuarios Service', () => {
                             delete: jest.fn(() => { return { usernameExists: false } }),
                         },
                         usuariosParametros: {
-                            findFirst: jest.fn(() => { return { usuario_parametro_id: 1}}),
+                            findFirst: jest.fn(() => { return { usuario_parametro_id: 1 } }),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
                         usuariosParametrosValores: {
-                            findFirst: jest.fn(() => { return { usuario_parametro_valor_id: 1}}),
+                            findFirst: jest.fn(() => { return { usuario_parametro_valor_id: 1 } }),
                             findMany: jest.fn(),
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
                         usuariosHistoricoContrasenas: {
-                            findFirst: jest.fn(() => { return { usu_historico_contrasena_id: 1}}),
-                            findMany: jest.fn(() => { return [{usu_historico_contrasena_id: 1}]}),
+                            findFirst: jest.fn(() => { return { usu_historico_contrasena_id: 1 } }),
+                            findMany: jest.fn(() => { return [{ usu_historico_contrasena_id: 1 }] }),
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
@@ -143,15 +143,15 @@ describe('Usuarios Service', () => {
     //     });
     // });
 
-    describe('exSendCodeVerification method', () => {
-        it('should invoke prismaService.usuarios.findFirst', async () => {
-            let testParams: SendCodeVerificationInput = {
-                nombre_usuario: "Andres"
-            }
-            await usuariosService.exSendCodeVerification(testParams);
-            expect(prismaService.usuarios.findFirst).toHaveBeenCalled();
-        });
-    });
+    // describe('exSendCodeVerification method', () => {
+    //     it('should invoke prismaService.usuarios.findFirst', async () => {
+    //         let testParams: SendCodeVerificationInput = {
+    //             nombre_usuario: "Andres"
+    //         }
+    //         await usuariosService.exSendCodeVerification(testParams);
+    //         expect(prismaService.usuarios.findFirst).toHaveBeenCalled();
+    //     });
+    // });
 
     describe('exValidationCodeVerification method', () => {
         it('should invoke prismaService.usuariosParametrosValores.findFirst', async () => {

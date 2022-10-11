@@ -44,12 +44,12 @@ export class PermisosService {
     let providers = await this.prismaService.proveedoresServicios.findMany();
     providers.forEach(provider => {
       JSON.parse(provider.lista_proveedores).forEach(lista => {
-        return this.saveEntidadesPermisosValidaciones(lista);
+        return this.saveEntidadesPermisosValidaciones(lista, provider.microservicio_id);
       });
     });
   }
   // Esta función se encarga de almacenar Entidades y Permisos
-  async saveEntidadesPermisosValidaciones(nameMethods) {
+  async saveEntidadesPermisosValidaciones(nameMethods, microservicio_id) {
     let upsertEntidades = [];
     let upsertPermisos = [];
     let createPermisos = [];
@@ -104,6 +104,7 @@ export class PermisosService {
         create: {
           nombre: entidad.nameClass.replace("Resolver", ""),
           resolver: entidad.nameClass,
+          microservicio_id: microservicio_id,
           Permisos: {
             create: createPermisos
           }
@@ -111,6 +112,7 @@ export class PermisosService {
         update: {
           nombre: entidad.nameClass.replace("Resolver", ""),
           resolver: entidad.nameClass,
+          microservicio_id: microservicio_id,
           Permisos: {
             upsert: upsertPermisos
           },
