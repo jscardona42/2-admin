@@ -79,7 +79,7 @@ export class UsuariosService {
 
     async signUpLogin(data: SignUpUserInput): Promise<any> {
         let metodoAutenticacion = undefined;
-        let parametrosIds: any = [];
+        let parametrosValores: any = [];
         let user: any;
 
         await this.rolesService.getRolById(data.rol_id);
@@ -94,12 +94,14 @@ export class UsuariosService {
             metodoAutenticacion = { connect: { metodo_autenticacion_id: data.metodo_autenticacion_id } };
         }
 
-        const usuariosParametros = await this.prismaService.usuariosParametros.findMany({
-            select: { usuario_parametro_id: true }
-        });
+        const usuariosParametros = await this.prismaService.usuariosParametros.findMany();
 
         usuariosParametros.forEach(parametro => {
-            parametrosIds.push({ usuario_parametro_id: parametro.usuario_parametro_id },);
+            parametrosValores.push(
+                {
+                    usuario_parametro_id: parametro.usuario_parametro_id,
+                    valor: parametro.valor_defecto
+                });
         });
 
         let vigencia = await this.getUsuarioParametros(0, "autvigenciacontrasena");
@@ -121,7 +123,7 @@ export class UsuariosService {
                     TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
                     sol_cambio_contrasena: true,
                     UsuarioParametroValor: {
-                        create: parametrosIds
+                        create: parametrosValores
                     }
                 },
                 include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
