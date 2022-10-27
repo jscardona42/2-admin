@@ -14,6 +14,9 @@ export class Entidades {
     @Field(() => String, { nullable: true })
     resolver?: string
 
+    @Field((type) => Number)
+    microservicio_id: number
+
     @Field(() => [EntidadesSecundarias])
     EntidadesSecundariasSec: EntidadesSecundarias[]
 
