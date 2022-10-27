@@ -8,7 +8,6 @@ import { TbRolesService } from './modules/GestionFuncionalidades/Roles/roles.ser
 import { PermisosService } from './modules/GestionFuncionalidades/Permisos/permisos.service';
 import { PermisosResolver } from './modules/GestionFuncionalidades/Permisos/permisos.resolver';
 import { EntidadesService } from './modules/Admin/Entidades/entidades.service';
-import { MailerModule } from '@nestjs-modules/mailer';
 import { MenusService } from './modules/GestionMenus/Menus/menus.service';
 import { MenusResolver } from './modules/GestionMenus/Menus/menus.resolver';
 import { UsuariosService } from './modules/Usuarios/usuarios.service';
@@ -16,8 +15,6 @@ import { UsuariosResolver } from './modules/Usuarios/usuarios.resolver';
 import { TraduccionesService } from './modules/Traducciones/traducciones.service';
 import { TraduccionesResolver } from './modules/Traducciones/traducciones.resolver';
 import { ValidacionesService } from './modules/Admin/Validaciones/validaciones.service';
-import { IconosService } from './modules/Admin/Iconos/iconos.service';
-import { IconosResolver } from './modules/Admin/Iconos/iconos.resolver';
 import { ProveedoresServiciosService } from './modules/Admin/ProveedoresServicios/proveedoresservicios.service';
 import { ProveedoresServiciosController } from './modules/Admin/ProveedoresServicios/proveedoresservicios.controller';
 import { EntidadesResolver } from './modules/Admin/Entidades/entidades.resolver';
@@ -36,7 +33,7 @@ import { TbMetodosAutenticacionService } from './modules/MetodosAutenticacion/me
 import { TbMetodosAutenticacionResolver } from './modules/MetodosAutenticacion/metodosautenticacion.resolver';
 
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, IconosService, IconosResolver, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, TraduccionesService, TraduccionesResolver, ValidacionesService, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
 
 @Module({
   imports: [
