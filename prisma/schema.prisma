@@ -268,16 +268,6 @@ model RolesFuncionalidades {
   TbRoles              TbRoles         @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
 }
 
-model SendinBlue {
-  sendinblue_id Int     @id @default(autoincrement())
-  nombre        String  @db.VarChar(100)
-  email         String  @db.VarChar(100)
-  password      String  @db.VarChar(250)
-  servidor      String  @db.VarChar(250)
-  template_id   Int?
-  descripcion   String? @default("") @db.Text()
-}
-
 enum Estado {
   ACTIVO
   INACTIVO
