@@ -744,19 +744,21 @@ export class UsuariosService {
 
     async sendinBlueMail(nombre: string, user: Usuarios, params: any) {
 
-        let sendinblue = await this.prismaService.sendinBlue.findFirst({
-            where: { nombre: nombre.toLowerCase() }
-        });
-
         let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
 
         let apiKey = apiInstance.authentications['apiKey'];
         apiKey.apiKey = process.env.SENDINBLUE_KEY;
 
+        let limit = 50;
+        let offset = 0;
+
+        let sendinblue = await apiInstance.getSmtpTemplates(true, limit, offset);
+        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre);
+
         let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
 
-        sendSmtpEmail.templateId = sendinblue.template_id;
-        sendSmtpEmail.sender = { email: sendinblue.email, name: sendinblue.nombre };
+        sendSmtpEmail.templateId = templateInfo[0].id;
+        sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].subject };
         sendSmtpEmail.to = [{ email: user.correo, name: user.nombre_usuario }];
         sendSmtpEmail.params = params;
 
