@@ -1,5 +1,7 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
+import * as CryptoJS from 'crypto-js';
+import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
 import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
@@ -7,6 +9,7 @@ import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, Valida
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 import { Usuarios } from './entities/usuarios.entity';
+import { gql, GraphQLClient } from 'graphql-request';
 let QRCode = require('qrcode');
 const SibApiV3Sdk = require('sib-api-v3-typescript');
 
@@ -134,7 +137,8 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario, password: contrasena_provisional };
-            await this.sendinBlueMail("usuario_nuevo", user, params);
+            let userReturn = await this.getDataErrorReturn(user.usuario_id);
+            await this.setMessage("usuario_nuevo", userReturn, params);
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
         }
@@ -290,7 +294,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario };
-            await this.sendinBlueMail("confirmacion", user9, params);
+            await this.setMessage("confirmacion", user9, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
         }
@@ -362,7 +366,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario, codigo: recoveryCode };
-            await this.sendinBlueMail("codigo_verificacion", user, params);
+            await this.setMessage("codigo_verificacion", user, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
         }
@@ -411,7 +415,7 @@ export class UsuariosService {
 
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendinBlueMail("codigo_email", user, params);
+                await this.setMessage("codigo_email", user, params);
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
             }
@@ -488,7 +492,7 @@ export class UsuariosService {
             let recoveryCode = this.generateRecoveryCode(20);
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendinBlueMail("codigo_recuperacion", user, params);
+                await this.setMessage("codigo_recuperacion", user, params);
 
                 await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
 
@@ -767,4 +771,38 @@ export class UsuariosService {
             console.error(error);
         });
     }
+
+    public async setMessage(nombre: string, user: any, params: any) {
+        let message: any;
+    
+        let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
+        referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
+    
+        const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
+        const queryValidation = gql`
+                    mutation setMessage($data: MessageInput!) {
+                        setMessage(data: $data) {
+                          nombre
+                        }
+                    }
+                    `
+        const variables = {
+          data:{
+            proveedor_mensajeria_id: 1,
+            usuarios: JSON.stringify(user),
+            params: JSON.stringify(params),
+            nombre: nombre
+          }
+        }
+        const requestHeaders = {
+          authorization_url: referer
+        }
+    
+        try {
+          message = await client.request(queryValidation, variables, requestHeaders);
+        } catch (error) {
+          console.log(error)
+        }
+        return message.sendMessage;
+      }
 }
