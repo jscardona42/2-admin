@@ -157,27 +157,27 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
-        let user0 = await this.getUsuarioByUsername(data.nombre_usuario);
-        if (user0.TbEstadosUsuarios.nombre === "INACTIVO") {
+        let usuario = await this.getUsuarioByUsername(data.nombre_usuario);
+        if (usuario.TbEstadosUsuarios.nombre === "INACTIVO") {
             throw new UnauthorizedException({ error_code: "012", message: "Usuario inactivo" });
         }
-        let numerocontrasenas = await this.getUsuarioParametros(user0.usuario_id, "autnummaxintentos")
-        if (!user0.sol_cambio_contrasena) {
-            let vencimientocontrasena = await this.getUsuarioParametros(user0.usuario_id, "autvctocontrasena");
+        let numerocontrasenas = await this.getUsuarioParametros(usuario.usuario_id, "autnummaxintentos")
+        if (!usuario.sol_cambio_contrasena) {
+            let vencimientocontrasena = await this.getUsuarioParametros(usuario.usuario_id, "autvctocontrasena");
             if (vencimientocontrasena.valor == "true") {
 
                 let newDate = await this.getLocaleDate();
 
-                if (newDate >= user0.fecha_vigencia_contrasena) {
+                if (newDate >= usuario.fecha_vigencia_contrasena) {
                     await this.statusChange(data.nombre_usuario)
-                    let userReturn = await this.getDataErrorReturn(user0.usuario_id);
+                    let userReturn = await this.getDataErrorReturn(usuario.usuario_id);
                     throw new UnauthorizedException({ error_code: "002", message: "La contraseña ha expirado", data: userReturn });
                 }
             }
         }
 
-        if (user0.cant_intentos >= numerocontrasenas.valor) {
-            let userReturn = await this.getDataErrorReturn(user0.usuario_id);
+        if (usuario.cant_intentos >= numerocontrasenas.valor) {
+            let userReturn = await this.getDataErrorReturn(usuario.usuario_id);
             throw new UnauthorizedException({ error_code: "003", message: "Bloquedo por intentos fallidos", data: userReturn });
         }
 
@@ -191,14 +191,14 @@ export class UsuariosService {
 
         if (!user) {
             await this.addIntentos(data.nombre_usuario)
-            if (user0.cant_intentos + 1 >= numerocontrasenas.valor) {
+            if (usuario.cant_intentos + 1 >= numerocontrasenas.valor) {
                 await this.statusChange(data.nombre_usuario)
             }
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
 
         if (user.sol_cambio_contrasena) {
-            let userReturn = await this.getDataErrorReturn(user0.usuario_id);
+            let userReturn = await this.getDataErrorReturn(usuario.usuario_id);
             throw new UnauthorizedException({ error_code: "001", message: "Usuario nuevo", data: userReturn });
         }
 
@@ -242,16 +242,16 @@ export class UsuariosService {
 
     async exChangePasswordLogin(data: ChangePasswordInput): Promise<any> {
 
-        let user9 = await this.getUsuarioById(data.usuario_id);
+        let usuario = await this.getUsuarioById(data.usuario_id);
         const salt = await this.prismaService.usuarios.findFirst({
-            where: { usuario_id: user9.usuario_id },
+            where: { usuario_id: usuario.usuario_id },
             select: { salt: true },
         })
 
         if (salt === null) {
             throw new UnauthorizedException({ error_code: "004", message: "Credenciales inválidas" });
         }
-        if (user9.sol_cambio_contrasena && (data.contrasena !== undefined && data.contrasena !== null)) {
+        if (usuario.sol_cambio_contrasena && (data.contrasena !== undefined && data.contrasena !== null)) {
             const login = await this.prismaService.usuarios.findFirst({
                 where: {
                     contrasena: await this.hashPassword(data.contrasena, salt.salt),
@@ -294,7 +294,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario };
-            await this.setMessage("confirmacion", user9, params);
+            await this.setMessage("confirmacion", usuario, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
         }
@@ -375,12 +375,12 @@ export class UsuariosService {
 
     public async exValidationCodeVerification(data: ValidationCodeVerificationInput): Promise<any> {
 
-        const user0 = await this.getUsuarioById(data.usuario_id)
+        const usuario = await this.getUsuarioById(data.usuario_id)
 
         let Result = await this.prismaService.usuariosParametrosValores.findFirst({
             where: {
-                usuario_id: user0.usuario_id,
-                valor: await bcrypt.hash(data.codigo, user0.salt)
+                usuario_id: usuario.usuario_id,
+                valor: await bcrypt.hash(data.codigo, usuario.salt)
             },
         })
 
@@ -388,7 +388,7 @@ export class UsuariosService {
             throw new UnauthorizedException({ error_code: "011", message: "El código es incorrecto, vuelve a intentarlo" });
         }
 
-        return user0;
+        return usuario;
     }
 
     public async sendCodeMail(usuario_id: number) {
@@ -470,9 +470,9 @@ export class UsuariosService {
                 }
             })
 
-            let user0 = await this.getUsuarioById(usuario_id);
+            let usuario = await this.getUsuarioById(usuario_id);
 
-            return Object.assign(user0, { qr_code: JSON.stringify(qrCodeUrl), config_totp: configuracion_TOTP.valor });
+            return Object.assign(usuario, { qr_code: JSON.stringify(qrCodeUrl), config_totp: configuracion_TOTP.valor });
         }
         return Object.assign(user, { qr_code: "", config_totp: configuracion_TOTP.valor });
     }
@@ -649,9 +649,9 @@ export class UsuariosService {
 
     async addIntentos(nombre_usuario) {
 
-        const user0 = await this.getUsuarioByUsername(nombre_usuario)
+        const usuario = await this.getUsuarioByUsername(nombre_usuario)
         await this.prismaService.usuarios.update({
-            where: { usuario_id: user0.usuario_id },
+            where: { usuario_id: usuario.usuario_id },
             data: {
                 cant_intentos: { increment: 1 }
             }
@@ -671,11 +671,11 @@ export class UsuariosService {
 
     async statusChange(nombre_usuario) {
 
-        const user0 = await this.getUsuarioByUsername(nombre_usuario);
+        const usuario = await this.getUsuarioByUsername(nombre_usuario);
         let estadoUsuario = await this.getEstadoUsuario("BLOQUEADO");
 
         await this.prismaService.usuarios.update({
-            where: { usuario_id: user0.usuario_id },
+            where: { usuario_id: usuario.usuario_id },
             data: {
                 estado_usuario_id: estadoUsuario.estado_usuario_id
             }
