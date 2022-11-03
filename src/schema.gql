@@ -35,6 +35,7 @@ type Entidades {
   entidad_id: Int!
   nombre: String!
   resolver: String
+  microservicio_id: Float!
   EntidadesSecundariasSec: [EntidadesSecundarias!]!
   EntidadesCamposSec: [EntidadesCampos!]!
   Permisos: [Permisos!]!
@@ -167,13 +168,6 @@ type Traducciones {
   sigla: String!
 }
 
-type Iconos {
-  icono_id: ID!
-  nombre: String!
-  activo: Boolean
-  unicode: String!
-}
-
 type FuncionalidadesPermisos {
   funcionalidad_permiso_id: ID!
   Funcionalidades: Funcionalidades!
@@ -207,7 +201,7 @@ type Query {
   getEntidadForFormularios(entidad_id: Float!): Entidades!
   getEntidadeById(entidad_id: Float!): Entidades!
   getFilterEntidades(nombre: String): [Entidades!]!
-  getInfoEntidades(entidad_id: Float!): Entidades!
+  getEntidadesRelacionadas(entidad_id: Float!): Entidades!
   getPermisos: [Permisos!]!
   getPermisoById(permiso_id: Float!): Permisos!
   getFilterPermisos(permiso: String!): [Permisos!]!
@@ -221,9 +215,6 @@ type Query {
   exValidateRecoveryCode(data: ValidationRecoveryCodeInput!): Usuarios!
   exGetTraducciones: [Traducciones!]!
   getTraduccionById(traduccion_id: Float!): Traducciones!
-  getIconos: [Iconos!]!
-  getIconoById(icono_id: Float!): Iconos!
-  getFilterIconos(nombre: String, unicode: String): [Iconos!]!
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
@@ -317,9 +308,6 @@ type Mutation {
   createTraduccion(data: CreateTraduccionesInput!): Traducciones!
   updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
   deleteTraduccion(traduccion_id: Float!): Traducciones!
-  createIcono(data: CreateIconoInput!): Iconos!
-  updateIcono(data: UpdateIconoInput!): Iconos!
-  deleteIcono(icono_id: Float!): Iconos!
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
@@ -438,19 +426,6 @@ input UpdateTraduccionesInput {
   idioma: String
   sigla: String
   traduccion_id: Float!
-}
-
-input CreateIconoInput {
-  nombre: String!
-  activo: Boolean
-  unicode: String!
-}
-
-input UpdateIconoInput {
-  nombre: String
-  activo: Boolean
-  unicode: String
-  icono_id: Float!
 }
 
 input CreateMicroservicioInput {
