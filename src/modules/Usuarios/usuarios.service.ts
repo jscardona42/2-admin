@@ -746,38 +746,12 @@ export class UsuariosService {
         })
     }
 
-    async sendinBlueMail(nombre: string, user: Usuarios, params: any) {
-
-        let apiInstance = new SibApiV3Sdk.TransactionalEmailsApi();
-
-        let apiKey = apiInstance.authentications['apiKey'];
-        apiKey.apiKey = process.env.SENDINBLUE_KEY;
-
-        let limit = 50;
-        let offset = 0;
-
-        let sendinblue = await apiInstance.getSmtpTemplates(true, limit, offset);
-        const templateInfo = sendinblue.response.body.templates.filter(data => data.name === nombre);
-
-        let sendSmtpEmail = new SibApiV3Sdk.SendSmtpEmail();
-
-        sendSmtpEmail.templateId = templateInfo[0].id;
-        sendSmtpEmail.sender = { email: templateInfo[0].sender.email, name: templateInfo[0].subject };
-        sendSmtpEmail.to = [{ email: user.correo, name: user.nombre_usuario }];
-        sendSmtpEmail.params = params;
-
-        apiInstance.sendTransacEmail(sendSmtpEmail).then(function (data) {
-        }, function (error) {
-            console.error(error);
-        });
-    }
-
     public async setMessage(nombre: string, user: any, params: any) {
         let message: any;
-    
+
         let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
         referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
-    
+
         const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
         const queryValidation = gql`
                     mutation setMessage($data: MessageInput!) {
@@ -787,22 +761,23 @@ export class UsuariosService {
                     }
                     `
         const variables = {
-          data:{
-            proveedor_mensajeria_id: 1,
-            usuarios: JSON.stringify(user),
-            params: JSON.stringify(params),
-            nombre: nombre
-          }
+            data: {
+                proveedor_mensajeria_id: 1,
+                usuarios: JSON.stringify(user),
+                params: JSON.stringify(params),
+                nombre: nombre
+            }
         }
         const requestHeaders = {
-          authorization_url: referer
+            authorization_url: referer
         }
-    
+
         try {
-          message = await client.request(queryValidation, variables, requestHeaders);
+            message = await client.request(queryValidation, variables, requestHeaders);
         } catch (error) {
-          console.log(error)
+            console.log(error)
+            return error;
         }
-        return message.sendMessage;
-      }
+        return message.setMessage;
+    }
 }
