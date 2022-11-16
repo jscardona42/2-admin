@@ -172,7 +172,6 @@ model Menus {
   Menus                Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, map: "fk_menus_parent_menu_id")
   other_Menus          Menus[]             @relation("MenusToMenus_parentMenuId")
   MenusPalabrasSec     MenusPalabras[]
-  MenusTraduccionesSec MenusTraducciones[]
 }
 
 model Microservicios {
@@ -217,22 +216,6 @@ model Validaciones {
   name_query           String?                @db.VarChar(255)
   Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, map: "fk_validaciones_microservicio_id")
   PermisosValidaciones PermisosValidaciones[]
-}
-
-model MenusTraducciones {
-  menu_traduccion_id Int          @id @default(autoincrement())
-  traduccion         String       @db.VarChar(255)
-  traduccion_id      Int
-  menu_id            Int
-  Menus              Menus        @relation(fields: [menu_id], references: [menu_id], map: "fk_men_tra_menu_id")
-  Traducciones       Traducciones @relation(fields: [traduccion_id], references: [traduccion_id], map: "fk_men_tra_traduccion_id")
-}
-
-model Traducciones {
-  traduccion_id     Int                 @id @default(autoincrement())
-  idioma            String              @db.VarChar(255)
-  sigla             String              @db.VarChar(10)
-  MenusTraducciones MenusTraducciones[]
 }
 
 model ProveedoresServicios {

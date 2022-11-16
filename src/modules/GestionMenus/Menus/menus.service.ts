@@ -22,19 +22,19 @@ export class MenusService {
         menu_id: 1,
       },
       include: {
-        MenusTraduccionesSec: true, MenusPalabrasSec: true,
+        MenusPalabrasSec: true,
         other_Menus: {
           where: { activo: true },
           include: {
-            MenusTraduccionesSec: true, MenusPalabrasSec: true,
+            MenusPalabrasSec: true,
             other_Menus: {
               where: { activo: true },
               include: {
-                MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                MenusPalabrasSec: true,
                 other_Menus: {
                   where: { activo: true },
                   include: {
-                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                    MenusPalabrasSec: true,
                     other_Menus: true
                   }
                 }
@@ -57,19 +57,19 @@ export class MenusService {
     return this.prismaService.menus.findMany({
       where: { activo: false },
       include: {
-        MenusTraduccionesSec: true, MenusPalabrasSec: true,
+        MenusPalabrasSec: true,
         other_Menus: {
           where: { activo: true },
           include: {
-            MenusTraduccionesSec: true, MenusPalabrasSec: true,
+            MenusPalabrasSec: true,
             other_Menus: {
               where: { activo: true },
               include: {
-                MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                MenusPalabrasSec: true,
                 other_Menus: {
                   where: { activo: true },
                   include: {
-                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                    MenusPalabrasSec: true,
                     other_Menus: true
                   }
                 }
@@ -104,19 +104,19 @@ export class MenusService {
         level: 1,
       },
       include: {
-        MenusTraduccionesSec: true, MenusPalabrasSec: true,
+        MenusPalabrasSec: true,
         other_Menus: {
           where: { OR: OR },
           include: {
-            MenusTraduccionesSec: true, MenusPalabrasSec: true,
+            MenusPalabrasSec: true,
             other_Menus: {
               where: { OR: OR },
               include: {
-                MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                MenusPalabrasSec: true,
                 other_Menus: {
                   where: { OR: OR },
                   include: {
-                    MenusTraduccionesSec: true, MenusPalabrasSec: true,
+                    MenusPalabrasSec: true,
                     other_Menus: true
                   }
                 }
@@ -170,9 +170,6 @@ export class MenusService {
         entidad_id: data.entidad_id,
         MenusPalabrasSec: {
           create: data.MenusPalabras
-        },
-        MenusTraduccionesSec: {
-          create: data.MenusTraducciones
         }
       },
     });
