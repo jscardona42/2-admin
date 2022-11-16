@@ -138,7 +138,7 @@ export class UsuariosService {
         try {
             let params = { name: user.nombre_usuario, password: contrasena_provisional };
             let userReturn = await this.getDataErrorReturn(user.usuario_id);
-            await this.setMessage("usuario_nuevo", userReturn, params);
+            await this.sendNotificacion("usuario_nuevo", userReturn, params);
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
         }
@@ -294,7 +294,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario };
-            await this.setMessage("confirmacion", usuario, params);
+            await this.sendNotificacion("confirmacion", usuario, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
         }
@@ -366,7 +366,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario, codigo: recoveryCode };
-            await this.setMessage("codigo_verificacion", user, params);
+            await this.sendNotificacion("codigo_verificacion", user, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
         }
@@ -415,7 +415,7 @@ export class UsuariosService {
 
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.setMessage("codigo_email", user, params);
+                await this.sendNotificacion("codigo_email", user, params);
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
             }
@@ -492,7 +492,7 @@ export class UsuariosService {
             let recoveryCode = this.generateRecoveryCode(20);
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.setMessage("codigo_recuperacion", user, params);
+                await this.sendNotificacion("codigo_recuperacion", user, params);
 
                 await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
 
@@ -746,7 +746,7 @@ export class UsuariosService {
         })
     }
 
-    public async setMessage(nombre: string, user: any, params: any) {
+    public async sendNotificacion(nombre: string, user: any, params: any) {
         let message: any;
 
         let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
@@ -754,8 +754,8 @@ export class UsuariosService {
 
         const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
         const queryValidation = gql`
-                    mutation setMessage($data: MessageInput!) {
-                        setMessage(data: $data) {
+                    mutation sendNotificacion($data: MessageInput!) {
+                        sendNotificacion(data: $data) {
                           nombre
                         }
                     }
@@ -778,6 +778,6 @@ export class UsuariosService {
             console.log(error)
             return error;
         }
-        return message.setMessage;
+        return message.sendNotificacion;
     }
 }
