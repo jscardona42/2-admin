@@ -7,8 +7,9 @@ pipelines:
           - node
         script:
           - export NODE_OPTIONS=--max_old_space_size=1024
-          - npm install --quiet # install dependencies
-          - npx prisma generate
+          - npm install --quiet                    
+          - npx prisma db push --accept-data-loss
+          - npm run-script build
         services:
           - docker
     - step:
