@@ -7,7 +7,7 @@ pipelines:
           - node
         script:
           - export NODE_OPTIONS=--max_old_space_size=1024
-          - npm install --quiet                    
+          - npm install --quiet
           - npx prisma db push --accept-data-loss
           - npm run-script build
         services:
@@ -35,7 +35,7 @@ pipelines:
     #       - npx eslint "{src,apps,libs,test}/**/*.ts" --format=json  -o=report.json
     #     artifacts: # defining the artifacts to be passed to each future step.
     #       - report.json
-    - step: 
+    - step:
         image: maven:3.3.9-alpine
         name: SonarQube analysis
         clone:
@@ -50,7 +50,7 @@ pipelines:
 definitions:
   services:
     docker:
-      memory: 2048  #increasing docker service memory
+      memory: 2048 #increasing docker service memory
     postgres:
       image: postgres:14-alpine
       memory: 1024
@@ -58,6 +58,7 @@ definitions:
         POSTGRES_DB: "admin"
         POSTGRES_USER: "postgres"
         POSTGRES_PASSWORD: "1234"
+        DATABASE_URL: "postgresql://${POSTGRES_USER}:${POSTGRES_PASSWORD}@localhost:5432/admin?schema=public"
   caches:
     sonar: ~/.sonar
     bundler: vendor/bundle
