@@ -2,19 +2,18 @@ pipelines:
   default:
     - step:
         image: node:14-alpine
-        name: "install build"
+        name: "Install build"
         caches:
           - node
         script:
           - export NODE_OPTIONS=--max_old_space_size=1024
           - npm install --quiet
-          - npm run-script build
         services:
           - postgres
           - docker
     - step:
         image: node:14-alpine
-        name: "test"
+        name: "Test"
         size: 2x
         caches:
           - node
