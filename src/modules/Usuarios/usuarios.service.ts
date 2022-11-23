@@ -746,7 +746,75 @@ export class UsuariosService {
         })
     }
 
+    public async sendMessageNotification(data: any) {
+
+        let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
+        referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
+        let mesaggeArray = [];
+        let message: any;
+        let variables: any;
+        const requestHeaders = { authorization_url: referer };
+
+        if(data.data == undefined){
+            return { error: "no se encontro la informacion para el envio de mensajeria", error_code:"021"};
+        }
+
+        data.data.forEach(async (element) => {
+
+            if(element.usuarios == undefined){
+                return { error: "No se encontraron datos del usuario", error_code:"017"};
+            }
+
+            if (element.proveedor_mensajeria_id == 1) {
+                if(element.params == undefined){
+                    return { error: "No se encontraron parámetros", error_code:"019"};
+                }
+
+                else if(element.nombre == undefined){
+                    return { error: "No se encontro el nombre de la plantilla", error_code:"020"};
+                }
+
+                variables = {
+                    data: {
+                        proveedor_mensajeria_id: element.proveedor_mensajeria_id,
+                        usuarios: JSON.stringify(element.usuarios),
+                        params: JSON.stringify(element.params),
+                        nombre: element.nombre
+                    }
+                }
+            }
+            else if (element.proveedor_mensajeria_id == 2) {
+
+                variables = {
+                    data: {
+                        proveedor_mensajeria_id: element.proveedor_mensajeria_id,
+                        usuarios: JSON.stringify(element.usuarios),
+                    }
+                }
+            }
+            const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
+            const queryValidation = gql`
+                    mutation sendNotificacion($data: MessageInput!) {
+                        sendNotificacion(data: $data) {
+                          nombre
+                        }
+                    }
+                    `
+            try {
+                message = await client.request(queryValidation, variables, requestHeaders);
+                mesaggeArray.push({ nombre_usuario: message.sendNotificacion });
+                return { nombre: "Enviado correctamente" };
+            } catch (error) {
+                console.log(error)
+                throw new UnauthorizedException(error);
+            }
+        });
+        
+        return [];
+    }
+
     public async sendNotificacion(nombre: string, user: any, params: any) {
+
         let message: any;
 
         let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
@@ -780,4 +848,5 @@ export class UsuariosService {
         }
         return message.sendNotificacion;
     }
+
 }

@@ -1,6 +1,7 @@
 import 'reflect-metadata'
 import { Field, InputType, Int } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
+import JSON from 'graphql-type-json';
 
 @InputType()
 export class SignUpUserInput {
@@ -108,4 +109,29 @@ export class ValidationRecoveryCodeInput {
     @Field(() => Number)
     @IsNotEmpty()
     usuario_id: number
+}
+
+@InputType()
+export class MessageInput {
+
+    @Field(() => Number)
+    @IsNotEmpty()
+    proveedor_mensajeria_id: number
+
+    @Field(() => JSON)
+    @IsNotEmpty()
+    usuarios: JSON
+
+    @Field(() => JSON, { nullable: true })
+    params?: JSON
+
+    @Field(() => String, { nullable: true })
+    nombre?: string
+}
+
+@InputType()
+export class MessageArrayInput {
+
+    @Field(() => [MessageInput])
+    data: MessageInput[]
 }

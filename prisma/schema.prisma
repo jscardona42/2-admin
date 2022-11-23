@@ -159,19 +159,19 @@ model EntidadesSecundariasCampos {
 }
 
 model Menus {
-  menu_id              Int                 @id @default(autoincrement())
-  title                String
-  path                 String
-  isEntity             Boolean
-  parentMenuId         Int?
-  entidad_id           Int?
-  order                Int?
-  level                Int?
-  icon                 String?             @db.VarChar(255)
-  activo               Boolean?            @default(true)
-  Menus                Menus?              @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, map: "fk_menus_parent_menu_id")
-  other_Menus          Menus[]             @relation("MenusToMenus_parentMenuId")
-  MenusPalabrasSec     MenusPalabras[]
+  menu_id          Int             @id @default(autoincrement())
+  title            String
+  path             String
+  isEntity         Boolean
+  parentMenuId     Int?
+  entidad_id       Int?
+  order            Int?
+  level            Int?
+  icon             String?         @db.VarChar(255)
+  activo           Boolean?        @default(true)
+  Menus            Menus?          @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, map: "fk_menus_parent_menu_id")
+  other_Menus      Menus[]         @relation("MenusToMenus_parentMenuId")
+  MenusPalabrasSec MenusPalabras[]
 }
 
 model Microservicios {
