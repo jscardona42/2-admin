@@ -1,6 +1,6 @@
 import { UsePipes, ValidationPipe } from '@nestjs/common';
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, MessageArrayInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
@@ -31,87 +31,81 @@ export class UsuariosResolver {
     }
 
     @Query(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async signInLogin(
         @Args("data") data: SignInUserInput): Promise<Usuarios> {
         return this.usuariosService.signInLogin(data);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async signUpLogin(
         @Args("data") data: SignUpUserInput): Promise<Usuarios> {
         return this.usuariosService.signUpLogin(data);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async logOutLogin(
         @Args("usuario_id") usuario_id: number): Promise<any> {
         return this.usuariosService.logOutLogin(usuario_id);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exChangePasswordLogin(
         @Args("data") data: ChangePasswordInput): Promise<Usuarios> {
         return this.usuariosService.exChangePasswordLogin(data);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exSendCodeVerification(
         @Args("data") data: SendCodeVerificationInput): Promise<any> {
         return this.usuariosService.exSendCodeVerification(data);
     }
 
     @Query(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exValidationCodeVerification(
         @Args("data") data: ValidationCodeVerificationInput): Promise<any> {
         return this.usuariosService.exValidationCodeVerification(data);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exSendMail(
         @Args("usuario_id") usuario_id: number): Promise<any> {
         return this.usuariosService.sendCodeMail(usuario_id);
     }
 
     @Query(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exValidationCodeMail(
         @Args("data") data: ValidationCodeMailInput): Promise<any> {
         return this.usuariosService.validationCodeMail(data);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exConfigTotp(
         @Args("usuario_id") usuario_id: number): Promise<any> {
         return this.usuariosService.configTotp(usuario_id);
     }
 
     @Mutation(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exSetActivateConfigTotp(
         @Args("usuario_id") usuario_id: number): Promise<any> {
         return this.usuariosService.exSetActivateConfigTotp(usuario_id);
     }
 
     @Query(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exValidateTotpCode(
         @Args("data") data: ValidationCodeTotpInput): Promise<any> {
         return this.usuariosService.exValidateTotpCode(data);
     }
 
     @Query(() => Usuarios)
-    @UsePipes(ValidationPipe)
     async exValidateRecoveryCode(
         @Args("data") data: ValidationRecoveryCodeInput): Promise<any> {
         return this.usuariosService.exValidateRecoveryCode(data);
+    }
+
+    @Mutation(() => [Usuarios])
+    async sendMessageNotification(
+        @Args("data") data: MessageArrayInput): Promise<any> {
+        return this.usuariosService.sendMessageNotification(data);
     }
 
 }

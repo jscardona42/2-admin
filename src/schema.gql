@@ -162,12 +162,6 @@ type Usuarios {
   qr_code: String
 }
 
-type Traducciones {
-  traduccion_id: ID!
-  idioma: String!
-  sigla: String!
-}
-
 type FuncionalidadesPermisos {
   funcionalidad_permiso_id: ID!
   Funcionalidades: Funcionalidades!
@@ -213,8 +207,6 @@ type Query {
   exValidationCodeMail(data: ValidationCodeMailInput!): Usuarios!
   exValidateTotpCode(data: ValidationCodeTotpInput!): Usuarios!
   exValidateRecoveryCode(data: ValidationRecoveryCodeInput!): Usuarios!
-  exGetTraducciones: [Traducciones!]!
-  getTraduccionById(traduccion_id: Float!): Traducciones!
   getMicroservicios: [Microservicios!]!
   getMicroservicioById(microservicio_id: Float!): Microservicios!
   getFilterMicroservicios(nombre: String): [Microservicios!]!
@@ -305,9 +297,7 @@ type Mutation {
   exSendMail(usuario_id: Float!): Usuarios!
   exConfigTotp(usuario_id: Float!): Usuarios!
   exSetActivateConfigTotp(usuario_id: Float!): Usuarios!
-  createTraduccion(data: CreateTraduccionesInput!): Traducciones!
-  updateTraduccion(data: UpdateTraduccionesInput!): Traducciones!
-  deleteTraduccion(traduccion_id: Float!): Traducciones!
+  sendMessageNotification(data: MessageArrayInput!): [Usuarios!]!
   createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
   updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
   deleteMicroservicio(microservicio_id: Float!): Microservicios!
@@ -417,15 +407,15 @@ input SendCodeVerificationInput {
   tipo_solicitud: String
 }
 
-input CreateTraduccionesInput {
-  idioma: String!
-  sigla: String!
+input MessageArrayInput {
+  data: [MessageInput!]!
 }
 
-input UpdateTraduccionesInput {
-  idioma: String
-  sigla: String
-  traduccion_id: Float!
+input MessageInput {
+  proveedor_mensajeria_id: Float!
+  usuarios: JSON!
+  params: JSON
+  nombre: String
 }
 
 input CreateMicroservicioInput {
