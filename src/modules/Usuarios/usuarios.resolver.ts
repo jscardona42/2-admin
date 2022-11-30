@@ -101,11 +101,4 @@ export class UsuariosResolver {
         @Args("data") data: ValidationRecoveryCodeInput): Promise<any> {
         return this.usuariosService.exValidateRecoveryCode(data);
     }
-
-    @Mutation(() => [Usuarios])
-    async sendMessageNotification(
-        @Args("data") data: MessageArrayInput): Promise<any> {
-        return this.usuariosService.sendMessageNotification(data);
-    }
-
 }
