@@ -138,7 +138,7 @@ export class UsuariosService {
         try {
             let params = { name: user.nombre_usuario, password: contrasena_provisional };
             let userReturn = await this.getDataErrorReturn(user.usuario_id);
-            await this.sendNotificacion("usuario_nuevo", userReturn, params);
+            await this.sendNotificacionCorreo("usuario_nuevo", userReturn, params);
         } catch (error) {
             throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
         }
@@ -294,7 +294,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario };
-            await this.sendNotificacion("confirmacion", usuario, params);
+            await this.sendNotificacionCorreo("confirmacion", usuario, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
         }
@@ -366,7 +366,7 @@ export class UsuariosService {
 
         try {
             let params = { name: user.nombre_usuario, codigo: recoveryCode };
-            await this.sendNotificacion("codigo_verificacion", user, params);
+            await this.sendNotificacionCorreo("codigo_verificacion", user, params);
         } catch (error) {
             throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
         }
@@ -415,7 +415,7 @@ export class UsuariosService {
 
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendNotificacion("codigo_email", user, params);
+                await this.sendNotificacionCorreo("codigo_email", user, params);
             } catch (error) {
                 throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
             }
@@ -492,7 +492,7 @@ export class UsuariosService {
             let recoveryCode = this.generateRecoveryCode(20);
             try {
                 let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendNotificacion("codigo_recuperacion", user, params);
+                await this.sendNotificacionCorreo("codigo_recuperacion", user, params);
 
                 await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
 
@@ -746,94 +746,27 @@ export class UsuariosService {
         })
     }
 
-    public async sendMessageNotification(data: any) {
+    public async sendNotificacionCorreo(nombre_plantilla: string, user: any, params: any) {
 
-        let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
-        referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
-        let mesaggeArray = [];
-        let message: any;
-        let variables: any;
-        const requestHeaders = { authorization_url: referer };
-
-        if(data.data == undefined){
-            return { error: "no se encontro la informacion para el envio de mensajeria", error_code:"021"};
-        }
-
-        data.data.forEach(async (element) => {
-
-            if(element.usuarios == undefined){
-                return { error: "No se encontraron datos del usuario", error_code:"017"};
-            }
-
-            if (element.proveedor_mensajeria_id == 1) {
-                if(element.params == undefined){
-                    return { error: "No se encontraron parámetros", error_code:"019"};
-                }
-
-                else if(element.nombre == undefined){
-                    return { error: "No se encontro el nombre de la plantilla", error_code:"020"};
-                }
-
-                variables = {
-                    data: {
-                        proveedor_mensajeria_id: element.proveedor_mensajeria_id,
-                        usuarios: JSON.stringify(element.usuarios),
-                        params: JSON.stringify(element.params),
-                        nombre: element.nombre
-                    }
-                }
-            }
-            else if (element.proveedor_mensajeria_id == 2) {
-
-                variables = {
-                    data: {
-                        proveedor_mensajeria_id: element.proveedor_mensajeria_id,
-                        usuarios: JSON.stringify(element.usuarios),
-                    }
-                }
-            }
-            const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
-            const queryValidation = gql`
-                    mutation sendNotificacion($data: MessageInput!) {
-                        sendNotificacion(data: $data) {
-                          nombre
-                        }
-                    }
-                    `
-            try {
-                message = await client.request(queryValidation, variables, requestHeaders);
-                mesaggeArray.push({ nombre_usuario: message.sendNotificacion });
-                return { nombre: "Enviado correctamente" };
-            } catch (error) {
-                console.log(error)
-                throw new UnauthorizedException(error);
-            }
-        });
-        
-        return [];
-    }
-
-    public async sendNotificacion(nombre: string, user: any, params: any) {
-
-        let message: any;
+        let notificacion: any;
 
         let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
         referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
 
         const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
         const queryValidation = gql`
-                    mutation sendNotificacion($data: MessageInput!) {
-                        sendNotificacion(data: $data) {
-                          nombre
+                    mutation sendNotificacionCorreo($data: NotificacionesCorreoInput!) {
+                        sendNotificacionCorreo(data: $data) {
+                          notificacion
                         }
                     }
                     `
         const variables = {
             data: {
-                proveedor_mensajeria_id: 1,
-                usuarios: JSON.stringify(user),
+                correo: user.correo,
+                nombre_usuario: user.nombre_usuario,
                 params: JSON.stringify(params),
-                nombre: nombre
+                nombre_plantilla: nombre_plantilla
             }
         }
         const requestHeaders = {
@@ -841,12 +774,12 @@ export class UsuariosService {
         }
 
         try {
-            message = await client.request(queryValidation, variables, requestHeaders);
+            notificacion = await client.request(queryValidation, variables, requestHeaders);
         } catch (error) {
             console.log(error)
             return error;
         }
-        return message.sendNotificacion;
+        return notificacion.NotificacionesCorreoInput;
     }
 
 }
