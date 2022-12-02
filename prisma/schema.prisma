@@ -8,54 +8,96 @@ datasource db {
 }
 
 model TbClasesParametros {
-  clase_parametro_id Int                  @id(map: "TbClaseParametro_id") @default(autoincrement())
+  clase_parametro_id Int                  @id(map: "pk_clase_parametro_id_pk") @default(autoincrement())
   nombre             String               @db.VarChar(50)
   UsuariosParametros UsuariosParametros[]
 
-  @@index([clase_parametro_id], name: "pk_clase_parametro_id")
+  @@index([clase_parametro_id], name: "idx_clase_parametro_id")
 }
 
 model TbEstadosUsuarios {
-  estado_usuario_id Int        @id(map: "TbEstadoUsuario_id") @default(autoincrement())
+  estado_usuario_id Int        @id(map: "pk_estado_usuario_id_pk") @default(autoincrement())
   nombre            String     @db.VarChar(100)
   Usuarios          Usuarios[]
 
-  @@index([estado_usuario_id], name: "pk_estado_usuario_id")
+  @@index([estado_usuario_id], name: "idx_estado_usuario_id")
 }
 
 model TbMetodosAutenticacion {
-  metodo_autenticacion_id Int        @id(map: "TbMetodoAutenticacion_id") @default(autoincrement())
+  metodo_autenticacion_id Int        @id(map: "pk_metodo_autenticacion_id_pk") @default(autoincrement())
   nombre                  String     @unique() @db.VarChar(100)
   Usuarios                Usuarios[]
 
-  @@index([metodo_autenticacion_id], name: "pk_metodo_autenticacion_id")
-}
-
-model TbRoles {
-  rol_id               Int                    @id(map: "rol_id") @default(autoincrement())
-  nombre               String                 @db.VarChar(100)
-  Usuarios             Usuarios[]
-  RolesFuncionalidades RolesFuncionalidades[]
-
-  @@index([rol_id], name: "pk_rol_id")
+  @@index([metodo_autenticacion_id], name: "idx_metodo_autenticacion_id")
 }
 
 model TbTipoUsuarios {
-  tipo_usuario_id Int        @id(map: "TbTipoUsuario_id") @default(autoincrement())
+  tipo_usuario_id Int        @id(map: "pk_tipo_usuario_id") @default(autoincrement())
   nombre          String     @db.VarChar(100)
   estado          Estado     @default(ACTIVO)
   Usuarios        Usuarios[]
 
-  @@index([tipo_usuario_id], name: "pk_tipo_usuario_id")
+  @@index([tipo_usuario_id], name: "idx_tipo_usuario_id")
+}
+
+model Perfiles {
+  perfil_id                   Int                           @id(map: "pk_perfil_id") @default(autoincrement())
+  nombre                      String                        @db.VarChar(100)
+  descripcion                 String                        @default("") @db.Text()
+  personalizado               Boolean                       @default(false)
+  UsuariosPerfiles            UsuariosPerfiles[]
+  AccionesFormulariosPerfiles AccionesFormulariosPerfiles[]
+  FormulariosPerfiles         FormulariosPerfiles[]
+
+  @@index([perfil_id], name: "idx_perfil_id")
+}
+
+model UsuariosPerfiles {
+  usuario_perfil_id Int      @id(map: "pk_usuario_perfil_id") @default(autoincrement())
+  usuario_id        Int
+  perfil_id         Int
+  Usuarios          Usuarios @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_per_usuario_id")
+  Perfiles          Perfiles @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_per_perfil_id")
+
+  @@index([usuario_perfil_id], name: "idx_usuario_perfil_id")
+}
+
+model AccionesFormulariosPerfiles {
+  accion_formulario_perfil_id Int      @id(map: "pk_accion_formulario_perfil_id") @default(autoincrement())
+  accion_formulario_id        Int
+  perfil_id                   Int
+  Perfiles                    Perfiles @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_acc_for_per_perfil_id")
+
+  @@index([accion_formulario_perfil_id], name: "idx_accion_formulario_perfil_id")
+}
+
+model FormulariosPerfiles {
+  formulario_perfil_id  Int                 @id(map: "pk_formulario_perfil_id") @default(autoincrement())
+  formulario_empresa_id Int
+  perfil_id             Int
+  Perfiles              Perfiles            @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_for_per_perfil_id")
+  FormulariosEmpresas   FormulariosEmpresas @relation(fields: [formulario_empresa_id], references: [formulario_empresa_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_for_per_formulario_empresa_id")
+
+  @@index([formulario_perfil_id], name: "idx_formulario_perfil_id")
+}
+
+model FormulariosEmpresas {
+  formulario_empresa_id Int                   @id(map: "pk_formulario_empresa_id") @default(autoincrement())
+  formulario_gestion_id Int
+  estado                Boolean               @default(true)
+  FormulariosPerfiles   FormulariosPerfiles[]
+
+  @@index([formulario_empresa_id], name: "idx_formulario_empresa_id")
 }
 
 model Usuarios {
-  usuario_id                      Int                            @id(map: "Usuario_id") @default(autoincrement())
+  usuario_id                      Int                            @id(map: "pk_usuario_id") @default(autoincrement())
   nombre_usuario                  String                         @db.VarChar(100)
   contrasena                      String                         @db.VarChar(100)
+  empresa_id                      Int?
   correo                          String                         @db.VarChar(100)
-  salt                            String                         @db.VarChar
-  rol_id                          Int
+  idioma                          String?                        @db.VarChar(10)
+  salt                            String                         @db.VarChar(255)
   metodo_autenticacion_id         Int?
   tipo_usuario_id                 Int
   estado_usuario_id               Int
@@ -64,191 +106,60 @@ model Usuarios {
   fecha_creacion                  DateTime?                      @db.Timestamp(6)
   fecha_actualizacion             DateTime?                      @db.Timestamp(6)
   cant_intentos                   Int                            @default(0)
-  TbEstadosUsuarios               TbEstadosUsuarios              @relation(fields: [estado_usuario_id], references: [estado_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbEstadoUsuario_fk")
-  TbMetodosAutenticacion          TbMetodosAutenticacion?        @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "TbMetodoAutenticacion_fk")
-  TbRoles                         TbRoles                        @relation(fields: [rol_id], references: [rol_id], onDelete: NoAction, onUpdate: NoAction, map: "TbRol_fk")
-  TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "TbTipoUsuario_fk")
+  TbEstadosUsuarios               TbEstadosUsuarios              @relation(fields: [estado_usuario_id], references: [estado_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_estado_usuario_id")
+  TbMetodosAutenticacion          TbMetodosAutenticacion?        @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_met_aut_id")
+  TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_tipo_usuario_id")
   UsuariosHistoricoContrasenasSec UsuariosHistoricoContrasenas[]
   UsuarioParametroValor           UsuariosParametrosValores[]
   UsuariosSesionesSec             UsuariosSesiones?
+  UsuariosPerfiles                UsuariosPerfiles[]
 
-  @@index([usuario_id], name: "pk_usuario_id")
+  @@index([usuario_id], name: "idx_usuario_id")
 }
 
 model UsuariosHistoricoContrasenas {
-  usu_historico_contrasena_id Int       @id(map: "UsuarioHistoricoContrasena_id") @default(autoincrement())
+  usu_historico_contrasena_id Int       @id(map: "pk_usu_historico_contrasena_id") @default(autoincrement())
   usuario_id                  Int
   contrasena                  String?   @db.VarChar(100)
   fecha_actualizacion         DateTime? @db.Timestamp(6)
   Usuarios                    Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
-  @@index([usu_historico_contrasena_id], name: "usu_historico_contrasena_id")
+  @@index([usu_historico_contrasena_id], name: "idx_usu_historico_contrasena_id")
 }
 
 model UsuariosParametros {
-  usuario_parametro_id         Int                         @id(map: "UsuarioParametro_id") @default(autoincrement())
+  usuario_parametro_id         Int                         @id(map: "pk_usuario_parametro_id") @default(autoincrement())
   clase_parametro_id           Int
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
   descripcion                  String                      @default("") @db.Text()
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
-  TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "TbClaseParametro_fk")
+  TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_par_clase_parametro_id")
   UsuariosParametrosValoresSec UsuariosParametrosValores[]
 
-  @@index([usuario_parametro_id], name: "pk_usuario_parametro_id")
+  @@index([usuario_parametro_id], name: "idx_usuario_parametro_id")
 }
 
 model UsuariosParametrosValores {
-  usuario_parametro_valor_id Int                @id(map: "UsuarioParametroValor_id") @default(autoincrement())
+  usuario_parametro_valor_id Int                @id(map: "pk_usuario_parametro_valor_id") @default(autoincrement())
   usuario_id                 Int
   usuario_parametro_id       Int
   valor                      String?            @db.VarChar(255)
-  UsuariosParametros         UsuariosParametros @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "UsuarioParametro_fk")
+  UsuariosParametros         UsuariosParametros @relation(fields: [usuario_parametro_id], references: [usuario_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_par_val_usuario_parametro_id")
   Usuarios                   Usuarios           @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
-  @@index([usuario_parametro_valor_id], name: "pk_usuario_parametro_valor_id")
+  @@index([usuario_parametro_valor_id], name: "idx_usuario_parametro_valor_id")
 }
 
 model UsuariosSesiones {
-  usuario_sesion_id  Int       @id(map: "UsuarioSesion_id") @default(autoincrement())
+  usuario_sesion_id  Int       @id(map: "pk_usuario_sesion_id") @default(autoincrement())
   usuario_id         Int       @unique
   token              String?   @db.VarChar(255)
   fecha_ultimo_login DateTime? @db.Timestamp(6)
   Usuarios           Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
-  @@index([usuario_sesion_id], name: "pk_usuario_sesion_id")
-}
-
-model Entidades {
-  entidad_id              Int                    @id @default(autoincrement())
-  nombre                  String                 @db.VarChar(255)
-  resolver                String?                @db.VarChar(255)
-  Permisos                Permisos[]
-  microservicio_id        Int?
-  Funcionalidades         Funcionalidades[]
-  EntidadesSecundariasSec EntidadesSecundarias[]
-  EntidadesCamposSec      EntidadesCampos[]
-}
-
-model EntidadesSecundarias {
-  entidad_secundaria_id         Int                          @id @default(autoincrement())
-  nombre                        String                       @db.VarChar(255)
-  entidad_id                    Int
-  padre_id                      Int?
-  Entidades                     Entidades                    @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_sec_entidad_id")
-  EntidadesSecundarias          EntidadesSecundarias?        @relation("EntidadesSecundarias_padre_id", fields: [padre_id], references: [entidad_secundaria_id], onDelete: Restrict, map: "fk_entidades_secundarias_padre_id")
-  EntidadesSecundariasPadre     EntidadesSecundarias[]       @relation("EntidadesSecundarias_padre_id")
-  EntidadesSecundariasCamposSec EntidadesSecundariasCampos[]
-}
-
-model EntidadesCampos {
-  entidad_campo_id Int        @id @default(autoincrement())
-  nombre           String     @db.VarChar(255)
-  tipo             String     @db.VarChar(100)
-  entidad_id       Int
-  Entidades        Entidades? @relation(fields: [entidad_id], references: [entidad_id], map: "fk_ent_cam_entidad_id")
-}
-
-model EntidadesSecundariasCampos {
-  entidad_secundaria_campo_id Int                   @id @default(autoincrement())
-  nombre                      String                @db.VarChar(255)
-  tipo                        String                @db.VarChar(100)
-  entidad_secundaria_id       Int
-  EntidadesSecundarias        EntidadesSecundarias? @relation(fields: [entidad_secundaria_id], references: [entidad_secundaria_id], map: "fk_ent_sec_cam_entidad_secundaria_id")
-}
-
-model Menus {
-  menu_id          Int             @id @default(autoincrement())
-  title            String
-  path             String
-  isEntity         Boolean
-  parentMenuId     Int?
-  entidad_id       Int?
-  order            Int?
-  level            Int?
-  icon             String?         @db.VarChar(255)
-  activo           Boolean?        @default(true)
-  Menus            Menus?          @relation("MenusToMenus_parentMenuId", fields: [parentMenuId], references: [menu_id], onDelete: Restrict, map: "fk_menus_parent_menu_id")
-  other_Menus      Menus[]         @relation("MenusToMenus_parentMenuId")
-  MenusPalabrasSec MenusPalabras[]
-}
-
-model Microservicios {
-  microservicio_id        Int                    @id @default(autoincrement())
-  name                    String                 @db.VarChar(255)
-  url                     String                 @db.VarChar(255)
-  activo                  Boolean
-  ProveedoresServiciosSec ProveedoresServicios[]
-  Validaciones            Validaciones[]
-}
-
-model Permisos {
-  permiso_id              Int                       @id @default(autoincrement())
-  entidad_id              Int?
-  permiso                 String?
-  es_publico              Boolean?
-  Entidades               Entidades?                @relation(fields: [entidad_id], references: [entidad_id], onDelete: Restrict, map: "fk_permisos_entidad_id")
-  PermisosValidacionesSec PermisosValidaciones[]
-  FuncionalidadesPermisos FuncionalidadesPermisos[]
-}
-
-model MenusPalabras {
-  menu_palabra_id Int    @id @default(autoincrement())
-  menu_id         Int
-  palabra         String @db.VarChar(255)
-  Menus           Menus  @relation(fields: [menu_id], references: [menu_id], map: "fk_men_pal_menu_id")
-}
-
-model PermisosValidaciones {
-  permiso_validacion_id Int          @id @default(autoincrement())
-  permiso_id            Int
-  validacion_id         Int
-  Permisos              Permisos     @relation(fields: [permiso_id], references: [permiso_id], map: "fk_per_val_permiso_id")
-  ValidacionesSec       Validaciones @relation(fields: [validacion_id], references: [validacion_id], onDelete: NoAction, onUpdate: NoAction, map: "FK_per_val_validacion_id")
-}
-
-model Validaciones {
-  validacion_id        Int                    @id @default(autoincrement())
-  microservicio_id     Int?
-  id_referenciado      String?                @db.VarChar(255)
-  id_query             String?                @db.VarChar(255)
-  name_query           String?                @db.VarChar(255)
-  Microservicios       Microservicios?        @relation(fields: [microservicio_id], references: [microservicio_id], onDelete: Restrict, map: "fk_validaciones_microservicio_id")
-  PermisosValidaciones PermisosValidaciones[]
-}
-
-model ProveedoresServicios {
-  proveedor_servicio_id Int            @id @default(autoincrement())
-  microservicio_id      Int            @unique
-  lista_proveedores     String
-  model_data            String?
-  Microservicios        Microservicios @relation(fields: [microservicio_id], references: [microservicio_id], map: "fk_pro_ser_microservicio_id")
-}
-
-model Funcionalidades {
-  funcionalidad_id           Int                       @id @default(autoincrement())
-  nombre                     String
-  entidad_id                 Int
-  Entidades                  Entidades                 @relation(fields: [entidad_id], references: [entidad_id], map: "fk_funcionalidades_entidad_id")
-  FuncionalidadesPermisosSec FuncionalidadesPermisos[]
-  RolesFuncionalidades       RolesFuncionalidades[]
-}
-
-model FuncionalidadesPermisos {
-  funcionalidad_permiso_id Int             @id @default(autoincrement())
-  funcionalidad_id         Int
-  permiso_id               Int
-  Funcionalidades          Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_fun_per_funcionalidad_id")
-  Permisos                 Permisos        @relation(fields: [permiso_id], references: [permiso_id], map: "fk_fun_per_permiso_id")
-}
-
-model RolesFuncionalidades {
-  rol_funcionalidad_id Int             @id @default(autoincrement())
-  funcionalidad_id     Int
-  rol_id               Int
-  Funcionalidades      Funcionalidades @relation(fields: [funcionalidad_id], references: [funcionalidad_id], map: "fk_rol_fun_funcionalidad_id")
-  TbRoles              TbRoles         @relation(fields: [rol_id], references: [rol_id], map: "fk_rol_fun_rol_id")
+  @@index([usuario_sesion_id], name: "idx_usuario_sesion_id")
 }
 
 enum Estado {

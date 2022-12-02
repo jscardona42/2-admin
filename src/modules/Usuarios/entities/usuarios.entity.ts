@@ -3,7 +3,6 @@ import { ObjectType, Field, ID } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { TbEstadosUsuarios } from '../EstadosUsuarios/entities/tbestadosusuarios.entity'
 import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbmetodosautenticacion.entity'
-import { TbRoles } from '../../../modules/GestionFuncionalidades/Roles/entities/tbroles.entity'
 import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
 import { UsuariosSesiones } from './usuariossesiones.entity'
 
@@ -29,14 +28,17 @@ export class Usuarios {
     @Field(() => String)
     salt: string
 
+    @Field(() => String)
+    idioma?: string
+
     @Field(() => Boolean)
     sol_cambio_contrasena?: boolean
 
-    @Field(() => String)
-    fecha_vigencia_contrasena?: string
+    @Field(() => Date)
+    fecha_vigencia_contrasena?: Date
 
-    @Field(() => String)
-    fecha_creacion?: string
+    @Field(() => Date)
+    fecha_creacion?: Date
 
     @Field(() => String)
     fecha_actualizacion?: string
@@ -49,9 +51,6 @@ export class Usuarios {
 
     @Field(() => TbMetodosAutenticacion, { nullable: true })
     TbMetodosAutenticacion?: TbMetodosAutenticacion
-
-    @Field(() => TbRoles)
-    TbRoles: TbRoles
 
     @Field(() => TbTipoUsuarios)
     TbTipoUsuarios: TbTipoUsuarios

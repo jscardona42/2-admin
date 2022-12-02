@@ -14,9 +14,6 @@ export class SignUpUserInput {
     @IsNotEmpty()
     correo: string
 
-    @Field(() => Int)
-    rol_id: number
-
     @Field(() => Number)
     @IsNotEmpty()
     estado_usuario_id: number
