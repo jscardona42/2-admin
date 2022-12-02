@@ -4,7 +4,6 @@ import * as CryptoJS from 'crypto-js';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
 import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
@@ -19,20 +18,19 @@ const SibApiV3Sdk = require('sib-api-v3-typescript');
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private rolesService: TbRolesService,
         private jwtService: JwtService,
     ) { }
 
     async getUsuarios(): Promise<any> {
         return this.prismaService.usuarios.findMany({
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbRoles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         });
     }
 
     async getUsuarioById(usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbRoles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
 
         if (usuarios === null) {
@@ -85,7 +83,7 @@ export class UsuariosService {
         let parametrosValores: any = [];
         let user: any;
 
-        await this.rolesService.getRolById(data.rol_id);
+        // await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (usernameExists) {
@@ -120,7 +118,6 @@ export class UsuariosService {
                     fecha_vigencia_contrasena: await this.addDaysToDate(newDate, parseInt(vigencia.valor)),
                     fecha_creacion: newDate,
                     fecha_actualizacion: newDate,
-                    TbRoles: { connect: { rol_id: data.rol_id } },
                     TbEstadosUsuarios: { connect: { estado_usuario_id: data.estado_usuario_id } },
                     TbMetodosAutenticacion: metodoAutenticacion,
                     TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
@@ -129,7 +126,7 @@ export class UsuariosService {
                         create: parametrosValores
                     }
                 },
-                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
             })
         } catch (error) {
             throw new UnauthorizedException("Ocurrió un error durante la creación del usuario " + error);
@@ -186,7 +183,7 @@ export class UsuariosService {
                 nombre_usuario: data.nombre_usuario,
                 contrasena: await this.hashPassword(data.contrasena, salt.salt)
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
 
         if (!user) {
@@ -289,7 +286,7 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, }
         })
 
         try {
@@ -566,7 +563,7 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbRoles: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, }
         })
     }
 

@@ -4,34 +4,25 @@ import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { join } from 'path';
 import { PrismaService } from './prisma.service';
-import { TbRolesService } from './modules/GestionFuncionalidades/Roles/roles.service';
-import { PermisosService } from './modules/GestionFuncionalidades/Permisos/permisos.service';
-import { PermisosResolver } from './modules/GestionFuncionalidades/Permisos/permisos.resolver';
-import { EntidadesService } from './modules/Admin/Entidades/entidades.service';
-import { MenusService } from './modules/GestionMenus/Menus/menus.service';
-import { MenusResolver } from './modules/GestionMenus/Menus/menus.resolver';
 import { UsuariosService } from './modules/Usuarios/usuarios.service';
 import { UsuariosResolver } from './modules/Usuarios/usuarios.resolver';
-import { ValidacionesService } from './modules/Admin/Validaciones/validaciones.service';
-import { ProveedoresServiciosService } from './modules/Admin/ProveedoresServicios/proveedoresservicios.service';
-import { ProveedoresServiciosController } from './modules/Admin/ProveedoresServicios/proveedoresservicios.controller';
-import { EntidadesResolver } from './modules/Admin/Entidades/entidades.resolver';
-import { MicroserviciosService } from './modules/Admin/Microservicios/microservicios.service';
-import { MicroserviciosResolver } from './modules/Admin/Microservicios/microservicios.resolver';
 import { Prisma } from '@prisma/client';
-import { FuncionalidadesService } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.service';
-import { FuncionalidadesResolver } from './modules/GestionFuncionalidades/Funcionalidades/funcionalidades.resolver';
 import { ApolloFederationDriver, ApolloFederationDriverConfig } from '@nestjs/apollo';
-import { TbRolesResolver } from './modules/GestionFuncionalidades/Roles/roles.resolver';
 import { TbTipoUsuariosResolver } from './modules/Usuarios/TipoUsuarios/tipousuarios.resolver';
 import { TbTipoUsuariosService } from './modules/Usuarios/TipoUsuarios/tipousuarios.service';
 import { TbEstadosUsuariosService } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.service';
 import { TbEstadosUsuariosResolver } from './modules/Usuarios/EstadosUsuarios/estadosusuarios.resolver';
 import { TbMetodosAutenticacionService } from './modules/MetodosAutenticacion/metodosautenticacion.service';
 import { TbMetodosAutenticacionResolver } from './modules/MetodosAutenticacion/metodosautenticacion.resolver';
+import * as CryptoJS from 'crypto-js';
+import * as jwt from 'jsonwebtoken';
+import { gql, GraphQLClient } from 'graphql-request';
+import { FormulariosGestion } from './modules/Referencias/FormulariosGestion/entities/formulariosgestion.entity';
+import { FormulariosEmpresasService } from './modules/FormulariosEmpresas/formulariosempresas.service';
+import { FormulariosEmpresasResolver } from './modules/FormulariosEmpresas/formulariosempresas.resolver';
+import { FormulariosGestionResolver } from './modules/Referencias/FormulariosGestion/formulariosgestion.resolver';
 
-
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, MenusService, MenusResolver, TbRolesService, TbRolesResolver, EntidadesService, EntidadesResolver, PermisosResolver, PermisosService, UsuariosService, UsuariosResolver, ValidacionesService, ProveedoresServiciosService, MicroserviciosService, MicroserviciosResolver, FuncionalidadesService, FuncionalidadesResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver]
 
 @Module({
   imports: [
@@ -55,51 +46,47 @@ const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosR
         res: res
       }),
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
+      buildSchemaOptions: {
+        orphanedTypes: [FormulariosGestion],
+      },
+
     })
   ],
-  controllers: [ProveedoresServiciosController],
+  controllers: [],
   providers: MyProviders,
   exports: []
 })
 
 export class AppModule {
-  constructor(private readonly proveedoresServiciosService: ProveedoresServiciosService) {
-    this.refreshProviders();
-  }
-
-  // Esta función se encarga de crear o actualizar el listado de providers en la BD
-  public async refreshProviders() {
-    let cont = 0;
-    let myProviders = [];
-
-    // Recorremos el arreglo de proveedores
-    for (const clsname of MyProviders) {
-
-      // Eliminamos los métodos constructores
-      let TMPmethods = Object.getOwnPropertyNames(clsname.prototype).filter(item => item !== 'constructor')
-
-      // Damos una estructura de clase y métodos
-      let providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
-
-      // Eliminamos Servicios y mantenemos Resolver
-      let myProvidersTmp = providersTmp.filter(
-        (method) => !method.nameClass.includes('Service') && !method.nameClass.includes('Controller') && !method.nameClass.includes('Extend'),
-      );
-      // Eliminamos arreglos vacíos
-      if (myProvidersTmp.length > 0) {
-        myProviders[cont] = myProvidersTmp;
-        cont++;
-      }
-    }
-
-    let microservicio = "admin";
-    let modelData = ModelData();
-    // Envíamos arreglo de Resolver con sus métodos, el microservicio_id y las entidadades que no poseen resolver
-    await this.proveedoresServiciosService.saveProveedoresServicios(myProviders, microservicio, modelData);
+  constructor() {
+    getResolutoresAndModeloDatos();
   }
 }
 
-export function ModelData() {
+export async function getResolutoresAndModeloDatos() {
+  let cont = 0;
+  let resolutores = [];
+  for (const clsname of MyProviders) {
+
+    let TMPmethods =
+      Object.getOwnPropertyNames(clsname.prototype).filter(
+        item => item !== 'constructor'
+      )
+    let providersTmp = [{ nameClass: clsname.name, methods: TMPmethods }];
+    let myProvidersTmp = providersTmp.filter(
+      (method) => !method.nameClass.includes('Service') && !method.nameClass.includes('Controller') && !method.nameClass.includes('Extend'),
+    );
+    if (myProvidersTmp.length > 0) {
+      resolutores[cont] = myProvidersTmp;
+      cont++;
+    }
+  }
+  let modeloDatos = getModeloDatos();
+
+  await setDataMicroserviciosEstructura("admin", modeloDatos, resolutores)
+}
+
+export function getModeloDatos() {
   let entidades = [];
   let fields = [];
   let modelData = [];
@@ -190,25 +177,54 @@ export function ModelData() {
         }
         entidadesSec.push({
           nombre: field_name,
-          EntidadesSecundariasCamposSec: {
-            create: EntidadesSecundariasCamposSec
-          }
+          EntidadesSecundariasCamposSec
         });
       }
       EntidadesSecundariasCamposSec = []
     });
     modelData.push({
       name: entidades[cont - 1],
-      fields: {
-        create: fields
-      },
-      entidadesSec: {
-        create: entidadesSec
-      }
+      fields,
+      entidadesSec
     });
     fields = [];
     entidadesSec = [];
   });
 
   return modelData;
+}
+
+export async function setDataMicroserviciosEstructura(microservicio: string, modelo_datos: any, resolutores: any) {
+  let entidades: any;
+
+  let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
+  referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
+
+  const client = new GraphQLClient(process.env.ADMIN_GENERAL_URL + "/graphql")
+  const queryValidation = gql`
+                mutation createMicroservicioEstructura($microservicio:String!, $modelo_datos: String!,$resolutores:String!) {
+                    createMicroservicioEstructura(microservicio: $microservicio,modelo_datos: $modelo_datos, resolutores: $resolutores) {
+                      microservicio_estructura_id
+                    }
+                }
+                `
+  const variables = {
+    microservicio: microservicio,
+    modelo_datos: JSON.stringify(modelo_datos),
+    resolutores: JSON.stringify(resolutores)
+  }
+  const requestHeaders = {
+    authorization_url: referer
+  }
+
+  try {
+    entidades = await client.request(queryValidation, variables, requestHeaders);
+  } catch (error) {
+    if (error.errno !== undefined) {
+      console.log("El microservicio del admin general no es accesible en este momento");
+    } else {
+      console.log(error.response.errors);
+    }
+  }
+  return entidades;
 }
