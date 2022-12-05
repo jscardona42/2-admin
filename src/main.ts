@@ -2,7 +2,7 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
 import * as fs from 'fs';
-import { GqlAuthGuard } from './modules/Admin/Guard/authguard.guard';
+import { GqlAuthGuard } from './auth/authguard.guard';
 
 async function bootstrap() {
   let options: any = {};
