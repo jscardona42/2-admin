@@ -2,14 +2,9 @@
 import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
-import { EntidadesService } from '../Admin/Entidades/entidades.service';
-import { PermisosService } from '../GestionFuncionalidades/Permisos/permisos.service';
-import { TbRolesService } from '../GestionFuncionalidades/Roles/roles.service';
-import { ValidacionesService } from '../Admin/Validaciones/validaciones.service';
-import { UsuariosService } from './usuarios.service';
-import { FuncionalidadesService } from '../GestionFuncionalidades/Funcionalidades/funcionalidades.service';
-import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { SignInUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 import { MailerModule } from '@nestjs-modules/mailer';
+import { UsuariosService } from './usuarios.service';
 
 
 describe('Usuarios Service', () => {
@@ -37,7 +32,7 @@ describe('Usuarios Service', () => {
                 }),
             ],
             providers: [
-                UsuariosService, TbRolesService, PermisosService, MailerModule, EntidadesService, ValidacionesService, FuncionalidadesService,
+                UsuariosService, MailerModule,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
