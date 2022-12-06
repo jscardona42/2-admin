@@ -12,106 +12,6 @@ directive @requires(fields: String!) on FIELD_DEFINITION
 
 directive @provides(fields: String!) on FIELD_DEFINITION
 
-type EntidadesCampos {
-  entidad_campo_id: Int!
-  nombre: String!
-  tipo: String!
-  Entidades: Entidades!
-}
-
-type EntidadesSecundariasCampos {
-  entidad_secundaria_campo_id: Int!
-  nombre: String!
-  tipo: String!
-}
-
-type EntidadesSecundarias {
-  entidad_secundaria_id: Int!
-  nombre: String!
-  EntidadesSecundariasCamposSec: [EntidadesSecundariasCampos!]!
-}
-
-type Entidades {
-  entidad_id: Int!
-  nombre: String!
-  resolver: String
-  microservicio_id: Float!
-  EntidadesSecundariasSec: [EntidadesSecundarias!]!
-  EntidadesCamposSec: [EntidadesCampos!]!
-  Permisos: [Permisos!]!
-  EntidadesRelacionadas: [EntidadesCampos!]
-}
-
-type ProveedoresServicios {
-  proveedor_servicio_id: ID!
-  Microservicios: Microservicios!
-  lista_proveedores: String!
-  model_data: String!
-  status: String
-}
-
-type Microservicios {
-  microservicio_id: ID!
-  name: String!
-  url: String!
-  activo: Boolean!
-  ProveedoresServiciosSec: [ProveedoresServicios!]
-}
-
-type Validaciones {
-  validacion_id: ID!
-  Microservicios: Microservicios!
-  id_referenciado: String!
-  id_query: String!
-  name_query: String!
-  PermisosValidaciones: [PermisosValidaciones!]!
-}
-
-type PermisosValidaciones {
-  permiso_validacion_id: ID!
-  Permisos: Permisos!
-  ValidacionesSec: Validaciones!
-}
-
-type Permisos {
-  permiso_id: ID!
-  Entidades: Entidades!
-  permiso: String!
-  es_publico: Boolean!
-  PermisosValidacionesSec: [PermisosValidaciones!]
-}
-
-type MenusTraducciones {
-  menu_traduccion_id: ID!
-  traduccion: String!
-  menu_id: Float!
-  traduccion_id: Float!
-}
-
-type MenusPalabras {
-  menu_palabra_id: ID!
-  menu_id: Float!
-  palabra: String!
-}
-
-type Menus {
-  menu_id: ID!
-  title: String!
-  path: String!
-  entidad_id: Float
-  isEntity: Boolean!
-  other_Menus: JSON!
-  order: Float
-  activo: Float
-  MenusPalabrasSec: [MenusPalabras!]
-  MenusTraduccionesSec: [MenusTraducciones!]
-}
-
-"""
-The `JSON` scalar type represents JSON values as specified by [ECMA-404](http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf).
-"""
-scalar JSON @specifiedBy(url: "http://www.ecma-international.org/publications/files/ECMA-ST/ECMA-404.pdf")
-
 type TbEstadosUsuarios {
   estado_usuario_id: Float!
   nombre: String!
@@ -119,11 +19,6 @@ type TbEstadosUsuarios {
 
 type TbMetodosAutenticacion {
   metodo_autenticacion_id: Float!
-  nombre: String!
-}
-
-type TbRoles {
-  rol_id: Float!
   nombre: String!
 }
 
@@ -147,14 +42,14 @@ type Usuarios {
   contrasena: String!
   correo: String!
   salt: String!
+  idioma: String!
   sol_cambio_contrasena: Boolean!
-  fecha_vigencia_contrasena: String!
-  fecha_creacion: String!
+  fecha_vigencia_contrasena: DateTime!
+  fecha_creacion: DateTime!
   fecha_actualizacion: String!
   cant_intentos: Float!
   TbEstadosUsuarios: TbEstadosUsuarios!
   TbMetodosAutenticacion: TbMetodosAutenticacion
-  TbRoles: TbRoles!
   TbTipoUsuarios: TbTipoUsuarios!
   UsuariosSesionesSec: UsuariosSesiones
   config_totp: String
@@ -162,17 +57,21 @@ type Usuarios {
   qr_code: String
 }
 
-type FuncionalidadesPermisos {
-  funcionalidad_permiso_id: ID!
-  Funcionalidades: Funcionalidades!
-  Permisos: Permisos!
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type FormulariosEmpresas {
+  formulario_empresa_id: Int!
+  formulario_gestion_id: Float!
+  estado: Boolean!
+  FormulariosGestion: FormulariosGestion!
 }
 
-type Funcionalidades {
-  funcionalidad_id: ID!
-  nombre: String!
-  Entidades: Entidades!
-  FuncionalidadesPermisosSec: [FuncionalidadesPermisos!]!
+type FormulariosGestion {
+  formulario_gestion_id: Int!
+  FormulariosEmpresas: FormulariosEmpresas!
 }
 
 type Query {
@@ -182,23 +81,6 @@ type Query {
   getTipoUsuarios: [TbTipoUsuarios!]!
   getTipoUsuarioById(tipo_usuario_id: Float!): TbTipoUsuarios!
   getFilterTipoUsuarios(data: FilterTipoUsuariosInput): [TbTipoUsuarios!]!
-  getMenus: [Menus!]!
-  getMenusInactivos: [Menus!]!
-  getMenuByRoleId(usuario_id: Float!): [Menus!]!
-  getFilterMenuPalabra(palabra: String!): [Menus!]!
-  getRoles: [TbRoles!]!
-  getRolById(rol_id: Float!): TbRoles!
-  getFilterRoles(rol: String): [TbRoles!]!
-  getEntidadesIdsByRolId: [TbRoles!]!
-  getEntidades: [Entidades!]!
-  getEntidadesForFormularios: [Entidades!]!
-  getEntidadForFormularios(entidad_id: Float!): Entidades!
-  getEntidadeById(entidad_id: Float!): Entidades!
-  getFilterEntidades(nombre: String): [Entidades!]!
-  getEntidadesRelacionadas(entidad_id: Float!): Entidades!
-  getPermisos: [Permisos!]!
-  getPermisoById(permiso_id: Float!): Permisos!
-  getFilterPermisos(permiso: String!): [Permisos!]!
   getUsuarios: [Usuarios!]!
   getUsuarioById(usuario_id: Float!): Usuarios!
   getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
@@ -207,16 +89,12 @@ type Query {
   exValidationCodeMail(data: ValidationCodeMailInput!): Usuarios!
   exValidateTotpCode(data: ValidationCodeTotpInput!): Usuarios!
   exValidateRecoveryCode(data: ValidationRecoveryCodeInput!): Usuarios!
-  getMicroservicios: [Microservicios!]!
-  getMicroservicioById(microservicio_id: Float!): Microservicios!
-  getFilterMicroservicios(nombre: String): [Microservicios!]!
-  getFuncionalidades: [Funcionalidades!]!
-  getFuncionalidadesByentidad(input: FilterFuncionalidadesInput!): [Funcionalidades!]!
-  getFuncionalidadById(funcionalidad_id: Float!): Funcionalidades!
-  getFilterFuncionalidades(data: FilterFuncionalidadesInput): [Funcionalidades!]!
   getMetodosAutenticacion: [TbMetodosAutenticacion!]!
   getMetodoAutenticacionById(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
   getFilterMetodosAutenticacion(data: FilterMetodosAutenticacionInput): [TbMetodosAutenticacion!]!
+  getFormulariosEmpresas: [FormulariosEmpresas!]!
+  getFormularioEmpresaById(formulario_gestion_id: Float!): FormulariosEmpresas!
+  getFormularioEmpresaByUsuarioId(usuario_id: Float!): [FormulariosEmpresas!]!
 }
 
 input FilterEstadoUsuariosInput {
@@ -258,12 +136,6 @@ input ValidationRecoveryCodeInput {
   usuario_id: Float!
 }
 
-input FilterFuncionalidadesInput {
-  nombre: String
-  entidad_nombre: String
-  entidad_id: Float
-}
-
 input FilterMetodosAutenticacionInput {
   nombre: String
 }
@@ -275,21 +147,6 @@ type Mutation {
   createTipoUsuario(data: CreateTipoUsuarioInput!): TbTipoUsuarios!
   updateTipoUsuario(data: UpdateTipoUsuarioInput!): TbTipoUsuarios!
   deleteTipoUsuario(tipo_usuario_id: Float!): TbTipoUsuarios!
-  createRootMenu: Menus!
-  createMenu(data: CreateMenuInput!): Menus!
-  updateMenu(data: String!): [Menus!]!
-  modifyMenuEstado(menu_id: Float!, activo: Boolean!): Menus!
-  createRol(data: CreateRolInput!): TbRoles!
-  updateRol(data: UpdateRolInput!): TbRoles!
-  deleteRol(rol_id: Float!): TbRoles!
-  addFuncionalidadesToRol(data: AddFuncionalidadesToRolInput!): TbRoles!
-  updateEntidad(data: UpdateEntidadInput!): Entidades!
-  deleteEntidad(entidad_id: Float!): Entidades!
-  saveEntidadesDependientes: [Entidades!]!
-  saveAdditionalEntidadesDependientes: [Entidades!]!
-  updatePermiso(data: UpdatePermisoInput!): Permisos!
-  deletePermiso(permiso_id: Float!): Permisos!
-  saveEntidadesPermisosValidaciones: [Permisos!]!
   signUpLogin(data: SignUpUserInput!): Usuarios!
   logOutLogin(usuario_id: Float!): Usuarios!
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
@@ -297,14 +154,6 @@ type Mutation {
   exSendMail(usuario_id: Float!): Usuarios!
   exConfigTotp(usuario_id: Float!): Usuarios!
   exSetActivateConfigTotp(usuario_id: Float!): Usuarios!
-  sendMessageNotification(data: MessageArrayInput!): [Usuarios!]!
-  createMicroservicio(data: CreateMicroservicioInput!): Microservicios!
-  updateMicroservicio(data: UpdateMicroservicioInput!): Microservicios!
-  deleteMicroservicio(microservicio_id: Float!): Microservicios!
-  createFuncionalidad(data: CreateFuncionalidadInput!): Funcionalidades!
-  updateFuncionalidad(data: UpdateFuncionalidadInput!): Funcionalidades!
-  addPermisosToFuncionalidad(data: AddPermisosToFuncionalidadInput!): Funcionalidades!
-  deleteFuncionalidad(funcionalidad_id: Float!): Funcionalidades!
   createMetodoAutenticacion(data: CreateMetodoAutenticacionInput!): TbMetodosAutenticacion!
   updateMetodoAutenticacion(data: UpdateMetodoAutenticacionInput!): TbMetodosAutenticacion!
   deleteMetodoAutenticacion(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
@@ -329,68 +178,9 @@ input UpdateTipoUsuarioInput {
   estado: Estado
 }
 
-input CreateMenuInput {
-  parentId: Float!
-  name: String!
-  entidad_id: Float
-  order: Float
-  icon: String
-  base: Boolean
-  MenusPalabras: [CreateMenuPalabrasInput!]
-  MenusTraducciones: [CreateMenuTraduccionInput!]
-}
-
-input CreateMenuPalabrasInput {
-  palabra: String!
-}
-
-input CreateMenuTraduccionInput {
-  traduccion: String!
-  traduccion_id: Float!
-}
-
-input CreateRolInput {
-  rol: String!
-  RolesFuncionalidades: [CreateRolFuncionalidadInput!]
-}
-
-input CreateRolFuncionalidadInput {
-  funcionalidad_id: Float!
-}
-
-input UpdateRolInput {
-  rol_id: Float!
-  rol: String
-  RolesFuncionalidades: [UpdateRolFuncionalidadInput!]
-}
-
-input UpdateRolFuncionalidadInput {
-  funcionalidad_id: Float
-  rol_funcionalidad_id: Float!
-}
-
-input AddFuncionalidadesToRolInput {
-  rol_id: Float!
-  RolesFuncionalidades: [CreateRolFuncionalidadInput!]
-}
-
-input UpdateEntidadInput {
-  nombre: String
-  resolver: String
-  entidad_id: Float!
-}
-
-input UpdatePermisoInput {
-  entidad_id: Float
-  permiso: String
-  es_publico: Boolean
-  permiso_id: Float!
-}
-
 input SignUpUserInput {
   nombre_usuario: String!
   correo: String!
-  rol_id: Int!
   estado_usuario_id: Float!
   tipo_usuario_id: Float!
   metodo_autenticacion_id: Float
@@ -405,56 +195,6 @@ input ChangePasswordInput {
 input SendCodeVerificationInput {
   nombre_usuario: String!
   tipo_solicitud: String
-}
-
-input MessageArrayInput {
-  data: [MessageInput!]!
-}
-
-input MessageInput {
-  proveedor_mensajeria_id: Float!
-  usuarios: JSON!
-  params: JSON
-  nombre: String
-}
-
-input CreateMicroservicioInput {
-  name: String!
-  url: String!
-  activo: Boolean
-}
-
-input UpdateMicroservicioInput {
-  name: String
-  url: String
-  activo: Boolean
-  microservicio_id: Float!
-}
-
-input CreateFuncionalidadInput {
-  nombre: String!
-  entidad_id: Float!
-  FuncionalidadesPermisos: [CreateFuncionalidadPermisosInput!]!
-}
-
-input CreateFuncionalidadPermisosInput {
-  permiso_id: Float!
-}
-
-input UpdateFuncionalidadInput {
-  funcionalidad_id: Float!
-  nombre: String
-  FuncionalidadesPermisos: [UpdateFuncionalidadPermisosInput!]!
-}
-
-input UpdateFuncionalidadPermisosInput {
-  funcionalidad_permiso_id: Float!
-  permiso_id: Float
-}
-
-input AddPermisosToFuncionalidadInput {
-  funcionalidad_id: Float!
-  FuncionalidadesPermisos: [CreateFuncionalidadPermisosInput!]!
 }
 
 input CreateMetodoAutenticacionInput {

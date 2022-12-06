@@ -24,4 +24,17 @@ export class FormulariosEmpresasService {
         }
         return formularioEmpresa;
     }
+
+    async getFormularioEmpresaByUsuarioId(usuario_id: number) {
+        let formularioEmpresa = this.prismaService.formulariosEmpresas.findMany({
+            where: {
+                FormulariosPerfiles: {
+                    some: { Perfiles: { UsuariosPerfiles: { some: { usuario_id: usuario_id } } } }
+                }
+            }
+        });
+
+        return formularioEmpresa
+    }
+
 }
