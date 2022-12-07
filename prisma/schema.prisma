@@ -45,6 +45,7 @@ model Perfiles {
   nombre                      String                        @db.VarChar(100)
   descripcion                 String                        @default("") @db.Text()
   personalizado               Boolean                       @default(false)
+  estado                      Estado                        @default(ACTIVO)
   UsuariosPerfiles            UsuariosPerfiles[]
   AccionesFormulariosPerfiles AccionesFormulariosPerfiles[]
   FormulariosPerfiles         FormulariosPerfiles[]
@@ -160,6 +161,14 @@ model UsuariosSesiones {
   Usuarios           Usuarios  @relation(fields: [usuario_id], references: [usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "Usuario_fk")
 
   @@index([usuario_sesion_id], name: "idx_usuario_sesion_id")
+}
+
+model FuncionalidadesPerfiles {
+  funcionalidad_perfil_id Int @id(map: "pk_funcionalidad_perfil_id") @default(autoincrement())
+  perfil_id               Int @unique
+  funcionalidad_id        Int
+
+  @@index([funcionalidad_perfil_id], name: "idx_funcionalidad_perfil_id")
 }
 
 enum Estado {
