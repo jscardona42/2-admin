@@ -8,8 +8,8 @@ export class FormulariosEmpresas {
     @Field(() => Int)
     formulario_empresa_id: number
 
-    @Field(() => String)
-    formulario_gestion_id: string
+    @Field(() => Number)
+    formulario_gestion_id: number
 
     @Field(() => Boolean)
     estado: boolean

@@ -19,6 +19,12 @@ export class FormulariosEmpresasResolver {
         return this.formulariosEmpresasService.getFormularioEmpresaById(formulario_gestion_id);
     }
 
+    @Query(() => [FormulariosEmpresas])
+    async getFormularioEmpresaByUsuarioId(@Args("usuario_id") usuario_id: number)
+    {
+        return this.formulariosEmpresasService.getFormularioEmpresaByUsuarioId(usuario_id);
+    }
+
     @ResolveField(() => FormulariosGestion)
     async FormulariosGestion(@Parent() FormulariosEmpresas: FormulariosEmpresas) {
         return { __typename: 'FormulariosGestion', formulario_gestion_id: FormulariosEmpresas.formulario_gestion_id };
