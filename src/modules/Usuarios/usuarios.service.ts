@@ -134,7 +134,7 @@ export class UsuariosService {
         let userReturn = await this.getDataErrorReturn(user.usuario_id);
         let res = await this.sendNotificacionCorreo("usuario_nuevo", userReturn, params);
         if (res.statusCode !== 200) {
-            throw new UnauthorizedException("No se puede enviar la clave temporal " + res.message);
+            throw new UnauthorizedException({ message: "No se puede enviar la clave temporal", error: res.error, error_code: res.error_code });
         }
 
         return user;
@@ -289,7 +289,7 @@ export class UsuariosService {
         let params = { name: user.nombre_usuario };
         let res = await this.sendNotificacionCorreo("confirmacion", usuario, params);
         if (res.statusCode !== 200) {
-            throw new UnauthorizedException("No se pudo enviar el correo de confirmación " + res.message);
+            throw new UnauthorizedException({ message: "No se pudo enviar el correo de confirmación", error: res.error, error_code: res.error_code });
         }
         return user;
     }
@@ -360,7 +360,7 @@ export class UsuariosService {
         let params = { name: user.nombre_usuario, codigo: recoveryCode };
         let res = await this.sendNotificacionCorreo("codigo_verificacion", user, params);
         if (res.statusCode !== 200) {
-            throw new UnauthorizedException("No se pudo enviar el código de verificación " + res.message);
+            throw new UnauthorizedException({ message: "No se pudo enviar el código de verificación", error: res.error, error_code: res.error_code });
         }
         return updateData;
     }
@@ -408,7 +408,7 @@ export class UsuariosService {
             let params = { name: user.nombre_usuario, codigo: recoveryCode };
             let res = await this.sendNotificacionCorreo("codigo_email", user, params);
             if (res.statusCode !== 200) {
-                throw new UnauthorizedException("No se pudo enviar el código de verificación " + res.message);
+                throw new UnauthorizedException({ message: "No se pudo enviar el código de verificación", error: res.error, error_code: res.error_code });
             }
             return user;
         }
@@ -484,7 +484,7 @@ export class UsuariosService {
             let params = { name: user.nombre_usuario, codigo: recoveryCode };
             let res = await this.sendNotificacionCorreo("codigo_recuperacion", user, params);
             if (res.statusCode !== 200) {
-                throw new UnauthorizedException("No se pudo generar el código de recuperación " + res.message);
+                throw new UnauthorizedException({ message: "No se pudo generar el código de recuperación", error: res.error, error_code: res.error_code });
             }
 
             await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
@@ -745,12 +745,13 @@ export class UsuariosService {
             correo: user.correo,
             nombre_usuario: user.nombre_usuario,
             params: params,
-            nombre_plantilla: nombre_plantilla
+            nombre_plantilla: "hola"
         }
 
         let res = await axios.post(`${process.env.NOTIFICACIONES_URL}/notificaciones/email`, data, { headers: { Authorization_url: referer } })
             .then((res) => { return res.data })
             .catch(err => { return err.response.data });
+        console.log(res);
         return res;
     }
 
