@@ -34,7 +34,7 @@ export class FormulariosEmpresasService {
             }
         });
 
-        return formularioEmpresa
+        return formularioEmpresa;
     }
 
 }

@@ -71,9 +71,6 @@ describe('Usuarios Service', () => {
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
-                        tbRoles: {
-                            findUnique: jest.fn(() => { return { rol_id: 1 } })
-                        },
                     }),
                 },
             ],

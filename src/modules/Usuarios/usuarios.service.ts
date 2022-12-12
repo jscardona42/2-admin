@@ -7,10 +7,9 @@ import { JwtService } from '@nestjs/jwt';
 import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
-import { Usuarios } from './entities/usuarios.entity';
-import { gql, GraphQLClient } from 'graphql-request';
 let QRCode = require('qrcode');
 const SibApiV3Sdk = require('sib-api-v3-typescript');
+import axios from 'axios';
 
 
 
@@ -18,19 +17,19 @@ const SibApiV3Sdk = require('sib-api-v3-typescript');
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private jwtService: JwtService,
+        private jwtService: JwtService
     ) { }
 
     async getUsuarios(): Promise<any> {
         return this.prismaService.usuarios.findMany({
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         });
     }
 
     async getUsuarioById(usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
 
         if (usuarios === null) {
@@ -83,7 +82,6 @@ export class UsuariosService {
         let parametrosValores: any = [];
         let user: any;
 
-        // await this.rolesService.getRolById(data.rol_id);
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.nombre_usuario);
         if (usernameExists) {
@@ -126,18 +124,17 @@ export class UsuariosService {
                         create: parametrosValores
                     }
                 },
-                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
             })
         } catch (error) {
             throw new UnauthorizedException("Ocurrió un error durante la creación del usuario " + error);
         }
 
-        try {
-            let params = { name: user.nombre_usuario, password: contrasena_provisional };
-            let userReturn = await this.getDataErrorReturn(user.usuario_id);
-            await this.sendNotificacionCorreo("usuario_nuevo", userReturn, params);
-        } catch (error) {
-            throw new UnauthorizedException("No se puede enviar la clave temporal " + error);
+        let params = { name: user.nombre_usuario, password: contrasena_provisional };
+        let userReturn = await this.getDataErrorReturn(user.usuario_id);
+        let res = await this.sendNotificacionCorreo("usuario_nuevo", userReturn, params);
+        if (res.statusCode !== 200) {
+            throw new UnauthorizedException("No se puede enviar la clave temporal " + res.message);
         }
 
         return user;
@@ -183,7 +180,7 @@ export class UsuariosService {
                 nombre_usuario: data.nombre_usuario,
                 contrasena: await this.hashPassword(data.contrasena, salt.salt)
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
 
         if (!user) {
@@ -286,14 +283,13 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
         })
 
-        try {
-            let params = { name: user.nombre_usuario };
-            await this.sendNotificacionCorreo("confirmacion", usuario, params);
-        } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el correo de confirmación");
+        let params = { name: user.nombre_usuario };
+        let res = await this.sendNotificacionCorreo("confirmacion", usuario, params);
+        if (res.statusCode !== 200) {
+            throw new UnauthorizedException("No se pudo enviar el correo de confirmación " + res.message);
         }
         return user;
     }
@@ -361,11 +357,10 @@ export class UsuariosService {
         await this.updateUsuarioParametro(user.usuario_id, hashRecoveryCode, parametrovalor.usuario_parametro_valor_id,)
         let updateData = await this.updateUsuarioParametro(user.usuario_id, new Date().toString(), parametrovalor1.usuario_parametro_valor_id,);
 
-        try {
-            let params = { name: user.nombre_usuario, codigo: recoveryCode };
-            await this.sendNotificacionCorreo("codigo_verificacion", user, params);
-        } catch (error) {
-            throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
+        let params = { name: user.nombre_usuario, codigo: recoveryCode };
+        let res = await this.sendNotificacionCorreo("codigo_verificacion", user, params);
+        if (res.statusCode !== 200) {
+            throw new UnauthorizedException("No se pudo enviar el código de verificación " + res.message);
         }
         return updateData;
     }
@@ -410,11 +405,10 @@ export class UsuariosService {
 
             this.updateUsuarioParametro(user.usuario_id, new Date().toString(), fecha.usuario_parametro_valor_id)
 
-            try {
-                let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendNotificacionCorreo("codigo_email", user, params);
-            } catch (error) {
-                throw new UnauthorizedException("No se pudo enviar el código de verificación " + error);
+            let params = { name: user.nombre_usuario, codigo: recoveryCode };
+            let res = await this.sendNotificacionCorreo("codigo_email", user, params);
+            if (res.statusCode !== 200) {
+                throw new UnauthorizedException("No se pudo enviar el código de verificación " + res.message);
             }
             return user;
         }
@@ -487,17 +481,15 @@ export class UsuariosService {
 
         try {
             let recoveryCode = this.generateRecoveryCode(20);
-            try {
-                let params = { name: user.nombre_usuario, codigo: recoveryCode };
-                await this.sendNotificacionCorreo("codigo_recuperacion", user, params);
-
-                await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
-
-                await this.updateUsuarioParametro(usuario_id, await this.hashPassword(recoveryCode, user.salt), usuario_parametro_codigo.usuario_parametro_valor_id);
-
-            } catch (error) {
-                throw new UnauthorizedException("No se puedo enviar el código de activación " + error);
+            let params = { name: user.nombre_usuario, codigo: recoveryCode };
+            let res = await this.sendNotificacionCorreo("codigo_recuperacion", user, params);
+            if (res.statusCode !== 200) {
+                throw new UnauthorizedException("No se pudo generar el código de recuperación " + res.message);
             }
+
+            await this.updateUsuarioParametro(usuario_id, "true", usuario_parametro_config.usuario_parametro_valor_id);
+
+            await this.updateUsuarioParametro(usuario_id, await this.hashPassword(recoveryCode, user.salt), usuario_parametro_codigo.usuario_parametro_valor_id);
 
             return Object.assign(user, { cod_recuperacion: recoveryCode });
         } catch (error) {
@@ -563,7 +555,7 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
         })
     }
 
@@ -745,38 +737,20 @@ export class UsuariosService {
 
     public async sendNotificacionCorreo(nombre_plantilla: string, user: any, params: any) {
 
-        let notificacion: any;
-
         let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
         referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
 
-        const client = new GraphQLClient(process.env.NOTIFICACIONES_URL + "/graphql")
-        const queryValidation = gql`
-                    mutation sendNotificacionCorreo($data: NotificacionesCorreoInput!) {
-                        sendNotificacionCorreo(data: $data) {
-                          notificacion
-                        }
-                    }
-                    `
-        const variables = {
-            data: {
-                correo: user.correo,
-                nombre_usuario: user.nombre_usuario,
-                params: JSON.stringify(params),
-                nombre_plantilla: nombre_plantilla
-            }
-        }
-        const requestHeaders = {
-            authorization_url: referer
+        let data = {
+            correo: user.correo,
+            nombre_usuario: user.nombre_usuario,
+            params: params,
+            nombre_plantilla: nombre_plantilla
         }
 
-        try {
-            notificacion = await client.request(queryValidation, variables, requestHeaders);
-        } catch (error) {
-            console.log(error)
-            return error;
-        }
-        return notificacion.NotificacionesCorreoInput;
+        let res = await axios.post(`${process.env.NOTIFICACIONES_URL}/notificaciones/email`, data, { headers: { Authorization_url: referer } })
+            .then((res) => { return res.data })
+            .catch(err => { return err.response.data });
+        return res;
     }
 
 }

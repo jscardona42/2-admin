@@ -20,8 +20,7 @@ export class FormulariosEmpresasResolver {
     }
 
     @Query(() => [FormulariosEmpresas])
-    async getFormularioEmpresaByUsuarioId(@Args("usuario_id") usuario_id: number)
-    {
+    async getFormularioEmpresaByUsuarioId(@Args("usuario_id") usuario_id: number) {
         return this.formulariosEmpresasService.getFormularioEmpresaByUsuarioId(usuario_id);
     }
 
