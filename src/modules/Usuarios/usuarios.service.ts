@@ -741,6 +741,7 @@ export class UsuariosService {
         referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
 
         let data = {
+            proveedor_mensajeria_id: 1,
             correo: user.correo,
             nombre_usuario: user.nombre_usuario,
             params: params,
