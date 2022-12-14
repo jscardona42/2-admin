@@ -745,7 +745,7 @@ export class UsuariosService {
             correo: user.correo,
             nombre_usuario: user.nombre_usuario,
             params: params,
-            nombre_plantilla: "hola"
+            nombre_plantilla: nombre_plantilla
         }
 
         let res = await axios.post(`${process.env.NOTIFICACIONES_URL}/notificaciones/email`, data, { headers: { Authorization_url: referer } })
