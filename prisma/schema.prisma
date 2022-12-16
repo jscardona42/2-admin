@@ -47,7 +47,6 @@ model Perfiles {
   personalizado               Boolean                       @default(false)
   estado                      Estado                        @default(ACTIVO)
   UsuariosPerfiles            UsuariosPerfiles[]
-  AccionesFormulariosPerfiles AccionesFormulariosPerfiles[]
   FormulariosPerfiles         FormulariosPerfiles[]
 
   @@index([perfil_id], name: "idx_perfil_id")
@@ -61,15 +60,6 @@ model UsuariosPerfiles {
   Perfiles          Perfiles @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_per_perfil_id")
 
   @@index([usuario_perfil_id], name: "idx_usuario_perfil_id")
-}
-
-model AccionesFormulariosPerfiles {
-  accion_formulario_perfil_id Int      @id(map: "pk_accion_formulario_perfil_id") @default(autoincrement())
-  accion_formulario_id        Int
-  perfil_id                   Int
-  Perfiles                    Perfiles @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_acc_for_per_perfil_id")
-
-  @@index([accion_formulario_perfil_id], name: "idx_accion_formulario_perfil_id")
 }
 
 model FormulariosPerfiles {
