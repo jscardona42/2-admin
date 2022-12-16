@@ -1,10 +1,11 @@
 import 'reflect-metadata'
-import { ObjectType, Field, ID } from '@nestjs/graphql'
+import { ObjectType, Field } from '@nestjs/graphql'
 import { IsEmail, IsNotEmpty } from 'class-validator'
 import { TbEstadosUsuarios } from '../EstadosUsuarios/entities/tbestadosusuarios.entity'
 import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbmetodosautenticacion.entity'
 import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
 import { UsuariosSesiones } from './usuariossesiones.entity'
+import { UsuariosPerfiles } from '../../../modules/Perfiles/entities/usuariosperfiles.entity'
 
 @ObjectType()
 export class Usuarios {
@@ -66,4 +67,7 @@ export class Usuarios {
 
     @Field(() => String, { nullable: true })
     qr_code?: string
+
+    @Field(() => [UsuariosPerfiles], { nullable: true })
+    UsuariosPerfiles?: UsuariosPerfiles[]
 }

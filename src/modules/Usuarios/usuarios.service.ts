@@ -22,14 +22,14 @@ export class UsuariosService {
 
     async getUsuarios(): Promise<any> {
         return this.prismaService.usuarios.findMany({
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         });
     }
 
     async getUsuarioById(usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: true, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
         })
 
         if (usuarios === null) {
