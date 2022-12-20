@@ -16,7 +16,7 @@ async function bootstrap() {
 
   const app = await NestFactory.create(AppModule, options);
   app.useGlobalGuards(new GqlAuthGuard());
-  app.useGlobalPipes(new ValidationPipe());
+  app.useGlobalPipes(new ValidationPipe({ transform: true, forbidUnknownValues: false }));
   app.enableCors();
   await app.listen(process.env.PORT || 3000)
 }
