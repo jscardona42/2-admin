@@ -28,23 +28,25 @@ export class SignUpUserInput {
 
 @InputType()
 export class SignInUserInput {
-    @Field()
+    @Field(() => String)
+    @IsNotEmpty()
     nombre_usuario: string
 
-    @Field()
+    @Field(() => String)
+    @IsNotEmpty()
     contrasena: string
 }
 
 @InputType()
 export class ChangePasswordInput {
-    @Field()
+    @Field(() => Number)
     @IsNotEmpty()
     usuario_id: number
 
-    @Field({ nullable: true })
+    @Field(() => String, { nullable: true })
     contrasena?: string
 
-    @Field()
+    @Field(() => String)
     @IsNotEmpty()
     nueva_contrasena: string
 }
