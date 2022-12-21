@@ -1,7 +1,7 @@
 pipelines:
   default:
     - step:
-        image: node:14-alpine
+        image: node:16-bullseye-slim
         name: "Install build"
         caches:
           - node
@@ -12,7 +12,7 @@ pipelines:
           - postgres
           - docker
     - step:
-        image: node:14-alpine
+        image: node:16-bullseye-slim
         name: "Test"
         size: 2x
         caches:
