@@ -41,13 +41,14 @@ model TbTipoUsuarios {
 }
 
 model Perfiles {
-  perfil_id                   Int                           @id(map: "pk_perfil_id") @default(autoincrement())
-  nombre                      String                        @db.VarChar(100)
-  descripcion                 String                        @default("") @db.Text()
-  personalizado               Boolean                       @default(false)
-  estado                      Estado                        @default(ACTIVO)
-  UsuariosPerfiles            UsuariosPerfiles[]
-  FormulariosPerfiles         FormulariosPerfiles[]
+  perfil_id               Int                       @id(map: "pk_perfil_id") @default(autoincrement())
+  nombre                  String                    @db.VarChar(100)
+  descripcion             String?                   @default("") @db.Text()
+  personalizado           Boolean                   @default(false)
+  estado                  Estado                    @default(ACTIVO)
+  UsuariosPerfiles        UsuariosPerfiles[]
+  FormulariosPerfiles     FormulariosPerfiles[]
+  FuncionalidadesPerfiles FuncionalidadesPerfiles[]
 
   @@index([perfil_id], name: "idx_perfil_id")
 }
@@ -122,7 +123,7 @@ model UsuariosParametros {
   clase_parametro_id           Int
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
-  descripcion                  String                      @default("") @db.Text()
+  descripcion                  String?                     @default("") @db.Text()
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
   TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_par_clase_parametro_id")
@@ -153,9 +154,10 @@ model UsuariosSesiones {
 }
 
 model FuncionalidadesPerfiles {
-  funcionalidad_perfil_id Int @id(map: "pk_funcionalidad_perfil_id") @default(autoincrement())
-  perfil_id               Int @unique
+  funcionalidad_perfil_id Int      @id(map: "pk_funcionalidad_perfil_id") @default(autoincrement())
+  perfil_id               Int
   funcionalidad_id        Int
+  Perfiles                Perfiles @relation(fields: [perfil_id], references: [perfil_id], onDelete: NoAction, onUpdate: NoAction, map: "fun_per_perfil_id_fk")
 
   @@index([funcionalidad_perfil_id], name: "idx_funcionalidad_perfil_id")
 }
