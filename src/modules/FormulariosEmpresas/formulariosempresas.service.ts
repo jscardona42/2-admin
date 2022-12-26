@@ -12,7 +12,7 @@ export class FormulariosEmpresasService {
             include: { FormulariosPerfiles: true }
         });
     }
-
+    
     async getFormularioEmpresaById(formulario_empresa_id: number): Promise<any> {
         let formularioEmpresa = await this.prismaService.formulariosEmpresas.findUnique({
             where: { formulario_empresa_id: formulario_empresa_id },

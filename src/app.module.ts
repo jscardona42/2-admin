@@ -21,8 +21,12 @@ import { FormulariosGestion } from './modules/Referencias/FormulariosGestion/ent
 import { FormulariosEmpresasService } from './modules/FormulariosEmpresas/formulariosempresas.service';
 import { FormulariosEmpresasResolver } from './modules/FormulariosEmpresas/formulariosempresas.resolver';
 import { FormulariosGestionResolver } from './modules/Referencias/FormulariosGestion/formulariosgestion.resolver';
+import { Funcionalidades } from './modules/Referencias/Funcionalidades/entities/funcionalidades.entity';
+import { FuncionalidadesPerfilesService } from './modules/FuncionalidadesPerfiles/funcionalidadesperfiles.service';
+import { FuncionalidadesPerfilesResolver } from './modules/FuncionalidadesPerfiles/funcionalidadesperfiles.resolver';
+import { FuncionalidadesResolver } from './modules/Referencias/Funcionalidades/funcionalidades.resolver';
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver]
 
 @Module({
   imports: [
@@ -47,7 +51,7 @@ const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosR
       }),
       autoSchemaFile: join(process.cwd(), "src/schema.gql"),
       buildSchemaOptions: {
-        orphanedTypes: [FormulariosGestion],
+        orphanedTypes: [FormulariosGestion, Funcionalidades],
       },
 
     })
