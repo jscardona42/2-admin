@@ -21,6 +21,4 @@ export class Perfiles {
     @Field(() => Boolean)
     personalizado: boolean
 
-    @Field(() => Estado)
-    estado: Estado
 }
