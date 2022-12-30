@@ -2,7 +2,7 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-directive @key(fields: String!) on OBJECT | INTERFACE
+directive @key(fields: String!, resolvable: Boolean = true) repeatable on OBJECT | INTERFACE
 
 directive @extends on OBJECT | INTERFACE
 
@@ -11,6 +11,16 @@ directive @external on OBJECT | FIELD_DEFINITION
 directive @requires(fields: String!) on FIELD_DEFINITION
 
 directive @provides(fields: String!) on FIELD_DEFINITION
+
+directive @shareable on FIELD_DEFINITION | OBJECT
+
+directive @link(url: String!, import: [link__Import]) on SCHEMA
+
+directive @tag(name: String!) repeatable on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @inaccessible on FIELD_DEFINITION | OBJECT | INTERFACE | UNION | ARGUMENT_DEFINITION | SCALAR | ENUM | ENUM_VALUE | INPUT_OBJECT | INPUT_FIELD_DEFINITION
+
+directive @override(from: String!) on FIELD_DEFINITION
 
 type TbEstadosUsuarios {
   estado_usuario_id: Float!
@@ -36,6 +46,19 @@ type UsuariosSesiones {
   Usuarios: Usuarios!
 }
 
+type Perfiles {
+  perfil_id: Float!
+  nombre: String!
+  descripcion: String
+  personalizado: Boolean!
+}
+
+type UsuariosPerfiles {
+  usuario_perfil_id: Float!
+  Perfiles: Perfiles!
+  Usuarios: Usuarios!
+}
+
 type Usuarios {
   usuario_id: Float!
   nombre_usuario: String!
@@ -55,6 +78,7 @@ type Usuarios {
   config_totp: String
   cod_recuperacion: String
   qr_code: String
+  UsuariosPerfiles: [UsuariosPerfiles!]
 }
 
 """
@@ -74,6 +98,27 @@ type FormulariosGestion {
   FormulariosEmpresas: FormulariosEmpresas!
 }
 
+type FuncionalidadesPerfiles {
+  funcionalidad_perfil_id: Int!
+  Perfiles: Perfiles!
+  funcionalidad_id: Float!
+  Funcionalidades: Funcionalidades!
+}
+
+type Funcionalidades {
+  funcionalidad_id: Int!
+  FuncionalidadesPerfiles: FuncionalidadesPerfiles!
+}
+
+type UsuariosParametros {
+  usuario_parametro_id: Float!
+  nombre: String!
+  alias: String!
+  descripcion: String!
+  valor_defecto: String!
+  requerido: Boolean!
+}
+
 type Query {
   getEstadosUsuarios: [TbEstadosUsuarios!]!
   getEstadoUsuarioById(estado_usuario_id: Float!): TbEstadosUsuarios!
@@ -81,8 +126,14 @@ type Query {
   getTipoUsuarios: [TbTipoUsuarios!]!
   getTipoUsuarioById(tipo_usuario_id: Float!): TbTipoUsuarios!
   getFilterTipoUsuarios(data: FilterTipoUsuariosInput): [TbTipoUsuarios!]!
+
+  """Obtener todos los elementos de la tabla Usuarios"""
   getUsuarios: [Usuarios!]!
+
+  """Obtener un elemento de la tabla Usuarios por id"""
   getUsuarioById(usuario_id: Float!): Usuarios!
+
+  """Filtrar elementos de la tabla TbEstadosEmpresa"""
   getFilterUsuarios(nombre: String, email: String): [Usuarios!]!
   signInLogin(data: SignInUserInput!): Usuarios!
   exValidationCodeVerification(data: ValidationCodeVerificationInput!): Usuarios!
@@ -93,8 +144,38 @@ type Query {
   getMetodoAutenticacionById(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
   getFilterMetodosAutenticacion(data: FilterMetodosAutenticacionInput): [TbMetodosAutenticacion!]!
   getFormulariosEmpresas: [FormulariosEmpresas!]!
-  getFormularioEmpresaById(formulario_gestion_id: Float!): FormulariosEmpresas!
+
+  """Obtener un elemento relacionado con el parámetro formulario_empresa"""
+  getFormularioEmpresaById(formulario_empresa: Float!): FormulariosEmpresas!
+
+  """
+  Obtener uno o varios elementos relacionado con los parámetros enviados al dto
+  """
+  getFilterFormulariosEmpresas(data: FilterFormulariosEmpresasInput): [FormulariosEmpresas!]!
   getFormularioEmpresaByUsuarioId(usuario_id: Float!): [FormulariosEmpresas!]!
+  getFuncionalidadesPerfiles: [FuncionalidadesPerfiles!]!
+  getFuncionalidadPerfilById(funcionalidad_perfil_id: Float!): FuncionalidadesPerfiles!
+  getFuncionalidadesPerfilesByUsuarioId(usuario_id: Float!): [FuncionalidadesPerfiles!]!
+
+  """Obtener todos los elementos de la tabla Perfiles"""
+  getPerfiles: [Perfiles!]!
+
+  """Obtener un elemento relacionado con el parámetro perfil_id"""
+  getPerfilById(perfil_id: Float!): Perfiles!
+
+  """
+  Obtener uno o varios elementos relacionado con los parámetros enviados al dto
+  """
+  getFilterPerfiles(data: FilterPerfilesInput): [Perfiles!]!
+  getUsuariosParametros: [UsuariosParametros!]!
+
+  """Obtener un elemento relacionado con el parámetro formulario_empresa"""
+  getUsuarioParametroById(usuario_parametro_id: Float!): UsuariosParametros!
+
+  """
+  Obtener uno o varios elementos relacionado con los parámetros enviados al dto
+  """
+  getFilterUsuariosParametrosInput(data: FilterUsuariosParametrosInput): [UsuariosParametros!]!
 }
 
 input FilterEstadoUsuariosInput {
@@ -140,6 +221,19 @@ input FilterMetodosAutenticacionInput {
   nombre: String
 }
 
+input FilterFormulariosEmpresasInput {
+  estado: Boolean
+}
+
+input FilterPerfilesInput {
+  nombre: String
+  personalizado: Boolean
+}
+
+input FilterUsuariosParametrosInput {
+  nombre: String
+}
+
 type Mutation {
   createEstadoUsuario(data: CreateEstadoUsuarioInput!): TbEstadosUsuarios!
   updateEstadoUsuario(data: UpdateEstadoUsuarioInput!): TbEstadosUsuarios!
@@ -147,7 +241,9 @@ type Mutation {
   createTipoUsuario(data: CreateTipoUsuarioInput!): TbTipoUsuarios!
   updateTipoUsuario(data: UpdateTipoUsuarioInput!): TbTipoUsuarios!
   deleteTipoUsuario(tipo_usuario_id: Float!): TbTipoUsuarios!
-  signUpLogin(data: SignUpUserInput!): Usuarios!
+
+  """Creación de un nuevo elemento para la tabla Usuarios"""
+  createUsuario(data: CreateUsuarioInput!): Usuarios!
   logOutLogin(usuario_id: Float!): Usuarios!
   exChangePasswordLogin(data: ChangePasswordInput!): Usuarios!
   exSendCodeVerification(data: SendCodeVerificationInput!): Usuarios!
@@ -157,6 +253,27 @@ type Mutation {
   createMetodoAutenticacion(data: CreateMetodoAutenticacionInput!): TbMetodosAutenticacion!
   updateMetodoAutenticacion(data: UpdateMetodoAutenticacionInput!): TbMetodosAutenticacion!
   deleteMetodoAutenticacion(metodo_autenticacion_id: Float!): TbMetodosAutenticacion!
+
+  """Creación de un nuevo elemento para la tabla FormulariosEmpresas"""
+  createFormularioEmpresa(data: CreateFormularioEmpresaInput!): FormulariosEmpresas!
+
+  """Actualización de un elemento de la tabla FormulariosEmpresas"""
+  updateFormularioEmpresa(data: UpdateFormularioEmpresaInput!): FormulariosEmpresas!
+
+  """Inhabilitación de un elemento de la tabla FormulariosEmpresas"""
+  deleteFormularioEmpresa(formulario_empresa_id: Float!): FormulariosEmpresas!
+
+  """Creación de un nuevo elemento para la tabla Perfiles"""
+  createPerfil(data: CreatePerfilInput!): Perfiles!
+
+  """Actualización de un elemento de la tabla Perfiles"""
+  updatePerfil(data: UpdatePerfilInput!): Perfiles!
+
+  """Creación de un nuevo elemento para la tabla FormulariosEmpresas"""
+  createUsuarioParametro(data: CreateUsuarioParametroInput!): UsuariosParametros!
+
+  """Actualización de un elemento de la tabla FormulariosEmpresas"""
+  updateUsuarioParametro(data: UpdateUsuarioParametroInput!): UsuariosParametros!
 }
 
 input CreateEstadoUsuarioInput {
@@ -178,12 +295,17 @@ input UpdateTipoUsuarioInput {
   estado: Estado
 }
 
-input SignUpUserInput {
+input CreateUsuarioInput {
   nombre_usuario: String!
   correo: String!
   estado_usuario_id: Float!
   tipo_usuario_id: Float!
   metodo_autenticacion_id: Float
+  UsuariosPerfiles: [CreateUsuarioPerfilInput!]!
+}
+
+input CreateUsuarioPerfilInput {
+  perfil_id: Float!
 }
 
 input ChangePasswordInput {
@@ -205,3 +327,57 @@ input UpdateMetodoAutenticacionInput {
   metodo_autenticacion_id: Float!
   nombre: String
 }
+
+input CreateFormularioEmpresaInput {
+  formulario_gestion_id: Float!
+  estado: Boolean!
+}
+
+input UpdateFormularioEmpresaInput {
+  formulario_empresa_id: Int!
+  formulario_gestion_id: Float
+  estado: Boolean
+}
+
+input CreatePerfilInput {
+  nombre: String!
+  descripcion: String!
+  personalizado: Boolean!
+  FormulariosPerfiles: [CreateFormularioPerfilInput!]!
+}
+
+input CreateFormularioPerfilInput {
+  formulario_empresa_id: Float!
+}
+
+input UpdatePerfilInput {
+  perfil_id: Int!
+  nombre: String
+  descripcion: String
+  personalizado: Boolean
+  FormulariosPerfiles: [UpdateFormularioPerfilInput!]!
+}
+
+input UpdateFormularioPerfilInput {
+  formulario_perfil_id: Int!
+  formulario_empresa_id: Float
+}
+
+input CreateUsuarioParametroInput {
+  nombre: String!
+  alias: String!
+  requerido: Boolean!
+  valor_defecto: String!
+  descripcion: String!
+}
+
+input UpdateUsuarioParametroInput {
+  usuario_parametro_id: Int!
+  nombre: String
+  alias: String
+  requerido: Boolean
+  valor_defecto: String
+  descripcion: String
+}
+
+scalar link__Import

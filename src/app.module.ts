@@ -25,8 +25,12 @@ import { Funcionalidades } from './modules/Referencias/Funcionalidades/entities/
 import { FuncionalidadesPerfilesService } from './modules/FuncionalidadesPerfiles/funcionalidadesperfiles.service';
 import { FuncionalidadesPerfilesResolver } from './modules/FuncionalidadesPerfiles/funcionalidadesperfiles.resolver';
 import { FuncionalidadesResolver } from './modules/Referencias/Funcionalidades/funcionalidades.resolver';
+import { PerfilesService } from './modules/Perfiles/perfiles.service';
+import { PerfilesResolver } from './modules/Perfiles/perfiles.resolver';
+import { UsuariosParametrosService } from './modules/UsuariosParametros/usuariosparametros.service';
+import { UsuariosParametrosResolver } from './modules/UsuariosParametros/usuariosparametros.resolver';
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver, PerfilesService, PerfilesResolver, UsuariosParametrosService, UsuariosParametrosResolver]
 
 @Module({
   imports: [

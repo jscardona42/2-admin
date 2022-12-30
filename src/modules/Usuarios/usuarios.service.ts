@@ -4,12 +4,13 @@ import * as CryptoJS from 'crypto-js';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { ChangePasswordInput, SendCodeVerificationInput, SignUpUserInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 let QRCode = require('qrcode');
 const SibApiV3Sdk = require('sib-api-v3-typescript');
 import axios from 'axios';
+import { PerfilesService } from '../Perfiles/perfiles.service';
 
 
 
@@ -17,7 +18,8 @@ import axios from 'axios';
 export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
-        private jwtService: JwtService
+        private jwtService: JwtService,
+        private perfilesService: PerfilesService
     ) { }
 
     async getUsuarios(): Promise<any> {
@@ -77,10 +79,24 @@ export class UsuariosService {
         })
     }
 
-    async signUpLogin(data: SignUpUserInput): Promise<any> {
+    async createUsuario(data: CreateUsuarioInput): Promise<any> {
         let metodoAutenticacion = undefined;
         let parametrosValores: any = [];
         let user: any;
+        let usuariosperfilesarray = [];
+
+        if (data.UsuariosPerfiles !== undefined) {
+            await data.UsuariosPerfiles.reduce(async (promise0, usuariosperfiles) => {
+                await promise0;
+
+                await this.perfilesService.getPerfilById(usuariosperfiles.perfil_id)
+
+                usuariosperfilesarray.push({
+                    perfil_id: usuariosperfiles.perfil_id
+                })
+               
+            }, Promise.resolve());
+        }
 
         const salt = await bcrypt.genSalt();
         const usernameExists = await this.usernameExists(data.nombre_usuario);
@@ -122,6 +138,9 @@ export class UsuariosService {
                     sol_cambio_contrasena: true,
                     UsuarioParametroValor: {
                         create: parametrosValores
+                    },
+                    UsuariosPerfiles:{
+                        create: usuariosperfilesarray
                     }
                 },
                 include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
