@@ -5,6 +5,8 @@ import { PrismaService } from '../../prisma.service';
 import { SignInUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 import { MailerModule } from '@nestjs-modules/mailer';
 import { UsuariosService } from './usuarios.service';
+import { PerfilesService } from '../Perfiles/perfiles.service';
+import { FormulariosEmpresasService } from '../FormulariosEmpresas/formulariosempresas.service';
 
 
 describe('Usuarios Service', () => {
@@ -33,6 +35,7 @@ describe('Usuarios Service', () => {
             ],
             providers: [
                 UsuariosService, MailerModule,
+                PerfilesService, FormulariosEmpresasService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -71,6 +74,9 @@ describe('Usuarios Service', () => {
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
+                        perfiles:{
+                            findUnique: jest.fn()
+                        }
                     }),
                 },
             ],

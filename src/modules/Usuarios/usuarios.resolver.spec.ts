@@ -1,5 +1,5 @@
 import { Test } from '@nestjs/testing';
-import { ChangePasswordInput, SendCodeVerificationInput, SignInUserInput, SignUpUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, SignInUserInput, ValidationCodeVerificationInput } from './dto/usuarios.dto';
 
 import { UsuariosResolver } from './usuarios.resolver';
 import { UsuariosService } from './usuarios.service';
@@ -19,7 +19,7 @@ describe('Usuarios Resolver', () => {
                         getUsuarios: jest.fn(),
                         getUsuarioById: jest.fn(),
                         getFilterUsuarios: jest.fn(),
-                        signUpLogin: jest.fn(),
+                        createUsuario: jest.fn(),
                         signInLogin: jest.fn(),
                         exSendCodeVerification: jest.fn(),
                         exValidationCodeVerification: jest.fn(),
@@ -75,9 +75,9 @@ describe('Usuarios Resolver', () => {
 
     describe('Mutation signUpLogin()', () => {
         it('should invoke usuariosService.signUpLogin', async () => {
-            let testParams: SignUpUserInput;
-            await usuariosResolver.signUpLogin(testParams);
-            expect(usuariosService.signUpLogin).toHaveBeenCalledWith(testParams);
+            let testParams: CreateUsuarioInput;
+            await usuariosResolver.createUsuario(testParams);
+            expect(usuariosService.createUsuario).toHaveBeenCalledWith(testParams);
         });
     });
 
