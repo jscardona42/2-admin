@@ -21,13 +21,11 @@ export class CreatePerfilInput {
     @IsNotEmpty()
     nombre: string
 
-    @Field(() => String)
-    @IsNotEmpty()
-    descripcion: string
+    @Field(() => String, { nullable: true })
+    descripcion?: string
 
-    @Field(() => Boolean)
-    @IsNotEmpty()
-    personalizado: boolean
+    @Field(() => Boolean, { nullable: true })
+    personalizado?: boolean
 
     @Field(() => [CreateFormularioPerfilInput], { nullable: true })
     FormulariosPerfiles?: CreateFormularioPerfilInput[]

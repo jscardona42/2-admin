@@ -18,7 +18,7 @@ export class Perfiles {
     @Field(() => String, { nullable: true })
     descripcion?: string
 
-    @Field(() => Boolean)
-    personalizado: boolean
+    @Field(() => Boolean, { nullable: true })
+    personalizado?: boolean
 
 }

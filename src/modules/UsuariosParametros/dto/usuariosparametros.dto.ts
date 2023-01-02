@@ -8,6 +8,8 @@ export class FilterUsuariosParametrosInput {
     @Field(() => String, { nullable: true })
     nombre?: string
 
+    @Field(() => String, { nullable: true })
+    alias?: string
 }
 
 @InputType()
@@ -21,17 +23,14 @@ export class CreateUsuarioParametroInput {
     @IsNotEmpty()
     alias: string
 
-    @Field(() => Boolean)
-    @IsNotEmpty()
-    requerido: boolean
+    @Field(() => Boolean, { nullable: true })
+    requerido?: boolean
 
-    @Field(() => String)
-    @IsNotEmpty()
-    valor_defecto: string
+    @Field(() => String, { nullable: true })
+    valor_defecto?: string
 
-    @Field(() => String)
-    @IsNotEmpty()
-    descripcion: string
+    @Field(() => String, { nullable: true })
+    descripcion?: string
 
 }
 
