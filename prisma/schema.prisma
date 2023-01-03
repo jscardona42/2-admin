@@ -7,14 +7,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model TbClasesParametros {
-  clase_parametro_id Int                  @id(map: "pk_clase_parametro_id_pk") @default(autoincrement())
-  nombre             String               @db.VarChar(50)
-  UsuariosParametros UsuariosParametros[]
-
-  @@index([clase_parametro_id], name: "idx_clase_parametro_id")
-}
-
 model TbEstadosUsuarios {
   estado_usuario_id Int        @id(map: "pk_estado_usuario_id_pk") @default(autoincrement())
   nombre            String     @db.VarChar(100)
@@ -45,7 +37,6 @@ model Perfiles {
   nombre                  String                    @db.VarChar(100)
   descripcion             String?                   @default("") @db.Text()
   personalizado           Boolean                   @default(false)
-  estado                  Estado                    @default(ACTIVO)
   UsuariosPerfiles        UsuariosPerfiles[]
   FormulariosPerfiles     FormulariosPerfiles[]
   FuncionalidadesPerfiles FuncionalidadesPerfiles[]
@@ -120,13 +111,11 @@ model UsuariosHistoricoContrasenas {
 
 model UsuariosParametros {
   usuario_parametro_id         Int                         @id(map: "pk_usuario_parametro_id") @default(autoincrement())
-  clase_parametro_id           Int
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
   descripcion                  String?                     @default("") @db.Text()
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
-  TbClasesParametros           TbClasesParametros          @relation(fields: [clase_parametro_id], references: [clase_parametro_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usu_par_clase_parametro_id")
   UsuariosParametrosValoresSec UsuariosParametrosValores[]
 
   @@index([usuario_parametro_id], name: "idx_usuario_parametro_id")

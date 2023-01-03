@@ -2,9 +2,10 @@ import 'reflect-metadata'
 import { Field, InputType, Int } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
 import JSON from 'graphql-type-json';
+import { CreateUsuarioPerfilInput } from './usuariosperfiles.dto';
 
 @InputType()
-export class SignUpUserInput {
+export class CreateUsuarioInput {
 
     @Field(() => String)
     @IsNotEmpty()
@@ -24,6 +25,9 @@ export class SignUpUserInput {
 
     @Field(() => Number, { nullable: true })
     metodo_autenticacion_id?: number
+
+    @Field(() => [CreateUsuarioPerfilInput])
+    UsuariosPerfiles: CreateUsuarioPerfilInput[]
 }
 
 @InputType()
