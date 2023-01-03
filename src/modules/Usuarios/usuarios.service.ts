@@ -756,7 +756,7 @@ export class UsuariosService {
 
     public async sendNotificacionCorreo(nombre_plantilla: string, user: any, params: any) {
 
-        let referer = jwt.sign(process.env.JWT_URL, process.env.JWT_SECRET_URL);
+        let referer = jwt.sign({ userId: user.usuario_id }, process.env.JWT_SECRET_URL);
         referer = CryptoJS.AES.encrypt(referer, process.env.KEY_CRYPTO_ADMIN).toString();
 
         let data = {

@@ -21,10 +21,12 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
             let referer = CryptoJS.AES.decrypt(req.headers.authorization_url, process.env.KEY_CRYPTO_ADMIN).toString(CryptoJS.enc.Utf8);
 
             try {
-                var url = jwt.verify(referer, process.env.JWT_SECRET_URL);
+                let url = jwt.verify(referer, process.env.JWT_SECRET_URL);
                 if (url === process.env.JWT_URL) {
                     return true;
                 }
+                await this.setUserId("Bearer " + referer, req);
+                return true;
             } catch (error) {
                 console.log(error);
             }
@@ -50,8 +52,8 @@ export class GqlAuthGuard extends AuthGuard('jwt') {
     }
 
     async setUserId(authorization, req) {
-        var tmp = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET) as getPermission;
-        var userId = tmp.userId;
-        req.userId = userId;
+        let tmp = jwt.verify(authorization.split(" ")[1], process.env.JWT_SECRET) as getPermission;
+        let userId = tmp.userId;
+        req.body.userId = userId;
     }
 }
