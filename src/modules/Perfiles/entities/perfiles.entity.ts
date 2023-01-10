@@ -21,4 +21,10 @@ export class Perfiles {
     @Field(() => Boolean, { nullable: true })
     personalizado?: boolean
 
+    @Field(() => Boolean)
+    estado: boolean
+
+    @Field(() => String)
+    codigo: string
+
 }

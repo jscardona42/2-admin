@@ -34,9 +34,11 @@ model TbTipoUsuarios {
 
 model Perfiles {
   perfil_id               Int                       @id(map: "pk_perfil_id") @default(autoincrement())
-  nombre                  String                    @db.VarChar(100)
+  nombre                  String                    @unique() @db.VarChar(100)
   descripcion             String?                   @default("") @db.Text()
   personalizado           Boolean                   @default(false)
+  estado                  Boolean                   @default(false)
+  codigo                  String                    @unique()
   UsuariosPerfiles        UsuariosPerfiles[]
   FormulariosPerfiles     FormulariosPerfiles[]
   FuncionalidadesPerfiles FuncionalidadesPerfiles[]

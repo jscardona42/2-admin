@@ -50,7 +50,9 @@ type Perfiles {
   perfil_id: Float!
   nombre: String!
   descripcion: String
-  personalizado: Boolean!
+  personalizado: Boolean
+  estado: Boolean!
+  codigo: String!
 }
 
 type UsuariosPerfiles {
@@ -114,9 +116,9 @@ type UsuariosParametros {
   usuario_parametro_id: Float!
   nombre: String!
   alias: String!
-  descripcion: String!
-  valor_defecto: String!
-  requerido: Boolean!
+  descripcion: String
+  valor_defecto: String
+  requerido: Boolean
 }
 
 type Query {
@@ -228,10 +230,13 @@ input FilterFormulariosEmpresasInput {
 input FilterPerfilesInput {
   nombre: String
   personalizado: Boolean
+  estado: Boolean
+  codigo: String
 }
 
 input FilterUsuariosParametrosInput {
   nombre: String
+  alias: String
 }
 
 type Mutation {
@@ -341,34 +346,39 @@ input UpdateFormularioEmpresaInput {
 
 input CreatePerfilInput {
   nombre: String!
-  descripcion: String!
-  personalizado: Boolean!
-  FormulariosPerfiles: [CreateFormularioPerfilInput!]!
+  codigo: String!
+  estado: Boolean!
+  descripcion: String
+  personalizado: Boolean
+  FormulariosPerfiles: [CreateFormularioPerfilInput!]
+  FuncionalidadesPerfiles: [CreateFuncionalidadPerfilInput!]
 }
 
 input CreateFormularioPerfilInput {
   formulario_empresa_id: Float!
 }
 
+input CreateFuncionalidadPerfilInput {
+  funcionalidad_id: Float!
+}
+
 input UpdatePerfilInput {
   perfil_id: Int!
   nombre: String
+  estado: Boolean
+  codigo: String
   descripcion: String
   personalizado: Boolean
-  FormulariosPerfiles: [UpdateFormularioPerfilInput!]!
-}
-
-input UpdateFormularioPerfilInput {
-  formulario_perfil_id: Int!
-  formulario_empresa_id: Float
+  FormulariosPerfiles: [CreateFormularioPerfilInput!]
+  FuncionalidadesPerfiles: [CreateFuncionalidadPerfilInput!]
 }
 
 input CreateUsuarioParametroInput {
   nombre: String!
   alias: String!
-  requerido: Boolean!
-  valor_defecto: String!
-  descripcion: String!
+  requerido: Boolean
+  valor_defecto: String
+  descripcion: String
 }
 
 input UpdateUsuarioParametroInput {
