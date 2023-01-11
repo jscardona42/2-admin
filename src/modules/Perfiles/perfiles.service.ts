@@ -12,16 +12,16 @@ export class PerfilesService {
         private formulariosEmpresas: FormulariosEmpresasService,
     ) { }
 
-    async getPerfiles(): Promise<Perfiles[]> {
+    async getPerfiles(): Promise<any[]> {
         return this.prismaService.perfiles.findMany({
-            include: { FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
     }
 
-    async getPerfilById(perfil_id: number): Promise<Perfiles> {
+    async getPerfilById(perfil_id: number): Promise<any> {
         let perfil = await this.prismaService.perfiles.findUnique({
             where: { perfil_id: perfil_id },
-            include: { FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
 
         if (perfil === null) {
@@ -30,7 +30,7 @@ export class PerfilesService {
         return perfil;
     }
 
-    async getFilterPerfiles(data: FilterPerfilesInput): Promise<Perfiles[]> {
+    async getFilterPerfiles(data: FilterPerfilesInput): Promise<any[]> {
         return this.prismaService.perfiles.findMany({
             where: {
                 OR:
@@ -39,11 +39,11 @@ export class PerfilesService {
                         { personalizado: { equals: data.personalizado } }
                     ]
             },
-            include: { FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         })
     }
 
-    async createPerfil(data: CreatePerfilInput): Promise<Perfiles> {
+    async createPerfil(data: CreatePerfilInput): Promise<any> {
 
 
         let createFormulariosPerfiles = [];
@@ -85,14 +85,14 @@ export class PerfilesService {
                     personalizado: data.personalizado,
                     codigo: data.codigo,
                     estado: data.estado,
-                    FuncionalidadesPerfiles: {
+                    FuncionalidadesPerfilesSec: {
                         create: createFuncionalidadesPerfiles
                     },
-                    FormulariosPerfiles: {
+                    FormulariosPerfilesSec: {
                         create: createFormulariosPerfiles
                     }
                 },
-                include: { FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true }
+                include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
             })
         } catch (error) {
             if (error.code === 'P2002') {
@@ -170,7 +170,7 @@ export class PerfilesService {
         let formulariosPerfilesExistentes = await this.prismaService.perfiles.findMany({
             where: { perfil_id: data.perfil_id },
             select: {
-                FormulariosPerfiles: {
+                FormulariosPerfilesSec: {
                     select: {
                         formulario_empresa_id: true
                     }
@@ -202,7 +202,7 @@ export class PerfilesService {
         let funcionalidadesPerfilesExistentes = await this.prismaService.perfiles.findMany({
             where: { perfil_id: data.perfil_id },
             select: {
-                FuncionalidadesPerfiles: {
+                FuncionalidadesPerfilesSec: {
                     select: {
                         funcionalidad_id: true
                     }
@@ -236,10 +236,10 @@ export class PerfilesService {
                 personalizado: data.personalizado,
                 codigo: data.codigo,
                 estado: data.estado,
-                FormulariosPerfiles: {
+                FormulariosPerfilesSec: {
                     create: createFormulariosPerfiles
                 },
-                FuncionalidadesPerfiles: {
+                FuncionalidadesPerfilesSec: {
                     create: createFuncionalidadesPerfiles
                 }
             }

@@ -1,6 +1,8 @@
 import 'reflect-metadata'
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql"
 import { Estado } from '@prisma/client';
+import { FormulariosPerfiles } from './formulariosperfiles.entity';
+import { FuncionalidadesPerfiles } from 'src/modules/FuncionalidadesPerfiles/entities/funcionalidadesperfiles.entity';
 
 registerEnumType(Estado, {
     name: 'Estado',
@@ -26,5 +28,11 @@ export class Perfiles {
 
     @Field(() => String)
     codigo: string
+
+    @Field(() => [FormulariosPerfiles], { nullable: true })
+    FormulariosPerfilesSec?: FormulariosPerfiles[]
+
+    @Field(() => [FuncionalidadesPerfiles], { nullable: true })
+    FuncionalidadesPerfilesSec?: FuncionalidadesPerfiles[]
 
 }

@@ -46,6 +46,37 @@ type UsuariosSesiones {
   Usuarios: Usuarios!
 }
 
+type FormulariosGestion {
+  formulario_gestion_id: Int!
+  FormulariosEmpresas: FormulariosEmpresas!
+}
+
+type FormulariosEmpresas {
+  formulario_empresa_id: Int!
+  formulario_gestion_id: Float!
+  estado: Boolean!
+  FormulariosGestion: FormulariosGestion!
+}
+
+type FormulariosPerfiles {
+  formulario_perfil_id: Int!
+  formulario_empresa_id: Float!
+  perfil_id: Float!
+  FormulariosEmpresas: [FormulariosEmpresas!]
+}
+
+type Funcionalidades {
+  funcionalidad_id: Int!
+  FuncionalidadesPerfiles: FuncionalidadesPerfiles!
+}
+
+type FuncionalidadesPerfiles {
+  funcionalidad_perfil_id: Int!
+  Perfiles: Perfiles!
+  funcionalidad_id: Float!
+  Funcionalidades: Funcionalidades!
+}
+
 type Perfiles {
   perfil_id: Float!
   nombre: String!
@@ -53,6 +84,8 @@ type Perfiles {
   personalizado: Boolean
   estado: Boolean!
   codigo: String!
+  FormulariosPerfilesSec: [FormulariosPerfiles!]
+  FuncionalidadesPerfilesSec: [FuncionalidadesPerfiles!]
 }
 
 type UsuariosPerfiles {
@@ -87,30 +120,6 @@ type Usuarios {
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
-
-type FormulariosEmpresas {
-  formulario_empresa_id: Int!
-  formulario_gestion_id: Float!
-  estado: Boolean!
-  FormulariosGestion: FormulariosGestion!
-}
-
-type FormulariosGestion {
-  formulario_gestion_id: Int!
-  FormulariosEmpresas: FormulariosEmpresas!
-}
-
-type FuncionalidadesPerfiles {
-  funcionalidad_perfil_id: Int!
-  Perfiles: Perfiles!
-  funcionalidad_id: Float!
-  Funcionalidades: Funcionalidades!
-}
-
-type Funcionalidades {
-  funcionalidad_id: Int!
-  FuncionalidadesPerfiles: FuncionalidadesPerfiles!
-}
 
 type UsuariosParametros {
   usuario_parametro_id: Float!
