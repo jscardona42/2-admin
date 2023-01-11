@@ -16,7 +16,7 @@ describe('Perfiles Service', () => {
                     useFactory: () => ({
                         perfiles: {
                             findFirst: jest.fn(),
-                            findMany: jest.fn(),
+                            findMany: jest.fn(() => { return [] }),
                             findUnique: jest.fn(),
                             create: jest.fn(),
                             createMany: jest.fn(),
@@ -69,7 +69,9 @@ describe('Perfiles Service', () => {
                 data: {
                     nombre: "test",
                     descripcion: "test",
-                    personalizado: true
+                    personalizado: true,
+                    codigo: "",
+                    estado: true
                 }
             };
             await perfilesService.createPerfil(

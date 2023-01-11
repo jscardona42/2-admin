@@ -46,11 +46,46 @@ type UsuariosSesiones {
   Usuarios: Usuarios!
 }
 
+type FormulariosGestion {
+  formulario_gestion_id: Int!
+  FormulariosEmpresas: FormulariosEmpresas!
+}
+
+type FormulariosEmpresas {
+  formulario_empresa_id: Int!
+  formulario_gestion_id: Float!
+  estado: Boolean!
+  FormulariosGestion: FormulariosGestion!
+}
+
+type FormulariosPerfiles {
+  formulario_perfil_id: Int!
+  formulario_empresa_id: Float!
+  perfil_id: Float!
+  FormulariosEmpresas: [FormulariosEmpresas!]
+}
+
+type Funcionalidades {
+  funcionalidad_id: Int!
+  FuncionalidadesPerfiles: FuncionalidadesPerfiles!
+}
+
+type FuncionalidadesPerfiles {
+  funcionalidad_perfil_id: Int!
+  Perfiles: Perfiles!
+  funcionalidad_id: Float!
+  Funcionalidades: Funcionalidades!
+}
+
 type Perfiles {
   perfil_id: Float!
   nombre: String!
   descripcion: String
-  personalizado: Boolean!
+  personalizado: Boolean
+  estado: Boolean!
+  codigo: String!
+  FormulariosPerfilesSec: [FormulariosPerfiles!]
+  FuncionalidadesPerfilesSec: [FuncionalidadesPerfiles!]
 }
 
 type UsuariosPerfiles {
@@ -86,37 +121,13 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type FormulariosEmpresas {
-  formulario_empresa_id: Int!
-  formulario_gestion_id: Float!
-  estado: Boolean!
-  FormulariosGestion: FormulariosGestion!
-}
-
-type FormulariosGestion {
-  formulario_gestion_id: Int!
-  FormulariosEmpresas: FormulariosEmpresas!
-}
-
-type FuncionalidadesPerfiles {
-  funcionalidad_perfil_id: Int!
-  Perfiles: Perfiles!
-  funcionalidad_id: Float!
-  Funcionalidades: Funcionalidades!
-}
-
-type Funcionalidades {
-  funcionalidad_id: Int!
-  FuncionalidadesPerfiles: FuncionalidadesPerfiles!
-}
-
 type UsuariosParametros {
   usuario_parametro_id: Float!
   nombre: String!
   alias: String!
-  descripcion: String!
-  valor_defecto: String!
-  requerido: Boolean!
+  descripcion: String
+  valor_defecto: String
+  requerido: Boolean
 }
 
 type Query {
@@ -228,10 +239,13 @@ input FilterFormulariosEmpresasInput {
 input FilterPerfilesInput {
   nombre: String
   personalizado: Boolean
+  estado: Boolean
+  codigo: String
 }
 
 input FilterUsuariosParametrosInput {
   nombre: String
+  alias: String
 }
 
 type Mutation {
@@ -341,34 +355,39 @@ input UpdateFormularioEmpresaInput {
 
 input CreatePerfilInput {
   nombre: String!
-  descripcion: String!
-  personalizado: Boolean!
-  FormulariosPerfiles: [CreateFormularioPerfilInput!]!
+  codigo: String!
+  estado: Boolean!
+  descripcion: String
+  personalizado: Boolean
+  FormulariosPerfiles: [CreateFormularioPerfilInput!]
+  FuncionalidadesPerfiles: [CreateFuncionalidadPerfilInput!]
 }
 
 input CreateFormularioPerfilInput {
   formulario_empresa_id: Float!
 }
 
+input CreateFuncionalidadPerfilInput {
+  funcionalidad_id: Float!
+}
+
 input UpdatePerfilInput {
   perfil_id: Int!
   nombre: String
+  estado: Boolean
+  codigo: String
   descripcion: String
   personalizado: Boolean
-  FormulariosPerfiles: [UpdateFormularioPerfilInput!]!
-}
-
-input UpdateFormularioPerfilInput {
-  formulario_perfil_id: Int!
-  formulario_empresa_id: Float
+  FormulariosPerfiles: [CreateFormularioPerfilInput!]
+  FuncionalidadesPerfiles: [CreateFuncionalidadPerfilInput!]
 }
 
 input CreateUsuarioParametroInput {
   nombre: String!
   alias: String!
-  requerido: Boolean!
-  valor_defecto: String!
-  descripcion: String!
+  requerido: Boolean
+  valor_defecto: String
+  descripcion: String
 }
 
 input UpdateUsuarioParametroInput {
