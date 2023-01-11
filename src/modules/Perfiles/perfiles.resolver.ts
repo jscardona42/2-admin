@@ -34,4 +34,9 @@ export class PerfilesResolver {
     async updatePerfil(@Args("data") data: UpdatePerfilInput): Promise<Perfiles> {
         return this.perfilesService.updatePerfil(data);
     }
+
+    @Mutation(() => Perfiles, { description: "Deshabilitar un elemento relacionado con el parámetro perfil_id" })
+    async deletePerfil(@Args("perfil_id") perfil_id: number): Promise<any> {
+        return this.perfilesService.deletePerfil(perfil_id);
+    }
 }

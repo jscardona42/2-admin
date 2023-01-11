@@ -1,7 +1,6 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PrismaService } from '../../prisma.service';
-import { AddFormulariosPerfilesToPerfilInput, CreatePerfilInput, FilterPerfilesInput, UpdatePerfilInput } from './dto/perfiles.dto';
-import { Perfiles } from './entities/perfiles.entity';
+import { CreatePerfilInput, FilterPerfilesInput, UpdatePerfilInput } from './dto/perfiles.dto';
 import { FormulariosEmpresasService } from '../FormulariosEmpresas/formulariosempresas.service';
 
 @Injectable()
@@ -14,14 +13,14 @@ export class PerfilesService {
 
     async getPerfiles(): Promise<any[]> {
         return this.prismaService.perfiles.findMany({
-            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
     }
 
     async getPerfilById(perfil_id: number): Promise<any> {
         let perfil = await this.prismaService.perfiles.findUnique({
             where: { perfil_id: perfil_id },
-            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
 
         if (perfil === null) {
@@ -39,7 +38,7 @@ export class PerfilesService {
                         { personalizado: { equals: data.personalizado } }
                     ]
             },
-            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         })
     }
 
@@ -92,56 +91,14 @@ export class PerfilesService {
                         create: createFormulariosPerfiles
                     }
                 },
-                include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+                include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
             })
         } catch (error) {
             if (error.code === 'P2002') {
                 throw new UnauthorizedException(`El ${error.meta.target[0]} ya se encuentra registrado`);
             }
         }
-
-
     }
-
-    // async updatePerfil(data: UpdatePerfilInput): Promise<Perfiles> {
-
-    //     await this.getPerfilById(data.perfil_id)
-
-    //     let update = [];
-
-    //     if (data.FormulariosPerfiles !== undefined) {
-    //         await data.FormulariosPerfiles.reduce(async (promise0, formulariosperfiles) => {
-    //             await promise0;
-
-    //             await this.getFormularioPerfilById(formulariosperfiles.formulario_perfil_id);
-    //             await this.formulariosEmpresasService.getFormularioEmpresaById(formulariosperfiles.formulario_empresa_id)
-
-
-    //             update.push({
-    //                 where: {
-    //                     formulario_perfil_id: formulariosperfiles.formulario_perfil_id
-    //                 },
-    //                 data: {
-    //                     formulario_empresa_id: formulariosperfiles.formulario_empresa_id
-    //                 }
-    //             }
-    //             )
-    //         }, Promise.resolve());
-    //     }
-
-    //     return this.prismaService.perfiles.update({
-    //         where: { perfil_id: data.perfil_id },
-    //         data: {
-    //             nombre: data.nombre,
-    //             descripcion: data.descripcion,
-    //             personalizado: data.personalizado,
-    //             FormulariosPerfiles: {
-    //                 update: update
-    //             }
-    //         },
-    //         include: { FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true }
-    //     })
-    // }
 
     async updatePerfil(data: UpdatePerfilInput): Promise<any> {
 
@@ -156,16 +113,15 @@ export class PerfilesService {
         let idsCreadosFormulariosPerfiles = [];
         let updatePerfiles = [];
 
-        await this.getPerfilById(data.perfil_id)
+        await this.getPerfilById(data.perfil_id);
 
         if (data.FormulariosPerfiles !== undefined) {
-            formulariosPerfiles = data.FormulariosPerfiles
+            formulariosPerfiles = data.FormulariosPerfiles;
 
         }
         if (data.FuncionalidadesPerfiles !== undefined) {
-            funcionalidadesPerfiles = data.FuncionalidadesPerfiles
+            funcionalidadesPerfiles = data.FuncionalidadesPerfiles;
         }
-
 
         let formulariosPerfilesExistentes = await this.prismaService.perfiles.findMany({
             where: { perfil_id: data.perfil_id },
@@ -178,7 +134,7 @@ export class PerfilesService {
             }
         })
 
-        if (formulariosPerfilesExistentes !== null) {
+        if (formulariosPerfilesExistentes.length > 0) {
             let ids = await this.buildArrayCoincidencias(formulariosPerfilesExistentes, formulariosPerfiles, "FormulariosPerfiles");
             idsBorradosFormulariosPerfiles = ids.idsBorrados;
             idsCreadosFormulariosPerfiles = ids.idsCreados;
@@ -210,7 +166,7 @@ export class PerfilesService {
             }
         })
 
-        if (funcionalidadesPerfilesExistentes !== null) {
+        if (funcionalidadesPerfilesExistentes.length > 0) {
             let ids = await this.buildArrayCoincidencias(funcionalidadesPerfilesExistentes, funcionalidadesPerfiles, "FuncionalidadesPerfiles");
             idsBorradosFuncionalidadesPerfiles = ids.idsBorrados;
             idsCreadosFuncionalidadesPerfiles = ids.idsCreados;
@@ -242,7 +198,8 @@ export class PerfilesService {
                 FuncionalidadesPerfilesSec: {
                     create: createFuncionalidadesPerfiles
                 }
-            }
+            },
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         }))
 
         idsBorradosFuncionalidadesPerfiles.forEach(e => {
@@ -285,7 +242,7 @@ export class PerfilesService {
 
         if (key === "FuncionalidadesPerfiles") {
             formulariosExistentes.map((e) => {
-                e.FuncionalidadesPerfiles.map((e) => {
+                e.FuncionalidadesPerfilesSec.map((e) => {
                     idsExistentes.push(e.funcionalidad_id)
                 })
 
@@ -298,7 +255,7 @@ export class PerfilesService {
 
         else if (key === "FormulariosPerfiles") {
             formulariosExistentes.map((e) => {
-                e.FormulariosPerfiles.map((e) => {
+                e.FormulariosPerfilesSec.map((e) => {
                     idsExistentes.push(e.formulario_empresa_id)
                 })
 
@@ -329,38 +286,13 @@ export class PerfilesService {
             throw new UnauthorizedException(`El formulario perfil con id ${formulario_perfil_id} no existe`);
         }
         return formularioperfil;
-
     }
 
-    // async AddFormulariosPerfilesToPerfil(data: AddFormulariosPerfilesToPerfilInput): Promise<any> {
 
-    //     let create = [];
-
-    //     await this.getPerfilById(data.perfil_id)
-
-    //     if (data.FormulariosPerfiles !== undefined) {
-    //         await data.FormulariosPerfiles.reduce(async (promise0, formularioperfil) => {
-    //             await promise0;
-
-    //             await this.formulariosEmpresas.getFormularioEmpresaById(formularioperfil.formulario_empresa_id)
-
-    //             create.push({
-    //                 formulario_empresa_id: formularioperfil.formulario_empresa_id
-    //             })
-
-    //         }, Promise.resolve());
-    //     }
-
-    //     return this.prismaService.perfiles.update({
-    //         where: { perfil_id: data.perfil_id },
-    //         data: {
-    //             FormulariosPerfiles: {
-    //                 create: create
-    //             }
-    //         },
-    //         include: {
-    //             FormulariosPerfiles: true, FuncionalidadesPerfiles: true, UsuariosPerfiles: true
-    //         }
-    //     })
-    // }
+    async deletePerfil(perfil_id: number) {
+        return this.prismaService.perfiles.update({
+            where: { perfil_id: perfil_id },
+            data: { estado: false }, include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+        });
+    }
 }

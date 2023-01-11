@@ -1,6 +1,6 @@
 import { Parent, ResolveField, Resolver } from '@nestjs/graphql';
-import { FormulariosEmpresas } from 'src/modules/FormulariosEmpresas/entities/formulariosempresas.entity';
-import { FormulariosEmpresasService } from 'src/modules/FormulariosEmpresas/formulariosempresas.service';
+import { FormulariosEmpresas } from '../../../modules/FormulariosEmpresas/entities/formulariosempresas.entity';
+import { FormulariosEmpresasService } from '../../../modules/FormulariosEmpresas/formulariosempresas.service';
 import { FormulariosGestion } from './entities/formulariosgestion.entity';
 
 @Resolver(() => FormulariosGestion)

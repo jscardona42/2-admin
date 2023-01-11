@@ -1,6 +1,6 @@
 import 'reflect-metadata'
-import { Field, Int, ObjectType, registerEnumType } from "@nestjs/graphql"
-import { FormulariosEmpresas } from 'src/modules/FormulariosEmpresas/entities/formulariosempresas.entity'
+import { Field, Int, ObjectType } from "@nestjs/graphql"
+import { FormulariosEmpresas } from '../../../modules/FormulariosEmpresas/entities/formulariosempresas.entity'
 
 @ObjectType()
 export class FormulariosPerfiles {
@@ -14,7 +14,7 @@ export class FormulariosPerfiles {
     @Field(() => Number)
     perfil_id: number
 
-    @Field(() => [FormulariosEmpresas], { nullable: true })
-    FormulariosEmpresas?: FormulariosEmpresas[]
+    @Field(() => FormulariosEmpresas, { nullable: true })
+    FormulariosEmpresas?: FormulariosEmpresas
 
 }

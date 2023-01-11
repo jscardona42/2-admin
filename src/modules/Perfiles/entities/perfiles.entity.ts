@@ -2,7 +2,7 @@ import 'reflect-metadata'
 import { Field, ObjectType, registerEnumType } from "@nestjs/graphql"
 import { Estado } from '@prisma/client';
 import { FormulariosPerfiles } from './formulariosperfiles.entity';
-import { FuncionalidadesPerfiles } from 'src/modules/FuncionalidadesPerfiles/entities/funcionalidadesperfiles.entity';
+import { FuncionalidadesPerfiles } from '../../../modules/FuncionalidadesPerfiles/entities/funcionalidadesperfiles.entity';
 
 registerEnumType(Estado, {
     name: 'Estado',

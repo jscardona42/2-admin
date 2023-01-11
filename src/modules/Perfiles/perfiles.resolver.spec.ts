@@ -59,7 +59,9 @@ describe('Perfiles Resolver', () => {
             const testParams = {
                 nombre: "test",
                 descripcion: "test",
-                personalizado: true
+                personalizado: true,
+                estado: true,
+                codigo: "Sss"
             };
 
             await perfilesResolver.createPerfil(testParams);
