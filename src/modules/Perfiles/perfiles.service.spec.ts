@@ -2,6 +2,7 @@ import { Test } from '@nestjs/testing';
 import { PrismaService } from '../../prisma.service';
 import { PerfilesService } from './perfiles.service';
 import { FormulariosEmpresasService } from '../FormulariosEmpresas/formulariosempresas.service';
+import { CreatePerfilInput } from './dto/perfiles.dto';
 
 describe('Perfiles Service', () => {
     let prismaService: PrismaService;
@@ -65,18 +66,14 @@ describe('Perfiles Service', () => {
 
     describe('createPerfil method', () => {
         it('should invoke prismaService.createPerfil.create', async () => {
-            const testParams = {
-                data: {
-                    nombre: "test",
-                    descripcion: "test",
-                    personalizado: true,
-                    codigo: "",
-                    estado: true
-                }
+            const testParams: CreatePerfilInput = {
+                nombre: "test",
+                descripcion: "test",
+                personalizado: true,
+                codigo: "",
+                estado: "ACTIVO"
             };
-            await perfilesService.createPerfil(
-                testParams.data,
-            );
+            await perfilesService.createPerfil(testParams);
             expect(prismaService.perfiles.create).toHaveBeenCalled();
         });
     });

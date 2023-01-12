@@ -1,6 +1,7 @@
 import { Test } from '@nestjs/testing';
 import { PerfilesService } from './perfiles.service';
 import { PerfilesResolver } from './perfiles.resolver';
+import { CreatePerfilInput } from './dto/perfiles.dto';
 
 describe('Perfiles Resolver', () => {
     let perfilesResolver: PerfilesResolver;
@@ -56,11 +57,11 @@ describe('Perfiles Resolver', () => {
 
     describe('Mutation createPerfil()', () => {
         it('should invoke perfilesService.createPerfil', async () => {
-            const testParams = {
+            const testParams: CreatePerfilInput = {
                 nombre: "test",
                 descripcion: "test",
                 personalizado: true,
-                estado: true,
+                estado: "ACTIVO",
                 codigo: "Sss"
             };
 

@@ -1,14 +1,8 @@
 
 import { registerEnumType } from '@nestjs/graphql';
-import { JwtModule } from '@nestjs/jwt';
 import { Test } from '@nestjs/testing';
-import { Estado } from '@prisma/client';
 import { PrismaService } from '../../../prisma.service';
 import { TbTipoUsuariosService } from './tipousuarios.service';
-
-registerEnumType(Estado, {
-    name: 'Estado'
-})
 
 describe('Usuarios Service', () => {
     let prismaService: PrismaService;
