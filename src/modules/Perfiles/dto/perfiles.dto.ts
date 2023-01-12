@@ -1,8 +1,13 @@
 import 'reflect-metadata'
-import { Field, InputType, Int } from '@nestjs/graphql'
+import { Field, InputType, Int, registerEnumType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
-import { CreateFormularioPerfilInput, UpdateFormularioPerfilInput } from './formulariosperfiles.dto'
+import { CreateFormularioPerfilInput } from './formulariosperfiles.dto'
 import { CreateFuncionalidadPerfilInput } from './funcionalidadesperfiles.dto'
+import { EstadoPerfil } from '@prisma/client'
+
+registerEnumType(EstadoPerfil, {
+    name: 'EstadoPerfil',
+});
 
 @InputType()
 export class FilterPerfilesInput {
@@ -13,8 +18,8 @@ export class FilterPerfilesInput {
     @Field(() => Boolean, { nullable: true })
     personalizado?: boolean
 
-    @Field(() => Boolean, { nullable: true })
-    estado?: boolean
+    @Field(() => EstadoPerfil, { nullable: true })
+    estado?: EstadoPerfil
 
     @Field(() => String, { nullable: true })
     codigo?: string
@@ -26,14 +31,14 @@ export class CreatePerfilInput {
     @Field(() => String)
     @IsNotEmpty()
     nombre: string
-    
+
     @Field(() => String)
     @IsNotEmpty()
     codigo: string
 
-    @Field(() => Boolean)
+    @Field(() => EstadoPerfil)
     @IsNotEmpty()
-    estado: boolean
+    estado: EstadoPerfil
 
     @Field(() => String, { nullable: true })
     descripcion?: string
@@ -59,8 +64,8 @@ export class UpdatePerfilInput {
     @Field(() => String, { nullable: true })
     nombre?: string
 
-    @Field(() => Boolean, { nullable: true })
-    estado?: boolean
+    @Field(() => EstadoPerfil, { nullable: true })
+    estado?: EstadoPerfil
 
     @Field(() => String, { nullable: true })
     codigo?: string

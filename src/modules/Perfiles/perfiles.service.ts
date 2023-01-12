@@ -292,7 +292,7 @@ export class PerfilesService {
     async deletePerfil(perfil_id: number) {
         return this.prismaService.perfiles.update({
             where: { perfil_id: perfil_id },
-            data: { estado: false }, include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            data: { estado: "INACTIVO" }, include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
     }
 }

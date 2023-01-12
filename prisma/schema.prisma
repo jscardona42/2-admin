@@ -24,9 +24,9 @@ model TbMetodosAutenticacion {
 }
 
 model TbTipoUsuarios {
-  tipo_usuario_id Int        @id(map: "pk_tipo_usuario_id") @default(autoincrement())
-  nombre          String     @db.VarChar(100)
-  estado          Estado     @default(ACTIVO)
+  tipo_usuario_id Int               @id(map: "pk_tipo_usuario_id") @default(autoincrement())
+  nombre          String            @db.VarChar(100)
+  estado          EstadoTipoUsuario @default(ACTIVO)
   Usuarios        Usuarios[]
 
   @@index([tipo_usuario_id], name: "idx_tipo_usuario_id")
@@ -34,11 +34,11 @@ model TbTipoUsuarios {
 
 model Perfiles {
   perfil_id                  Int                       @id(map: "pk_perfil_id") @default(autoincrement())
+  codigo                     String                    @unique() @db.VarChar(5)
   nombre                     String                    @unique() @db.VarChar(100)
   descripcion                String?                   @default("") @db.Text()
   personalizado              Boolean                   @default(false)
-  estado                     Boolean                   @default(false)
-  codigo                     String                    @unique()
+  estado                     EstadoPerfil              @default(ACTIVO)
   UsuariosPerfiles           UsuariosPerfiles[]
   FormulariosPerfilesSec     FormulariosPerfiles[]
   FuncionalidadesPerfilesSec FuncionalidadesPerfiles[]
@@ -77,9 +77,9 @@ model FormulariosEmpresas {
 
 model Usuarios {
   usuario_id                      Int                            @id(map: "pk_usuario_id") @default(autoincrement())
-  nombre_usuario                  String                         @db.VarChar(100)
+  nombre_usuario                  String                         @unique() @db.VarChar(100)
   contrasena                      String                         @db.VarChar(100)
-  correo                          String                         @db.VarChar(100)
+  correo                          String                         @unique() @db.VarChar(100)
   idioma                          String?                        @db.VarChar(10)
   salt                            String                         @db.VarChar(255)
   metodo_autenticacion_id         Int?
@@ -153,7 +153,12 @@ model FuncionalidadesPerfiles {
   @@index([funcionalidad_perfil_id], name: "idx_funcionalidad_perfil_id")
 }
 
-enum Estado {
+enum EstadoPerfil {
+  ACTIVO
+  INACTIVO
+}
+
+enum EstadoTipoUsuario {
   ACTIVO
   INACTIVO
 }

@@ -1,10 +1,10 @@
 import 'reflect-metadata'
 import { Field, InputType, registerEnumType } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
-import { Estado } from '@prisma/client'
+import { EstadoTipoUsuario } from '@prisma/client'
 
-registerEnumType(Estado, {
-    name: 'Estado'
+registerEnumType(EstadoTipoUsuario, {
+    name: 'EstadoTipoUsuario'
 })
 
 @InputType()
@@ -21,23 +21,23 @@ export class UpdateTipoUsuarioInput {
 
     @Field(() => Number)
     @IsNotEmpty()
-    tipo_usuario_id: number 
+    tipo_usuario_id: number
 
-    @Field(() => String, {nullable: true})
+    @Field(() => String, { nullable: true })
     nombre?: string
 
-    @Field(() => Estado, {nullable: true})
-    estado?: Estado
+    @Field(() => EstadoTipoUsuario, { nullable: true })
+    estado?: EstadoTipoUsuario
 
 }
 
 @InputType()
 export class FilterTipoUsuariosInput {
 
-    @Field(() => String, {nullable: true})
-    nombre?: string 
+    @Field(() => String, { nullable: true })
+    nombre?: string
 
-    @Field(() => Estado, {nullable: true})
-    estado?: Estado
+    @Field(() => EstadoTipoUsuario, { nullable: true })
+    estado?: EstadoTipoUsuario
 
 }

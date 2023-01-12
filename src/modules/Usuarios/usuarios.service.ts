@@ -94,7 +94,7 @@ export class UsuariosService {
                 usuariosperfilesarray.push({
                     perfil_id: usuariosperfiles.perfil_id
                 })
-               
+
             }, Promise.resolve());
         }
 
@@ -139,13 +139,16 @@ export class UsuariosService {
                     UsuarioParametroValor: {
                         create: parametrosValores
                     },
-                    UsuariosPerfiles:{
+                    UsuariosPerfiles: {
                         create: usuariosperfilesarray
                     }
                 },
                 include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
             })
         } catch (error) {
+            if (error.code === 'P2002') {
+                throw new UnauthorizedException(`El ${error.meta.target[0]} ya se encuentra registrado`);
+            }
             throw new UnauthorizedException("Ocurrió un error durante la creación del usuario " + error);
         }
 
