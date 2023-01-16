@@ -11,7 +11,9 @@ export class FormulariosEmpresasService {
 
     async getFormulariosEmpresas(): Promise<FormulariosEmpresas[]> {
         return this.prismaService.formulariosEmpresas.findMany({
-            include: { FormulariosPerfiles: true }
+            where: { estado: true },
+            include: { FormulariosPerfiles: true },
+            orderBy: { formulario_empresa_id: "asc" }
         });
     }
 
@@ -53,7 +55,7 @@ export class FormulariosEmpresasService {
     async updateFormularioEmpresa(data: UpdateFormularioEmpresaInput): Promise<FormulariosEmpresas> {
 
         await this.getFormularioEmpresaById(data.formulario_empresa_id)
-        
+
         return this.prismaService.formulariosEmpresas.update({
             where: { formulario_empresa_id: data.formulario_empresa_id },
             data: {

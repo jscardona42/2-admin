@@ -35,7 +35,10 @@ export class PerfilesService {
                 OR:
                     [
                         { nombre: { contains: data.nombre, mode: "insensitive" } },
-                        { personalizado: { equals: data.personalizado } }
+                        { codigo: { contains: data.codigo, mode: "insensitive" } },
+                        { personalizado: { equals: data.personalizado } },
+                        { estado: { equals: data.estado } },
+
                     ]
             },
             include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }

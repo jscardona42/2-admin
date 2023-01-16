@@ -79,7 +79,7 @@ model Usuarios {
   usuario_id                      Int                            @id(map: "pk_usuario_id") @default(autoincrement())
   nombre_usuario                  String                         @unique() @db.VarChar(100)
   contrasena                      String                         @db.VarChar(100)
-  correo                          String                         @unique() @db.VarChar(100)
+  correo                          String                         @db.VarChar(100)
   idioma                          String?                        @db.VarChar(10)
   salt                            String                         @db.VarChar(255)
   metodo_autenticacion_id         Int?
