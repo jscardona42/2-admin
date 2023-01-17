@@ -20,12 +20,19 @@ export class PerfilesService {
     async getPerfilById(perfil_id: number): Promise<any> {
         let perfil = await this.prismaService.perfiles.findUnique({
             where: { perfil_id: perfil_id },
-            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: true, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
         });
 
         if (perfil === null) {
             throw new UnauthorizedException(`El perfil con id ${perfil_id} no existe`);
         }
+
+        let formulariosPerfiles = await this.prismaService.formulariosPerfiles.findMany({
+            where: { perfil_id: perfil_id, FormulariosEmpresas: { estado: true } },
+            include: { FormulariosEmpresas: true }
+        });
+
+        perfil.FormulariosPerfilesSec = formulariosPerfiles;
         return perfil;
     }
 
@@ -46,7 +53,6 @@ export class PerfilesService {
     }
 
     async createPerfil(data: CreatePerfilInput): Promise<any> {
-
 
         let createFormulariosPerfiles = [];
         let createFuncionalidadesPerfiles = [];
@@ -107,7 +113,6 @@ export class PerfilesService {
 
         let funcionalidadesPerfiles = [];
         let formulariosPerfiles = [];
-
         let createFuncionalidadesPerfiles = [];
         let createFormulariosPerfiles = [];
         let idsBorradosFuncionalidadesPerfiles = [];
@@ -186,7 +191,6 @@ export class PerfilesService {
 
         }, Promise.resolve());
 
-
         updatePerfiles.push(this.prismaService.perfiles.update({
             where: { perfil_id: data.perfil_id },
             data: {
@@ -233,12 +237,13 @@ export class PerfilesService {
 
         } catch (error) {
             if (error.code === 'P2002') {
+
                 throw new UnauthorizedException(`El ${error.meta.target[0]} ya se encuentra registrado`);
             }
         }
     }
 
-    async buildArrayCoincidencias(formulariosExistentes: any, data: any, key: String): Promise<any> {
+    async buildArrayCoincidencias(formulariosExistentes: any, data: any, key: string): Promise<any> {
 
         let idsExistentes = [];
         let idsEnviados = [];

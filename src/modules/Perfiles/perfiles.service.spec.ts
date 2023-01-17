@@ -18,12 +18,15 @@ describe('Perfiles Service', () => {
                         perfiles: {
                             findFirst: jest.fn(),
                             findMany: jest.fn(() => { return [] }),
-                            findUnique: jest.fn(),
+                            findUnique: jest.fn(() => { return { FormulariosPerfilesSec: [] } }),
                             create: jest.fn(),
                             createMany: jest.fn(),
                             update: jest.fn(),
                             delete: jest.fn(),
                         },
+                        formulariosPerfiles: {
+                            findMany: jest.fn(() => { return [] }),
+                        }
                     }),
                 },
             ],
