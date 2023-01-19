@@ -10,27 +10,27 @@ export class UsuariosParametrosResolver {
         private readonly usuariosParametrosService: UsuariosParametrosService,
     ) { }
 
-    @Query(() => [UsuariosParametros])
+    @Query(() => [UsuariosParametros], { description: "Obtener todos los elementos de la tabla UsuariosParametros"})
     async getUsuariosParametros(): Promise<UsuariosParametros[]> {
         return this.usuariosParametrosService.getUsuariosParametros();
     }
 
-    @Query(() => UsuariosParametros, { description: "Obtener un elemento relacionado con el parámetro formulario_empresa" })
+    @Query(() => UsuariosParametros, { description: "Obtener un elemento de la tabla UsuariosParametros por id" })
     async getUsuarioParametroById(@Args("usuario_parametro_id") usuario_parametro_id: number): Promise<UsuariosParametros> {
         return this.usuariosParametrosService.getUsuarioParametroById(usuario_parametro_id);
     }
 
-    @Query(() => [UsuariosParametros], { description: "Obtener uno o varios elementos relacionado con los parámetros enviados al dto" })
+    @Query(() => [UsuariosParametros], { description: "Obtener uno o varios elementos filtrados de la tabla UsuariosParametros" })
     async getFilterUsuariosParametrosInput(@Args("data", { nullable: true }) data: FilterUsuariosParametrosInput): Promise<UsuariosParametros[]> {
         return this.usuariosParametrosService.getFilterUsuariosParametrosInput(data);
     }
 
-    @Mutation(() => UsuariosParametros, { description: "Creación de un nuevo elemento para la tabla FormulariosEmpresas" })
+    @Mutation(() => UsuariosParametros, { description: "Crear un nuevo elemento en la tabla UsuariosParametros" })
     async createUsuarioParametro(@Args("data") data: CreateUsuarioParametroInput): Promise<UsuariosParametros> {
         return this.usuariosParametrosService.createUsuarioParametro(data);
     }
 
-    @Mutation(() => UsuariosParametros, { description: "Actualización de un elemento de la tabla FormulariosEmpresas" })
+    @Mutation(() => UsuariosParametros, { description: "Actualizar un elemento de la tabla UsuariosParametros" })
     async updateUsuarioParametro(@Args("data") data: UpdateUsuarioParametroInput): Promise<UsuariosParametros> {
         return this.usuariosParametrosService.updateUsuarioParametro(data);
     }

@@ -12,34 +12,34 @@ export class TbMetodosAutenticacionResolver {
         private readonly MetodosAutenticacionService: TbMetodosAutenticacionService
     ) { }
 
-    @Query(() => [TbMetodosAutenticacion])
+    @Query(() => [TbMetodosAutenticacion], {description: "Obtener todos los elementos de la tabla TbMetodosAutenticacion"})
     async getMetodosAutenticacion(): Promise<any> {
         return this.MetodosAutenticacionService.getMetodosAutenticacion();
     }
 
-    @Query(() => TbMetodosAutenticacion)
+    @Query(() => TbMetodosAutenticacion, {description: "Obtener un elemento de la tabla TbMetodosAutenticacion por id"})
     async getMetodoAutenticacionById(
         @Args("metodo_autenticacion_id") metodo_autenticacion_id: number): Promise<any> {
         return this.MetodosAutenticacionService.getMetodoAutenticacionById(metodo_autenticacion_id);
     }
 
-    @Query(() => [TbMetodosAutenticacion])
+    @Query(() => [TbMetodosAutenticacion], {description: "Obtener uno o varios elementos filtrados de la tabla TbMetodosAutenticacion"})
     async getFilterMetodosAutenticacion(
         @Args("data", { nullable: true }) data: FilterMetodosAutenticacionInput): Promise<any[]> {
         return this.MetodosAutenticacionService.getFilterMetodosAutenticacion(data);
     }
 
-    @Mutation(() => TbMetodosAutenticacion)
+    @Mutation(() => TbMetodosAutenticacion, {description: "Crear un nuevo elemento en la tabla TbMetodosAutenticacion"})
     async createMetodoAutenticacion(@Args("data") data: CreateMetodoAutenticacionInput): Promise<any> {
         return this.MetodosAutenticacionService.createMetodoAutenticacion(data);
     }
 
-    @Mutation(() => TbMetodosAutenticacion)
+    @Mutation(() => TbMetodosAutenticacion, {description: "Actualizar un elemento de la tabla TbMetodosAutenticacion"})
     async updateMetodoAutenticacion(@Args("data") data: UpdateMetodoAutenticacionInput): Promise<any> {
         return this.MetodosAutenticacionService.updateMetodoAutenticacion(data);
     }
 
-    @Mutation(() => TbMetodosAutenticacion)
+    @Mutation(() => TbMetodosAutenticacion, {description: "Eliminar un elemento de la tabla TbMetodosAutenticacion"})
     async deleteMetodoAutenticacion(@Args("metodo_autenticacion_id") metodo_autenticacion_id: number): Promise<any> {
         return this.MetodosAutenticacionService.deleteMetodoAutenticacion(metodo_autenticacion_id);
     }

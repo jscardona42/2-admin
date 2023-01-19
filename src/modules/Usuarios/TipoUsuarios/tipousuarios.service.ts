@@ -8,16 +8,17 @@ export class TbTipoUsuariosService {
         private prismaService: PrismaService,
     ) { }
 
-    async getTipoUsuarios(): Promise<any>{
+    async getTipoUsuarios(): Promise<any> {
         return this.prismaService.tbTipoUsuarios.findMany({
-            include:{ Usuarios: true }
+            include: { Usuarios: true },
+            orderBy: { tipo_usuario_id: "asc" }
         });
     }
 
     async getTipoUsuarioById(tipo_usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.tbTipoUsuarios.findUnique({
             where: { tipo_usuario_id: tipo_usuario_id },
-            include: { Usuarios: true  }
+            include: { Usuarios: true }
         })
 
         if (usuarios === null) {
@@ -28,9 +29,9 @@ export class TbTipoUsuariosService {
 
     async getFilterTipoUsuarios(data: FilterTipoUsuariosInput): Promise<any> {
         return this.prismaService.tbTipoUsuarios.findMany({
-            where: data, 
-            orderBy: {tipo_usuario_id: "asc"} 
-            })
+            where: data,
+            orderBy: { tipo_usuario_id: "asc" }
+        })
     }
 
     async createTipoUsuario(data: CreateTipoUsuarioInput): Promise<any> {

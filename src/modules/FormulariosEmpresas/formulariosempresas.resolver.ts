@@ -10,32 +10,32 @@ export class FormulariosEmpresasResolver {
         private readonly formulariosEmpresasService: FormulariosEmpresasService,
     ) { }
 
-    @Query(() => [FormulariosEmpresas])
+    @Query(() => [FormulariosEmpresas], { description: "Obtener todos los elementos de la tabla FormulariosEmpresas" })
     async getFormulariosEmpresas(): Promise<FormulariosEmpresas[]> {
         return this.formulariosEmpresasService.getFormulariosEmpresas();
     }
 
-    @Query(() => FormulariosEmpresas, { description: "Obtener un elemento relacionado con el parámetro formulario_empresa" })
+    @Query(() => FormulariosEmpresas, { description: "Obtener un elemento de la tabla FormulariosEmpresas por id" })
     async getFormularioEmpresaById(@Args("formulario_empresa") formulario_empresa: number): Promise<FormulariosEmpresas> {
         return this.formulariosEmpresasService.getFormularioEmpresaById(formulario_empresa);
     }
 
-    @Query(() => [FormulariosEmpresas], { description: "Obtener uno o varios elementos relacionado con los parámetros enviados al dto" })
+    @Query(() => [FormulariosEmpresas], { description: "Obtener uno o varios elementos filtrados de la tabla FormulariosEmpresas" })
     async getFilterFormulariosEmpresas(@Args("data", { nullable: true }) data: FilterFormulariosEmpresasInput): Promise<FormulariosEmpresas[]> {
         return this.formulariosEmpresasService.getFilterFormulariosEmpresas(data);
     }
 
-    @Mutation(() => FormulariosEmpresas, { description: "Creación de un nuevo elemento para la tabla FormulariosEmpresas" })
+    @Mutation(() => FormulariosEmpresas, { description: "Crear un nuevo elemento en la tabla FormulariosEmpresas" })
     async createFormularioEmpresa(@Args("data") data: CreateFormularioEmpresaInput): Promise<FormulariosEmpresas> {
         return this.formulariosEmpresasService.createFormularioEmpresa(data);
     }
 
-    @Mutation(() => FormulariosEmpresas, { description: "Actualización de un elemento de la tabla FormulariosEmpresas" })
+    @Mutation(() => FormulariosEmpresas, { description: "Actualizar un elemento de la tabla FormulariosEmpresas" })
     async updateFormularioEmpresa(@Args("data") data: UpdateFormularioEmpresaInput): Promise<FormulariosEmpresas> {
         return this.formulariosEmpresasService.updateFormularioEmpresa(data);
     }
     
-    @Mutation(() => FormulariosEmpresas, { description: "Inhabilitación de un elemento de la tabla FormulariosEmpresas" })
+    @Mutation(() => FormulariosEmpresas, { description: "Eliminar un elemento de la tabla FormulariosEmpresas" })
     async deleteFormularioEmpresa(@Args("formulario_empresa_id") formulario_empresa_id: number): Promise<FormulariosEmpresas> {
         return this.formulariosEmpresasService.deleteFormularioEmpresa(formulario_empresa_id);
     }

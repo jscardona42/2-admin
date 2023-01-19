@@ -24,14 +24,14 @@ export class UsuariosService {
 
     async getUsuarios(): Promise<any> {
         return this.prismaService.usuarios.findMany({
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         });
     }
 
     async getUsuarioById(usuario_id: number): Promise<any> {
         let usuarios = await this.prismaService.usuarios.findUnique({
             where: { usuario_id: usuario_id },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         })
 
         if (usuarios === null) {
@@ -136,14 +136,14 @@ export class UsuariosService {
                     TbMetodosAutenticacion: metodoAutenticacion,
                     TbTipoUsuarios: { connect: { tipo_usuario_id: data.tipo_usuario_id } },
                     sol_cambio_contrasena: true,
-                    UsuarioParametroValor: {
+                    UsuariosParametrosValores: {
                         create: parametrosValores
                     },
                     UsuariosPerfiles: {
                         create: usuariosperfilesarray
                     }
                 },
-                include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+                include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
             })
         } catch (error) {
             if (error.code === 'P2002') {
@@ -202,7 +202,7 @@ export class UsuariosService {
                 nombre_usuario: data.nombre_usuario,
                 contrasena: await this.hashPassword(data.contrasena, salt.salt)
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuarioParametroValor: { include: { UsuariosParametros: true } } }
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         })
 
         if (!user) {
@@ -305,7 +305,7 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
         })
 
         let params = { name: user.nombre_usuario };
@@ -577,7 +577,7 @@ export class UsuariosService {
                     }
                 }
             },
-            include: { UsuariosSesionesSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, }
         })
     }
 
@@ -595,9 +595,9 @@ export class UsuariosService {
 
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
-            include: { UsuarioParametroValor: true },
+            include: { UsuariosParametrosValores: true },
             data: {
-                UsuarioParametroValor: {
+                UsuariosParametrosValores: {
                     update: {
                         where: { usuario_parametro_valor_id: usuario_parametro_valor_id },
                         data: {

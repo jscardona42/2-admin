@@ -29,8 +29,8 @@ export class CreateUsuarioParametroInput {
     @Field(() => String, { nullable: true })
     valor_defecto?: string
 
-    @Field(() => String, { nullable: true })
-    descripcion?: string
+    @Field(() => String)
+    descripcion: string
 
 }
 
