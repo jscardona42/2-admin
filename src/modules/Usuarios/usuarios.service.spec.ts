@@ -7,6 +7,7 @@ import { MailerModule } from '@nestjs-modules/mailer';
 import { UsuariosService } from './usuarios.service';
 import { PerfilesService } from '../Perfiles/perfiles.service';
 import { FormulariosEmpresasService } from '../FormulariosEmpresas/formulariosempresas.service';
+import { UsuariosSesionesService } from '../UsuariosSesiones/usuariossesiones.service';
 
 
 describe('Usuarios Service', () => {
@@ -35,7 +36,7 @@ describe('Usuarios Service', () => {
             ],
             providers: [
                 UsuariosService, MailerModule,
-                PerfilesService, FormulariosEmpresasService,
+                PerfilesService, FormulariosEmpresasService, UsuariosSesionesService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({

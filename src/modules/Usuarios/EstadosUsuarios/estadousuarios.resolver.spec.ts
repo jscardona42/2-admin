@@ -1,12 +1,8 @@
 import { registerEnumType } from '@nestjs/graphql';
 import { Test } from '@nestjs/testing';
-import { Estado } from '@prisma/client';
 import { TbEstadosUsuariosResolver } from './estadosusuarios.resolver';
 import { TbEstadosUsuariosService } from './estadosusuarios.service';
 
-registerEnumType(Estado, {
-    name: 'Estado'
-})
 
 describe('Iconos Resolver', () => {
     let EstadosUsuariosResolver: TbEstadosUsuariosResolver;
