@@ -13,8 +13,8 @@ export class UsuariosParametros {
     @Field(() => String)
     alias: string
 
-    @Field(() => String, { nullable: true })
-    descripcion?: string
+    @Field(() => String)
+    descripcion: string
 
     @Field(() => String, { nullable: true })
     valor_defecto?: string

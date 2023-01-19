@@ -4,8 +4,8 @@ import { IsEmail, IsNotEmpty } from 'class-validator'
 import { TbEstadosUsuarios } from '../EstadosUsuarios/entities/tbestadosusuarios.entity'
 import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbmetodosautenticacion.entity'
 import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
-import { UsuariosSesiones } from './usuariossesiones.entity'
 import { UsuariosPerfiles } from '../../../modules/Perfiles/entities/usuariosperfiles.entity'
+import { UsuariosSesiones } from '../../UsuariosSesiones/entities/usuariosesiones.entity'
 
 @ObjectType()
 export class Usuarios {
