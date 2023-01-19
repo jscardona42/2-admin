@@ -15,27 +15,27 @@ export class PerfilesResolver {
         return this.perfilesService.getPerfiles();
     }
 
-    @Query(() => Perfiles, { description: "Obtener un elemento relacionado con el parámetro perfil_id" })
+    @Query(() => Perfiles, { description: "Obtener un elemento de la tabla Perfiles por id" })
     async getPerfilById(@Args("perfil_id") perfil_id: number): Promise<Perfiles> {
         return this.perfilesService.getPerfilById(perfil_id);
     }
 
-    @Query(() => [Perfiles], { description: "Obtener uno o varios elementos relacionado con los parámetros enviados al dto" })
+    @Query(() => [Perfiles], { description: "Obtener uno o varios elementos filtrados de la tabla Perfiles" })
     async getFilterPerfiles(@Args("data", { nullable: true }) data: FilterPerfilesInput): Promise<Perfiles[]> {
         return this.perfilesService.getFilterPerfiles(data);
     }
 
-    @Mutation(() => Perfiles, { description: "Creación de un nuevo elemento para la tabla Perfiles" })
+    @Mutation(() => Perfiles, { description: "Crear un nuevo elemento en la tabla Perfiles" })
     async createPerfil(@Args("data") data: CreatePerfilInput): Promise<Perfiles> {
         return this.perfilesService.createPerfil(data);
     }
 
-    @Mutation(() => Perfiles, { description: "Actualización de un elemento de la tabla Perfiles" })
+    @Mutation(() => Perfiles, { description: "Actualizar un elemento de la tabla Perfiles" })
     async updatePerfil(@Args("data") data: UpdatePerfilInput): Promise<Perfiles> {
         return this.perfilesService.updatePerfil(data);
     }
 
-    @Mutation(() => Perfiles, { description: "Deshabilitar un elemento relacionado con el parámetro perfil_id" })
+    @Mutation(() => Perfiles, { description: "Eliminar un elemento de la tabla Perfiles" })
     async deletePerfil(@Args("perfil_id") perfil_id: number): Promise<any> {
         return this.perfilesService.deletePerfil(perfil_id);
     }

@@ -35,15 +35,12 @@ type TbMetodosAutenticacion {
 type TbTipoUsuarios {
   tipo_usuario_id: Float!
   nombre: String!
-  estado: String!
+  estado: EstadoTipoUsuario!
 }
 
-type UsuariosSesiones {
-  usuario_sesion_id: Float!
-  usuario_id: Float!
-  token: String
-  fecha_ultimo_login: String!
-  Usuarios: Usuarios!
+enum EstadoTipoUsuario {
+  ACTIVO
+  INACTIVO
 }
 
 type FormulariosGestion {
@@ -62,7 +59,7 @@ type FormulariosPerfiles {
   formulario_perfil_id: Int!
   formulario_empresa_id: Float!
   perfil_id: Float!
-  FormulariosEmpresas: [FormulariosEmpresas!]
+  FormulariosEmpresas: FormulariosEmpresas
 }
 
 type Funcionalidades {
@@ -82,10 +79,15 @@ type Perfiles {
   nombre: String!
   descripcion: String
   personalizado: Boolean
-  estado: Boolean!
+  estado: EstadoPerfil!
   codigo: String!
   FormulariosPerfilesSec: [FormulariosPerfiles!]
   FuncionalidadesPerfilesSec: [FuncionalidadesPerfiles!]
+}
+
+enum EstadoPerfil {
+  ACTIVO
+  INACTIVO
 }
 
 type UsuariosPerfiles {
@@ -93,6 +95,18 @@ type UsuariosPerfiles {
   Perfiles: Perfiles!
   Usuarios: Usuarios!
 }
+
+type UsuariosSesiones {
+  usuario_sesion_id: Int!
+  usuario_id: Float!
+  token: String
+  fecha_ultimo_login: DateTime
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
 
 type Usuarios {
   usuario_id: Float!
@@ -116,18 +130,20 @@ type Usuarios {
   UsuariosPerfiles: [UsuariosPerfiles!]
 }
 
-"""
-A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
-"""
-scalar DateTime
-
 type UsuariosParametros {
   usuario_parametro_id: Float!
   nombre: String!
   alias: String!
-  descripcion: String
+  descripcion: String!
   valor_defecto: String
   requerido: Boolean
+}
+
+type UsuariosHistoricoContrasenas {
+  usu_historico_contrasena_id: Int!
+  usuario_id: Float!
+  contrasena: String
+  fecha_actualizacion: DateTime
 }
 
 type Query {
@@ -187,6 +203,17 @@ type Query {
   Obtener uno o varios elementos relacionado con los parámetros enviados al dto
   """
   getFilterUsuariosParametrosInput(data: FilterUsuariosParametrosInput): [UsuariosParametros!]!
+
+  """Obtener todos los elementos de la tabla usuarioshistoricocontrasenas """
+  getUsuariosHistoricoContrasenas: [UsuariosHistoricoContrasenas!]!
+
+  """Obtener un elemento relacionado con el parámetro usuario_sesion_id"""
+  getUsuarioSesionById(usuario_sesion_id: Float!): UsuariosSesiones!
+
+  """
+  Obtener un elemento relacionado con el parámetro usu_historico_contrasena_id
+  """
+  getUsuarioHistoricoContrasenaById(usu_historico_contrasena_id: Float!): UsuariosHistoricoContrasenas!
 }
 
 input FilterEstadoUsuariosInput {
@@ -195,12 +222,7 @@ input FilterEstadoUsuariosInput {
 
 input FilterTipoUsuariosInput {
   nombre: String
-  estado: Estado
-}
-
-enum Estado {
-  ACTIVO
-  INACTIVO
+  estado: EstadoTipoUsuario
 }
 
 input SignInUserInput {
@@ -239,7 +261,7 @@ input FilterFormulariosEmpresasInput {
 input FilterPerfilesInput {
   nombre: String
   personalizado: Boolean
-  estado: Boolean
+  estado: EstadoPerfil
   codigo: String
 }
 
@@ -283,6 +305,9 @@ type Mutation {
   """Actualización de un elemento de la tabla Perfiles"""
   updatePerfil(data: UpdatePerfilInput!): Perfiles!
 
+  """Deshabilitar un elemento relacionado con el parámetro perfil_id"""
+  deletePerfil(perfil_id: Float!): Perfiles!
+
   """Creación de un nuevo elemento para la tabla FormulariosEmpresas"""
   createUsuarioParametro(data: CreateUsuarioParametroInput!): UsuariosParametros!
 
@@ -306,7 +331,7 @@ input CreateTipoUsuarioInput {
 input UpdateTipoUsuarioInput {
   tipo_usuario_id: Float!
   nombre: String
-  estado: Estado
+  estado: EstadoTipoUsuario
 }
 
 input CreateUsuarioInput {
@@ -356,7 +381,7 @@ input UpdateFormularioEmpresaInput {
 input CreatePerfilInput {
   nombre: String!
   codigo: String!
-  estado: Boolean!
+  estado: EstadoPerfil!
   descripcion: String
   personalizado: Boolean
   FormulariosPerfiles: [CreateFormularioPerfilInput!]
@@ -374,7 +399,7 @@ input CreateFuncionalidadPerfilInput {
 input UpdatePerfilInput {
   perfil_id: Int!
   nombre: String
-  estado: Boolean
+  estado: EstadoPerfil
   codigo: String
   descripcion: String
   personalizado: Boolean
@@ -387,7 +412,7 @@ input CreateUsuarioParametroInput {
   alias: String!
   requerido: Boolean
   valor_defecto: String
-  descripcion: String
+  descripcion: String!
 }
 
 input UpdateUsuarioParametroInput {

@@ -10,22 +10,22 @@ export class FuncionalidadesPerfilesResolver {
         private readonly funcionalidadesPerfilesService: FuncionalidadesPerfilesService,
     ) { }
 
-    @Query(() => [FuncionalidadesPerfiles])
+    @Query(() => [FuncionalidadesPerfiles], { description: "Obtener todos los elementos de la tabla ${nombre de la tabla}" })
     async getFuncionalidadesPerfiles(): Promise<FuncionalidadesPerfiles[]> {
         return this.funcionalidadesPerfilesService.getFuncionalidadesPerfiles();
     }
 
-    @Query(() => FuncionalidadesPerfiles)
+    @Query(() => FuncionalidadesPerfiles, { description: "Obtener un elemento de la tabla ${nombre de la tabla} por id" })
     async getFuncionalidadPerfilById(@Args("funcionalidad_perfil_id") funcionalidad_perfil_id: number): Promise<FuncionalidadesPerfiles> {
         return this.funcionalidadesPerfilesService.getFuncionalidadPerfilById(funcionalidad_perfil_id);
     }
 
-    @Query(() => [FuncionalidadesPerfiles])
+    @Query(() => [FuncionalidadesPerfiles], { description: "d" })
     async getFuncionalidadesPerfilesByUsuarioId(@Args("usuario_id") usuario_id: number) {
         return this.funcionalidadesPerfilesService.getFuncionalidadesPerfilesByUsuarioId(usuario_id);
     }
 
-    @ResolveField(() => Funcionalidades)
+    @ResolveField(() => Funcionalidades, { description: "d" })
     async Funcionalidades(@Parent() FuncionalidadesPerfiles: FuncionalidadesPerfiles) {
         return { __typename: 'Funcionalidades', funcionalidad_id: FuncionalidadesPerfiles.funcionalidad_id };
     }

@@ -115,7 +115,7 @@ model UsuariosParametros {
   usuario_parametro_id         Int                         @id(map: "pk_usuario_parametro_id") @default(autoincrement())
   nombre                       String                      @db.VarChar(100)
   alias                        String                      @db.VarChar(100)
-  descripcion                  String?                     @default("") @db.Text()
+  descripcion                  String                      @default("") @db.Text()
   valor_defecto                String?                     @db.VarChar(50)
   requerido                    Boolean?                    @default(false)
   UsuariosParametrosValoresSec UsuariosParametrosValores[]

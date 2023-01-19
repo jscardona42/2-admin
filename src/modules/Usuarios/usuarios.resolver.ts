@@ -23,7 +23,7 @@ export class UsuariosResolver {
         return this.usuariosService.getUsuarioById(usuario_id);
     }
 
-    @Query(() => [Usuarios], { description: "Filtrar elementos de la tabla TbEstadosEmpresa" })
+    @Query(() => [Usuarios], { description: "Obtener uno o varios elementos filtrados de la tabla Usuarios" })
     async getFilterUsuarios(
         @Args("nombre", { nullable: true }) nombre: string,
         @Args("email", { nullable: true }) email: string): Promise<Usuarios[]> {
@@ -36,7 +36,7 @@ export class UsuariosResolver {
         return this.usuariosService.signInLogin(data);
     }
 
-    @Mutation(() => Usuarios, { description: "Creación de un nuevo elemento para la tabla Usuarios" })
+    @Mutation(() => Usuarios, { description: "Crear un nuevo elemento en la tabla Usuarios" })
     async createUsuario(
         @Args("data") data: CreateUsuarioInput): Promise<Usuarios> {
         return this.usuariosService.createUsuario(data);

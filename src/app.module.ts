@@ -29,8 +29,12 @@ import { PerfilesService } from './modules/Perfiles/perfiles.service';
 import { PerfilesResolver } from './modules/Perfiles/perfiles.resolver';
 import { UsuariosParametrosService } from './modules/UsuariosParametros/usuariosparametros.service';
 import { UsuariosParametrosResolver } from './modules/UsuariosParametros/usuariosparametros.resolver';
+import { UsuariosSesionesService } from './modules/UsuariosSesiones/usuariossesiones.service';
+import { UsuariosSesionesResolver } from './modules/UsuariosSesiones/usuariossesiones.resolver';
+import { UsuariosHistoricoContrasenasService } from './modules/UsuariosHistoricoContrasenas/usuarioshistoricocontrasenas.service';
+import { UsuariosHistoricoContrasenasResolver } from './modules/UsuariosHistoricoContrasenas/usuarioshistoricocontrasenas.resolver';
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver, PerfilesService, PerfilesResolver, UsuariosParametrosService, UsuariosParametrosResolver]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver, PerfilesService, PerfilesResolver, UsuariosParametrosService, UsuariosParametrosResolver, UsuariosSesionesService, UsuariosSesionesResolver, UsuariosHistoricoContrasenasService, UsuariosHistoricoContrasenasResolver, UsuariosSesionesResolver, UsuariosSesionesService ]
 
 @Module({
   imports: [
