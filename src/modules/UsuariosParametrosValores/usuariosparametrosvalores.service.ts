@@ -10,14 +10,15 @@ export class UsuariosParametrosValoresService {
 
     async getUsuariosParametrosValores(): Promise<UsuariosParametrosValores[]> {
         return this.prismaService.usuariosParametrosValores.findMany({
-            include: { Usuarios: true }
+            include: { Usuarios: true },
+            orderBy: { usuario_parametro_valor_id: "asc" }
         });
     }
 
     async getUsuarioParametroValorById(usuario_parametro_valor_id: number): Promise<UsuariosParametrosValores> {
         let usuarioparametrovalor = await this.prismaService.usuariosParametrosValores.findUnique({
             where: { usuario_parametro_valor_id: usuario_parametro_valor_id },
-            include: { Usuarios: true}
+            include: { Usuarios: true }
         });
 
         if (usuarioparametrovalor === null) {

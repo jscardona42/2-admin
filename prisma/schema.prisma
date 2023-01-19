@@ -94,7 +94,7 @@ model Usuarios {
   TbMetodosAutenticacion          TbMetodosAutenticacion?        @relation(fields: [metodo_autenticacion_id], references: [metodo_autenticacion_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_met_aut_id")
   TbTipoUsuarios                  TbTipoUsuarios                 @relation(fields: [tipo_usuario_id], references: [tipo_usuario_id], onDelete: NoAction, onUpdate: NoAction, map: "fk_usuarios_tipo_usuario_id")
   UsuariosHistoricoContrasenasSec UsuariosHistoricoContrasenas[]
-  UsuarioParametroValor           UsuariosParametrosValores[]
+  UsuariosParametrosValores       UsuariosParametrosValores[]
   UsuariosSesionesSec             UsuariosSesiones?
   UsuariosPerfiles                UsuariosPerfiles[]
 

@@ -10,13 +10,15 @@ export class UsuariosHistoricoContrasenasService {
 
     async getUsuariosHistoricoContrasenas(): Promise<UsuariosHistoricoContrasenas[]> {
         return this.prismaService.usuariosHistoricoContrasenas.findMany({
+            include: { Usuarios: true },
+            orderBy: { usu_historico_contrasena_id: "asc" }
         });
     }
 
     async getUsuarioHistoricoContrasenaById(usu_historico_contrasena_id: number): Promise<UsuariosHistoricoContrasenas> {
         let usuariohistoricocontrasena = await this.prismaService.usuariosHistoricoContrasenas.findUnique({
             where: { usu_historico_contrasena_id: usu_historico_contrasena_id },
-            include: { Usuarios: true}
+            include: { Usuarios: true }
         });
 
         if (usuariohistoricocontrasena === null) {

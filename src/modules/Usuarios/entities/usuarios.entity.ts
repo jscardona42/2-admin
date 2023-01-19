@@ -6,6 +6,8 @@ import { TbMetodosAutenticacion } from '../../MetodosAutenticacion/entities/tbme
 import { TbTipoUsuarios } from '../TipoUsuarios/entities/tipousuarios.entity'
 import { UsuariosPerfiles } from '../../../modules/Perfiles/entities/usuariosperfiles.entity'
 import { UsuariosSesiones } from '../../UsuariosSesiones/entities/usuariosesiones.entity'
+import { UsuariosHistoricoContrasenas } from '../../../modules/UsuariosHistoricoContrasenas/entities/usuariohistoricocontrasenas.entity'
+import { UsuariosParametrosValores } from '../../../modules/UsuariosParametrosValores/entities/usuariosparametrosvalores.entity'
 
 @ObjectType()
 export class Usuarios {
@@ -59,6 +61,9 @@ export class Usuarios {
     @Field(() => UsuariosSesiones, { nullable: true })
     UsuariosSesionesSec?: UsuariosSesiones
 
+    @Field(() => [UsuariosHistoricoContrasenas], { nullable: true })
+    UsuariosHistoricoContrasenasSec?: UsuariosHistoricoContrasenas[]
+
     @Field(() => String, { nullable: true })
     config_totp?: string
 
@@ -70,4 +75,7 @@ export class Usuarios {
 
     @Field(() => [UsuariosPerfiles], { nullable: true })
     UsuariosPerfiles?: UsuariosPerfiles[]
+
+    @Field(() => [UsuariosParametrosValores], { nullable: true })
+    UsuariosParametrosValores?: UsuariosParametrosValores[]
 }

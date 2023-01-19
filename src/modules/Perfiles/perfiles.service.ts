@@ -13,7 +13,8 @@ export class PerfilesService {
 
     async getPerfiles(): Promise<any[]> {
         return this.prismaService.perfiles.findMany({
-            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true },
+            orderBy: { perfil_id: "asc" }
         });
     }
 
@@ -48,7 +49,8 @@ export class PerfilesService {
 
                     ]
             },
-            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true }
+            include: { FormulariosPerfilesSec: { include: { FormulariosEmpresas: true } }, FuncionalidadesPerfilesSec: true, UsuariosPerfiles: true },
+            orderBy: { perfil_id: "asc" }
         })
     }
 

@@ -10,13 +10,15 @@ export class UsuariosSesionesService {
 
     async getUsuariosSesiones(): Promise<UsuariosSesiones[]> {
         return this.prismaService.usuariosSesiones.findMany({
+            include: { Usuarios: true },
+            orderBy: { usuario_sesion_id: "asc" }
         });
     }
- 
+
     async getUsuarioSesionById(usuario_sesion_id: number): Promise<UsuariosSesiones> {
         let usuariosesion = await this.prismaService.usuariosSesiones.findUnique({
             where: { usuario_sesion_id: usuario_sesion_id },
-            include: { Usuarios: true}
+            include: { Usuarios: true }
         });
 
         if (usuariosesion === null) {

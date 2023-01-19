@@ -11,7 +11,8 @@ export class UsuariosParametrosService {
 
     async getUsuariosParametros(): Promise<UsuariosParametros[]> {
         return this.prismaService.usuariosParametros.findMany({
-            include: { UsuariosParametrosValoresSec: true }
+            include: { UsuariosParametrosValoresSec: true },
+            orderBy: { usuario_parametro_id: "asc" }
         });
     }
 
@@ -35,7 +36,8 @@ export class UsuariosParametrosService {
                         { nombre: { contains: data.nombre, mode: "insensitive" } }
                     ]
             },
-            include: { UsuariosParametrosValoresSec: true }
+            include: { UsuariosParametrosValoresSec: true },
+            orderBy: { usuario_parametro_id: "asc" }
         })
     }
 
@@ -65,7 +67,7 @@ export class UsuariosParametrosService {
                 requerido: data.requerido,
                 valor_defecto: data.valor_defecto,
                 descripcion: data.descripcion,
-                
+
             },
             include: { UsuariosParametrosValoresSec: true }
         })

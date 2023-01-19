@@ -8,9 +8,10 @@ export class TbEstadosUsuariosService {
         private prismaService: PrismaService,
     ) { }
 
-    async getEstadosUsuarios(): Promise<any>{
+    async getEstadosUsuarios(): Promise<any> {
         return this.prismaService.tbEstadosUsuarios.findMany({
-            include:{ Usuarios: true }
+            include: { Usuarios: true },
+            orderBy: { estado_usuario_id: "asc" }
         });
     }
 
@@ -28,8 +29,8 @@ export class TbEstadosUsuariosService {
 
     async getFilterEstadosUsuarios(data: FilterEstadoUsuariosInput): Promise<any> {
         return this.prismaService.tbEstadosUsuarios.findMany({
-            where: data, 
-            orderBy: {estado_usuario_id: "asc"} 
+            where: data,
+            orderBy: { estado_usuario_id: "asc" }
         })
     }
 
