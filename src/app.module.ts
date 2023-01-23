@@ -148,7 +148,8 @@ export function getModeloDatos() {
         }
         fields.push({
           nombre: field_name,
-          tipo: field_type
+          tipo: field_type,
+          obligatorio: field.isRequired
         });
       }
 
@@ -177,6 +178,7 @@ export function getModeloDatos() {
                 EntidadesSecundariasCamposSec.push({
                   nombre: mdfield.name,
                   tipo: mdfield_type,
+                  obligatorio: mdfield.isRequired
                 });
               }
             });
