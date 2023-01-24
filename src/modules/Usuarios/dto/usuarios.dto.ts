@@ -16,6 +16,9 @@ export class CreateUsuarioInput {
     @IsNotEmpty()
     correo: string
 
+    @Field(() => String, { nullable: true })
+    imagen?: string
+
     @Field(() => Number)
     @IsNotEmpty()
     estado_usuario_id: number
@@ -43,6 +46,12 @@ export class UpdateUsuarioInput {
 
     @Field(() => String, { nullable: true })
     correo?: string
+
+    @Field(() => String, { nullable: true })
+    imagen?: string
+
+    @Field(() => Number, { nullable: true })
+    idioma_id?: number
 
     @Field(() => Number, { nullable: true })
     estado_usuario_id?: number

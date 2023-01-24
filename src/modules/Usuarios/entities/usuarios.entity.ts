@@ -31,8 +31,8 @@ export class Usuarios {
     @Field(() => String)
     salt: string
 
-    @Field(() => String)
-    idioma?: string
+    @Field(() => Number)
+    idioma_id?: number
 
     @Field(() => Boolean)
     sol_cambio_contrasena?: boolean
@@ -45,6 +45,9 @@ export class Usuarios {
 
     @Field(() => String)
     fecha_actualizacion?: string
+
+    @Field(() => String)
+    imagen?: string
 
     @Field(() => Number)
     cant_intentos: number
