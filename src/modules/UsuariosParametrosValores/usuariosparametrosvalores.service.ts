@@ -22,7 +22,7 @@ export class UsuariosParametrosValoresService {
         });
 
         if (usuarioparametrovalor === null) {
-            throw new UnauthorizedException(`El usuario historico contrasena con id ${usuario_parametro_valor_id} no existe`);
+            throw new UnauthorizedException(`El usuario parámetro valor con id ${usuario_parametro_valor_id} no existe`);
         }
         return usuarioparametrovalor;
     }

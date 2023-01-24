@@ -2,7 +2,8 @@ import 'reflect-metadata'
 import { Field, InputType, Int } from '@nestjs/graphql'
 import { IsNotEmpty } from 'class-validator'
 import JSON from 'graphql-type-json';
-import { CreateUsuarioPerfilInput } from './usuariosperfiles.dto';
+import { CreateUsuarioPerfilInput, UpdateUsuarioPerfilInput } from './usuariosperfiles.dto';
+import { UpdateUsuarioParametroValorInput } from '../../../modules/UsuariosParametrosValores/dto/usuariosparametrosvalores.dto';
 
 @InputType()
 export class CreateUsuarioInput {
@@ -28,6 +29,35 @@ export class CreateUsuarioInput {
 
     @Field(() => [CreateUsuarioPerfilInput])
     UsuariosPerfiles: CreateUsuarioPerfilInput[]
+}
+
+@InputType()
+export class UpdateUsuarioInput {
+
+    @Field(() => Int)
+    @IsNotEmpty()
+    usuario_id: number
+
+    @Field(() => String, { nullable: true })
+    nombre_usuario?: string
+
+    @Field(() => String, { nullable: true })
+    correo?: string
+
+    @Field(() => Number, { nullable: true })
+    estado_usuario_id?: number
+
+    @Field(() => Number, { nullable: true })
+    tipo_usuario_id?: number
+
+    @Field(() => Number, { nullable: true })
+    metodo_autenticacion_id?: number
+
+    @Field(() => [UpdateUsuarioPerfilInput], { nullable: true })
+    UsuariosPerfiles?: UpdateUsuarioPerfilInput[]
+
+    @Field(() => [UpdateUsuarioParametroValorInput], { nullable: true })
+    UsuariosParametrosValores?: UpdateUsuarioParametroValorInput[]
 }
 
 @InputType()

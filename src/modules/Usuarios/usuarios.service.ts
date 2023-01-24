@@ -4,13 +4,17 @@ import * as CryptoJS from 'crypto-js';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, UpdateUsuarioInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 let QRCode = require('qrcode');
 const SibApiV3Sdk = require('sib-api-v3-typescript');
 import axios from 'axios';
 import { PerfilesService } from '../Perfiles/perfiles.service';
+import { UsuariosParametrosValoresService } from '../UsuariosParametrosValores/usuariosparametrosvalores.service';
+import { TbEstadosUsuariosService } from './EstadosUsuarios/estadosusuarios.service';
+import { TbTipoUsuariosService } from './TipoUsuarios/tipousuarios.service';
+import { TbMetodosAutenticacionService } from '../MetodosAutenticacion/metodosautenticacion.service';
 
 
 
@@ -19,7 +23,11 @@ export class UsuariosService {
     constructor(
         private prismaService: PrismaService,
         private jwtService: JwtService,
-        private perfilesService: PerfilesService
+        private perfilesService: PerfilesService,
+        private usuariosParamValService: UsuariosParametrosValoresService,
+        private tbEstadosUsuariosService: TbEstadosUsuariosService,
+        private tbTipoUsuariosService: TbTipoUsuariosService,
+        private tbMetodosAutenticacionService: TbMetodosAutenticacionService
     ) { }
 
     async getUsuarios(): Promise<any> {
@@ -160,6 +168,75 @@ export class UsuariosService {
         }
 
         return user;
+    }
+
+    async updateUsuario(data: UpdateUsuarioInput): Promise<any> {
+        let idsBorrados = [];
+        let idsCreados = [];
+        let updateUsuarios = [];
+        let usuariosPerfiles = [];
+        let usuariosParametrosValores = [];
+
+        await this.getUsuarioById(data.usuario_id);
+
+        if (data.UsuariosPerfiles !== undefined) {
+            usuariosPerfiles = data.UsuariosPerfiles;
+        }
+
+        if (data.UsuariosParametrosValores !== undefined) {
+            usuariosParametrosValores = data.UsuariosParametrosValores;
+        }
+
+        let connectUsuario = await this.buildConnectAndValidateUsuarios(data);
+
+        let updateParametrosValores = await this.buildUpdateUsuariosParametrosValores(usuariosParametrosValores);
+
+        let perfilesExistentes = await this.prismaService.usuarios.findUnique({
+            where: { usuario_id: data.usuario_id },
+            include: { UsuariosPerfiles: true }
+        });
+
+        if (perfilesExistentes !== null) {
+            let ids = await this.buildArrayCoincidencias(perfilesExistentes, usuariosPerfiles);
+            idsBorrados = ids.idsBorrados;
+            idsCreados = ids.idsCreados;
+        }
+
+        let createUsuariosPerfiles = await this.buildCreateUsuariosPerfiles(usuariosPerfiles, idsCreados);
+
+        await this.buildDeletePerfilesUsuarios(idsBorrados, updateUsuarios, data.usuario_id);
+
+        updateUsuarios.unshift(this.prismaService.usuarios.update({
+            where: { usuario_id: data.usuario_id },
+            data: {
+                nombre_usuario: data.nombre_usuario,
+                correo: data.correo,
+                fecha_actualizacion: new Date(),
+                TbEstadosUsuarios: connectUsuario.estadoUsuario,
+                TbMetodosAutenticacion: connectUsuario.metodoAutenticacion,
+                TbTipoUsuarios: connectUsuario.tipoUsuario,
+                UsuariosParametrosValores: {
+                    update: updateParametrosValores
+                },
+                UsuariosPerfiles: {
+                    create: createUsuariosPerfiles
+                }
+            }
+        }));
+
+        let transaction: any;
+
+        try {
+            transaction = await this.prismaService.$transaction(updateUsuarios)
+        } catch (error) {
+            if (error.code === 'P2002') {
+                throw new UnauthorizedException(`El ${error.meta.target[0]} ya se encuentra registrado`);
+            }
+            if (error.code == "P2025") {
+                throw new UnauthorizedException(`El parámetro valor id que intenta actualizar no pertenece al usuario con ID ${data.usuario_id}`);
+            }
+        }
+        return transaction[0];
     }
 
     async signInLogin(data: any): Promise<any> {
@@ -775,6 +852,99 @@ export class UsuariosService {
             .catch(err => { return err.response.data });
         console.log(res);
         return res;
+    }
+
+    async buildArrayCoincidencias(formulariosExistentes: any, data: any): Promise<any> {
+
+        let idsExistentes = [];
+        let idsEnviados = [];
+
+        formulariosExistentes.UsuariosPerfiles.map((e) => {
+            idsExistentes.push(e.perfil_id)
+        })
+
+        data.map((e) => {
+            idsEnviados.push(e.perfil_id);
+        })
+
+        let idsEstaticos = idsExistentes.filter(x => idsEnviados.includes(x));
+        let idsBorrados = idsExistentes.filter((e) => !idsEstaticos.includes(e));
+        let idsCreados = idsEnviados.filter((e) => !idsEstaticos.includes(e));
+
+        return { idsBorrados, idsCreados }
+    }
+
+    async buildConnectAndValidateUsuarios(data: UpdateUsuarioInput) {
+        let metodoAutenticacion = undefined;
+        let estadoUsuario = undefined;
+        let tipoUsuario = undefined;
+
+        if (data.metodo_autenticacion_id !== undefined && data.metodo_autenticacion_id !== null) {
+            await this.tbMetodosAutenticacionService.getMetodoAutenticacionById(data.metodo_autenticacion_id);
+            metodoAutenticacion = { connect: { metodo_autenticacion_id: data.metodo_autenticacion_id } };
+        }
+
+        if (data.estado_usuario_id !== undefined && data.estado_usuario_id !== null) {
+            await this.tbEstadosUsuariosService.getEstadoUsuarioById(data.estado_usuario_id);
+            estadoUsuario = { connect: { estado_usuario_id: data.estado_usuario_id } };
+        }
+
+        if (data.tipo_usuario_id !== undefined && data.tipo_usuario_id !== null) {
+            await this.tbTipoUsuariosService.getTipoUsuarioById(data.tipo_usuario_id);
+            tipoUsuario = { connect: { tipo_usuario_id: data.tipo_usuario_id } };
+        }
+
+        return { metodoAutenticacion, tipoUsuario, estadoUsuario };
+    }
+
+    async buildCreateUsuariosPerfiles(usuariosPerfiles: any[], idsCreados: any) {
+        let createUsuariosPerfiles = [];
+
+        await usuariosPerfiles.reduce(async (promise01, usuperfil) => {
+            await promise01;
+
+            await this.perfilesService.getPerfilById(usuperfil.perfil_id);
+
+            if (idsCreados.includes(usuperfil.perfil_id)) {
+                createUsuariosPerfiles.push({
+                    perfil_id: usuperfil.perfil_id
+                });
+            }
+        }, Promise.resolve());
+
+        return createUsuariosPerfiles
+    }
+
+    async buildDeletePerfilesUsuarios(idsBorrados: any[], updateUsuarios: any[], usuario_id: number) {
+        idsBorrados.forEach(e => {
+            updateUsuarios.push(this.prismaService.usuariosPerfiles.deleteMany({
+                where: {
+                    perfil_id: { in: idsBorrados },
+                    usuario_id: usuario_id
+                }
+            })
+            )
+        });
+
+        return updateUsuarios;
+    }
+
+    async buildUpdateUsuariosParametrosValores(usuariosParametrosValores: any[]) {
+        let updateParametrosValores = [];
+
+        await usuariosParametrosValores.reduce(async (promise01, paramvalor) => {
+            await promise01;
+
+            await this.usuariosParamValService.getUsuarioParametroValorById(paramvalor.usuario_parametro_valor_id);
+            updateParametrosValores.push({
+                where: { usuario_parametro_valor_id: paramvalor.usuario_parametro_valor_id },
+                data: {
+                    valor: paramvalor.valor
+                }
+            });
+        }, Promise.resolve());
+
+        return updateParametrosValores;
     }
 
 }

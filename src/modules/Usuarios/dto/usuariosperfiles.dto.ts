@@ -10,3 +10,10 @@ export class CreateUsuarioPerfilInput {
     perfil_id: number
 
 }
+
+@InputType()
+export class UpdateUsuarioPerfilInput {
+
+    @Field(() => Number, { nullable: true })
+    perfil_id?: number
+}

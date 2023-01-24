@@ -33,8 +33,10 @@ import { UsuariosSesionesService } from './modules/UsuariosSesiones/usuariossesi
 import { UsuariosSesionesResolver } from './modules/UsuariosSesiones/usuariossesiones.resolver';
 import { UsuariosHistoricoContrasenasService } from './modules/UsuariosHistoricoContrasenas/usuarioshistoricocontrasenas.service';
 import { UsuariosHistoricoContrasenasResolver } from './modules/UsuariosHistoricoContrasenas/usuarioshistoricocontrasenas.resolver';
+import { UsuariosParametrosValoresService } from './modules/UsuariosParametrosValores/usuariosparametrosvalores.service';
+import { UsuariosParametrosValoresResolver } from './modules/UsuariosParametrosValores/usuariosparametrosvalores.resolver';
 
-const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver, PerfilesService, PerfilesResolver, UsuariosParametrosService, UsuariosParametrosResolver, UsuariosSesionesService, UsuariosSesionesResolver, UsuariosHistoricoContrasenasService, UsuariosHistoricoContrasenasResolver, UsuariosSesionesResolver, UsuariosSesionesService ]
+const MyProviders = [PrismaService, TbEstadosUsuariosService, TbEstadosUsuariosResolver, TbTipoUsuariosResolver, TbTipoUsuariosService, UsuariosService, UsuariosResolver, TbMetodosAutenticacionService, TbMetodosAutenticacionResolver, FormulariosEmpresasService, FormulariosEmpresasResolver, FormulariosGestionResolver, FuncionalidadesPerfilesService, FuncionalidadesPerfilesResolver, FuncionalidadesResolver, PerfilesService, PerfilesResolver, UsuariosParametrosService, UsuariosParametrosResolver, UsuariosSesionesService, UsuariosSesionesResolver, UsuariosHistoricoContrasenasService, UsuariosHistoricoContrasenasResolver, UsuariosSesionesResolver, UsuariosSesionesService, UsuariosParametrosValoresService, UsuariosParametrosValoresResolver]
 
 @Module({
   imports: [
