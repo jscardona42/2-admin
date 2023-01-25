@@ -957,6 +957,8 @@ export class UsuariosService {
     }
 
     async deleteUsuario(usuario_id: number) {
+        await this.getUsuarioById(usuario_id);
+
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
             data: { TbEstadosUsuarios: { connect: { nombre: "INACTIVO" } } }
