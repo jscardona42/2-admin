@@ -31,8 +31,11 @@ export class Usuarios {
     @Field(() => String)
     salt: string
 
-    @Field(() => Number)
+    @Field(() => Number, { nullable: true })
     idioma_id?: number
+
+    @Field(() => Number, { nullable: true })
+    tercero_id?: number
 
     @Field(() => Boolean)
     sol_cambio_contrasena?: boolean

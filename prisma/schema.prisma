@@ -81,6 +81,7 @@ model Usuarios {
   contrasena                      String                         @db.VarChar(100)
   correo                          String                         @db.VarChar(100)
   idioma_id                       Int?
+  tercero_id                      Int?
   salt                            String                         @db.VarChar(255)
   imagen                          String?                        @default("") @db.Text()
   metodo_autenticacion_id         Int?
