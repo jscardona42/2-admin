@@ -183,3 +183,19 @@ export class MessageArrayInput {
     @Field(() => [MessageInput])
     data: MessageInput[]
 }
+
+@InputType()
+export class FilterUserInput {
+    @Field(() => String, { nullable: true })
+    nombre_usuario?: string
+
+    @Field(() => String, { nullable: true })
+    correo?: string
+
+    @Field(() => Number, { nullable: true })
+    metodo_autenticacion_id?: number
+
+    @Field(() => Number, { nullable: true })
+    estado_usuario_id?: number
+
+}

@@ -4,7 +4,7 @@ import * as CryptoJS from 'crypto-js';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from "bcrypt";
 import { JwtService } from '@nestjs/jwt';
-import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, UpdateUsuarioInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CreateUsuarioInput, FilterUserInput, SendCodeVerificationInput, UpdateUsuarioInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 import { authenticator } from 'otplib';
 import { AuthenticationError } from 'apollo-server-express';
 let QRCode = require('qrcode');
@@ -75,13 +75,15 @@ export class UsuariosService {
         return user;
     }
 
-    async getFilterUsuarios(nombre_usuario: string, correo: string): Promise<any> {
+    async getFilterUsuarios(data: FilterUserInput): Promise<any> {
         return this.prismaService.usuarios.findMany({
             where: {
                 OR:
                     [
-                        { nombre_usuario: { contains: nombre_usuario, mode: "insensitive" } },
-                        { correo: { contains: correo, mode: "insensitive" } }
+                        { nombre_usuario: { contains: data.nombre_usuario, mode: "insensitive" } },
+                        { correo: { contains: data.correo, mode: "insensitive" } },
+                        { metodo_autenticacion_id: data.metodo_autenticacion_id },
+                        { estado_usuario_id: data.estado_usuario_id }
                     ]
             }
         })
@@ -216,7 +218,7 @@ export class UsuariosService {
                 correo: data.correo,
                 fecha_actualizacion: new Date(),
                 idioma_id: data.idioma_id,
-                tercero_id:data.tercero_id,
+                tercero_id: data.tercero_id,
                 imagen: data.imagen,
                 TbEstadosUsuarios: connectUsuario.estadoUsuario,
                 TbMetodosAutenticacion: connectUsuario.metodoAutenticacion,

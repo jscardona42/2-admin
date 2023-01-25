@@ -8,6 +8,10 @@ import { UsuariosService } from './usuarios.service';
 import { PerfilesService } from '../Perfiles/perfiles.service';
 import { FormulariosEmpresasService } from '../FormulariosEmpresas/formulariosempresas.service';
 import { UsuariosSesionesService } from '../UsuariosSesiones/usuariossesiones.service';
+import { UsuariosParametrosValoresService } from '../UsuariosParametrosValores/usuariosparametrosvalores.service';
+import { TbEstadosUsuariosService } from './EstadosUsuarios/estadosusuarios.service';
+import { TbTipoUsuariosService } from './TipoUsuarios/tipousuarios.service';
+import { TbMetodosAutenticacionService } from '../MetodosAutenticacion/metodosautenticacion.service';
 
 
 describe('Usuarios Service', () => {
@@ -36,7 +40,7 @@ describe('Usuarios Service', () => {
             ],
             providers: [
                 UsuariosService, MailerModule,
-                PerfilesService, FormulariosEmpresasService, UsuariosSesionesService,
+                PerfilesService, FormulariosEmpresasService, UsuariosSesionesService, UsuariosParametrosValoresService, TbEstadosUsuariosService, TbTipoUsuariosService, TbMetodosAutenticacionService,
                 {
                     provide: PrismaService,
                     useFactory: () => ({
@@ -75,7 +79,7 @@ describe('Usuarios Service', () => {
                             findUnique: jest.fn(),
                             create: jest.fn()
                         },
-                        perfiles:{
+                        perfiles: {
                             findUnique: jest.fn()
                         }
                     }),
@@ -109,12 +113,10 @@ describe('Usuarios Service', () => {
     describe('getFilterUsuarios method', () => {
         it('should invoke prismaService.usuarios.findMany', async () => {
             const testParams = {
-                email: "a",
+                correo: "a",
                 nombre: "a"
             };
-            await usuariosService.getFilterUsuarios(
-                testParams.email, testParams.nombre
-            );
+            await usuariosService.getFilterUsuarios(testParams);
             expect(prismaService.usuarios.findMany).toHaveBeenCalled();
         });
     });

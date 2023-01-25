@@ -1,5 +1,5 @@
 import { Resolver, Query, Mutation, Args } from '@nestjs/graphql';
-import { ChangePasswordInput, CreateUsuarioInput, SendCodeVerificationInput, SignInUserInput, UpdateUsuarioInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
+import { ChangePasswordInput, CreateUsuarioInput, FilterUserInput, SendCodeVerificationInput, SignInUserInput, UpdateUsuarioInput, ValidationCodeMailInput, ValidationCodeTotpInput, ValidationCodeVerificationInput, ValidationRecoveryCodeInput } from './dto/usuarios.dto';
 
 import { Usuarios } from './entities/usuarios.entity';
 import { UsuariosService } from './usuarios.service';
@@ -24,9 +24,8 @@ export class UsuariosResolver {
 
     @Query(() => [Usuarios], { description: "Obtener uno o varios elementos filtrados de la tabla Usuarios" })
     async getFilterUsuarios(
-        @Args("nombre", { nullable: true }) nombre: string,
-        @Args("email", { nullable: true }) email: string): Promise<Usuarios[]> {
-        return this.usuariosService.getFilterUsuarios(nombre, email);
+        @Args("data") data: FilterUserInput): Promise<Usuarios[]> {
+        return this.usuariosService.getFilterUsuarios(data);
     }
 
     @Query(() => Usuarios)

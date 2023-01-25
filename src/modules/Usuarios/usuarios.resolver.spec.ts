@@ -53,10 +53,10 @@ describe('Usuarios Resolver', () => {
     describe('Query getFilterUsuarios()', () => {
         it('should invoke usuariosService.getFilterUsuarios()', async () => {
             const testParams = {
-                email: "a",
+                correo: "a",
                 nombre: "a"
             };
-            await usuariosResolver.getFilterUsuarios(testParams.email, testParams.nombre);
+            await usuariosResolver.getFilterUsuarios(testParams);
             expect(usuariosService.getFilterUsuarios).toHaveBeenCalled();
         });
     });
