@@ -85,7 +85,8 @@ export class UsuariosService {
                         { metodo_autenticacion_id: data.metodo_autenticacion_id },
                         { estado_usuario_id: data.estado_usuario_id }
                     ]
-            }
+            },
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         })
     }
 
