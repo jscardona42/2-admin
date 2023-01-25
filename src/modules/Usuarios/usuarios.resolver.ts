@@ -45,6 +45,12 @@ export class UsuariosResolver {
         return this.usuariosService.updateUsuario(data);
     }
 
+    @Mutation(() => Usuarios, { description: "Inhabilitar usuario" })
+    async deleteUsuario(
+        @Args("usuario_id") usuario_id: number): Promise<any> {
+        return this.usuariosService.deleteUsuario(usuario_id);
+    }
+
     @Mutation(() => Usuarios, { description: "Cierre de sesión" })
     async logOutLogin(
         @Args("usuario_id") usuario_id: number): Promise<any> {

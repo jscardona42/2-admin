@@ -9,7 +9,7 @@ datasource db {
 
 model TbEstadosUsuarios {
   estado_usuario_id Int        @id(map: "pk_estado_usuario_id_pk") @default(autoincrement())
-  nombre            String     @db.VarChar(100)
+  nombre            String     @unique() @db.VarChar(100)
   Usuarios          Usuarios[]
 
   @@index([estado_usuario_id], name: "idx_estado_usuario_id")

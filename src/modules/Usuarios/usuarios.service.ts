@@ -956,4 +956,11 @@ export class UsuariosService {
         return updateParametrosValores;
     }
 
+    async deleteUsuario(usuario_id: number) {
+        return this.prismaService.usuarios.update({
+            where: { usuario_id: usuario_id },
+            data: { TbEstadosUsuarios: { connect: { nombre: "INACTIVO" } } }
+        });
+    }
+
 }
