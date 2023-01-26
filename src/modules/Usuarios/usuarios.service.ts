@@ -230,7 +230,8 @@ export class UsuariosService {
                 UsuariosPerfiles: {
                     create: createUsuariosPerfiles
                 }
-            }
+            },
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbTipoUsuarios: true, UsuariosPerfiles: true, TbMetodosAutenticacion: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         }));
 
         let transaction: any;
