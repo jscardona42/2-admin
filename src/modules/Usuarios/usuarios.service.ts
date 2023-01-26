@@ -221,6 +221,7 @@ export class UsuariosService {
                 idioma_id: data.idioma_id,
                 tercero_id: data.tercero_id,
                 imagen: data.imagen,
+                sol_cambio_contrasena: data.sol_cambio_contrasena,
                 TbEstadosUsuarios: connectUsuario.estadoUsuario,
                 TbMetodosAutenticacion: connectUsuario.metodoAutenticacion,
                 TbTipoUsuarios: connectUsuario.tipoUsuario,
@@ -834,6 +835,7 @@ export class UsuariosService {
         newDate.setHours(newDate.getHours() - 6);
         return newDate;
     }
+
 
     async renewCantidadIntentos(usuario_id: number) {
         await this.prismaService.usuarios.update({

@@ -59,6 +59,9 @@ export class UpdateUsuarioInput {
     @Field(() => Number, { nullable: true })
     idioma_id?: number
 
+    @Field(() => Boolean, { nullable: true })
+    sol_cambio_contrasena?: boolean
+
     @Field(() => Number, { nullable: true })
     estado_usuario_id?: number
 
