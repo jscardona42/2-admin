@@ -961,7 +961,8 @@ export class UsuariosService {
 
         return this.prismaService.usuarios.update({
             where: { usuario_id: usuario_id },
-            data: { TbEstadosUsuarios: { connect: { nombre: "INACTIVO" } } }
+            data: { TbEstadosUsuarios: { connect: { nombre: "INACTIVO" } } },
+            include: { UsuariosSesionesSec: true, UsuariosHistoricoContrasenasSec: true, TbEstadosUsuarios: true, TbMetodosAutenticacion: true, UsuariosPerfiles: { include: { Perfiles: true } }, TbTipoUsuarios: true, UsuariosParametrosValores: { include: { UsuariosParametros: true } } }
         });
     }
 
