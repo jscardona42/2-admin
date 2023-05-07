@@ -68,7 +68,7 @@ model FormulariosPerfiles {
 
 model FormulariosEmpresas {
   formulario_empresa_id Int                   @id(map: "pk_formulario_empresa_id") @default(autoincrement())
-  formulario_gestion_id Int
+  formulario_gestion_id Int?
   estado                Boolean               @default(true)
   FormulariosPerfiles   FormulariosPerfiles[]
 
