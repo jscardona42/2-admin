@@ -1,0 +1,142 @@
+Plan de Gestión de Calidad Basado en ISO 25000 para el Microservicio de Control de Usuarios
+1. Contexto del Proyecto
+Descripción:
+Definir el alcance, objetivos y stakeholders del microservicio de control de usuarios, autenticación y parametrización.
+
+Actividades/Acciones:
+
+Identificación de los componentes del sistema: registro de usuarios, autenticación (normal y de doble factor), validación de historial de contraseñas, parametrización de usuarios.
+Determinación de los objetivos específicos para cada componente.
+Identificación de los stakeholders clave (usuarios, administradores, equipo de desarrollo).
+Responsables:
+
+Equipo de gestión de proyectos
+Analistas de negocio
+Recursos:
+
+Documentación del proyecto
+Reuniones con stakeholders
+Indicadores de Calidad:
+
+Documentos de alcance y objetivos aprobados
+Lista de stakeholders confirmada
+2. Planificación de Calidad
+Descripción:
+Planificar las actividades de gestión de calidad para el microservicio.
+
+Actividades/Acciones:
+
+Definir métricas de calidad específicas para registro, autenticación, validación de contraseñas y parametrización.
+Establecer un cronograma de revisiones y auditorías de calidad.
+Responsables:
+
+Gerente de calidad
+Equipo de desarrollo
+Recursos:
+
+Herramientas de gestión de proyectos
+Software de seguimiento de calidad
+Indicadores de Calidad:
+
+Plan de calidad documentado y aprobado
+Cumplimiento del cronograma de calidad
+3. Requisitos de Calidad
+Descripción:
+Identificar y especificar los requisitos de calidad del microservicio.
+
+Actividades/Acciones:
+
+Reuniones con stakeholders para definir requisitos de registro de usuarios, autenticación, validación de historial de contraseñas y parametrización.
+Documentación de requisitos funcionales y no funcionales.
+Responsables:
+
+Analistas de negocio
+Equipo de desarrollo
+Recursos:
+
+Herramientas de gestión de requisitos
+Documentación técnica
+Indicadores de Calidad:
+
+Requisitos documentados y aprobados
+Revisión y aceptación de requisitos por los stakeholders
+4. Diseño de Calidad
+Descripción:
+Diseñar el microservicio teniendo en cuenta los atributos de calidad identificados.
+
+Actividades/Acciones:
+
+Desarrollo de diagramas de arquitectura específicos para el registro de usuarios, autenticación, validación de contraseñas y parametrización.
+Revisión de diseño con enfoque en seguridad, escalabilidad y mantenibilidad.
+Responsables:
+
+Arquitectos de software
+Equipo de desarrollo
+Recursos:
+
+Herramientas de diseño de software
+Documentación de arquitectura
+Indicadores de Calidad:
+
+Documentos de diseño aprobados
+Revisión de diseño completa
+5. Implementación de Calidad
+Descripción:
+Implementar las funcionalidades del microservicio asegurando el cumplimiento de los requisitos de calidad.
+
+Actividades/Acciones:
+
+Programación de componentes con buenas prácticas de desarrollo.
+Realización de pruebas unitarias y de integración específicas para cada componente (registro, autenticación, etc.).
+Responsables:
+
+Equipo de desarrollo
+Recursos:
+
+Entorno de desarrollo
+Herramientas de pruebas
+Indicadores de Calidad:
+
+Código revisado y aprobado
+Pruebas unitarias e integraciones pasadas
+6. Verificación y Validación
+Descripción:
+Verificar y validar que el microservicio cumple con los requisitos de calidad establecidos.
+
+Actividades/Acciones:
+
+Realización de pruebas funcionales y de rendimiento específicas para cada componente.
+Auditorías de código y revisiones de calidad.
+Responsables:
+
+Equipo de QA
+Equipo de desarrollo
+Recursos:
+
+Herramientas de pruebas de software
+Planes de pruebas
+Indicadores de Calidad:
+
+Resultados de pruebas documentados
+Auditorías de código completas
+7. Mantenimiento y Mejora
+Descripción:
+Gestionar el mantenimiento y la mejora continua del microservicio.
+
+Actividades/Acciones:
+
+Monitoreo de incidentes y gestión de problemas.
+Implementación de mejoras y actualizaciones regulares basadas en feedback de usuarios y análisis de rendimiento.
+Responsables:
+
+Equipo de mantenimiento
+Equipo de desarrollo
+Recursos:
+
+Herramientas de monitoreo y gestión de incidentes
+Documentación de soporte
+Indicadores de Calidad:
+
+Reducción de incidentes reportados
+Registro de mejoras implementadas
+Implementar este plan permitirá identificar y solucionar problemas de calidad de manera proactiva, asegurando que el microservicio entregue valor continuo a sus usuarios.
